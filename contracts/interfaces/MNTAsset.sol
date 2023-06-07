@@ -12,6 +12,6 @@ interface MNTAsset {
      */
     function get3DModel() external view;
 
-    /** @notice function used to asset initialization */
+    /** @notice Asset initialization */
     function init() external view;
 }

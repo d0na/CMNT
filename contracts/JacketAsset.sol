@@ -3,7 +3,7 @@ pragma solidity ^0.8.9;
 
 // Uncomment this line to use console.log
 import "hardhat/console.sol";
-import "./MNTAsset.sol";
+import "./interfaces/MNTAsset.sol";
 
 /**
  * @title Smart Asset which represents a Jacket
