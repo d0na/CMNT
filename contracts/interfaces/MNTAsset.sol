@@ -1,17 +1,28 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.18;
 
-interface MNTAsset {
-    /**
-     * @notice Asset rendering based on the current variables state 
-     */
-    function render() external view returns (uint);
+contract MNTAsset {
+    address public currentOwner;
+
+    event OwnershipTransferred(
+        address indexed previousOwner,
+        address indexed newOwner
+    );
+
+    function transferOwnership(address to) public {
+        require(to == address(to), "Invalid address");
+        require(to != address(0), "Ownable: new owner is the zero address");
+
+        address oldOwner = currentOwner;
+        currentOwner = to;
+        emit OwnershipTransferred(oldOwner, currentOwner);
+    }
 
     /**
-     * @notice Extract the corret 3D model based on the current variables state  
+     * @dev Interrompe l'esecuzione se la funzione è chiamata da un account che non è proprietario.
      */
-    function get3DModel() external view;
-
-    /** @notice Asset initialization */
-    function init() external view;
+    modifier onlyOwner() {
+        require(msg.sender == currentOwner, "Caller is not the owner");
+        _;
+    }
 }
