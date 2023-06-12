@@ -2,11 +2,9 @@
 pragma solidity ^0.8.18;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
 abstract contract MutableNFT is Ownable,ERC721  {
-    constructor() {}
 
     /**
      * @notice mint
@@ -18,7 +16,7 @@ abstract contract MutableNFT is Ownable,ERC721  {
 
     /**
      * 
-     * @dev function tha should be ovveriden which let the real mint function works with the applied modifier
+     * @dev function tha should be ovveriden. In this way the real mint function works with the applied modifier
      * https://ethereum.stackexchange.com/questions/52960/do-modifiers-work-in-interfaces
      */
     function __mintFunction__(address to) internal virtual returns (address, uint);

@@ -3,7 +3,7 @@ pragma solidity ^0.8.18;
 
 // Uncomment this line to use console.log
 import "hardhat/console.sol";
-import "./interfaces/MNTAsset.sol";
+import "./interfaces/MutableAsset.sol";
 
 /**
  * @title Smart Asset which represents a Jacket
@@ -11,7 +11,11 @@ import "./interfaces/MNTAsset.sol";
  * @notice This Smart Contract contains all the Jacket properties and features which allows
  * it to mutate
  */
-contract JacketAsset is MNTAsset {
+contract JacketAsset is MutableAsset {
+    // constructor(address owner) {
+    //     require(owner == address(owner), "Invalid owner address");
+    //     currentOwner = owner;
+    // }
     constructor() {}
 
     /**
@@ -22,9 +26,7 @@ contract JacketAsset is MNTAsset {
         _;
     }
 
-    function transferOwnership(
-        address to
-    ) public override  otherModifier {
+    function transferOwnership(address to) public override otherModifier {
         // In questo modo richiamo trnasferOwnerShip del derivato ma aggiungo
         // quello che pensi giusto ad esempio aggiungere uno o più modifer
         // onlyOwner e otherModifier

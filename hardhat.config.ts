@@ -1,3 +1,6 @@
+require("@nomiclabs/hardhat-ganache");
+require("@nomiclabs/hardhat-ethers");
+require("@nomiclabs/hardhat-etherscan");
 
 // Example that belongs to the HardHat package
 import { HardhatUserConfig } from "hardhat/config";
