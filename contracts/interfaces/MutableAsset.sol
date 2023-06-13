@@ -23,6 +23,11 @@ contract MutableAsset {
         emit OwnershipTransferred(oldOwner, currentOwner);
     }
 
+    function get3DModel() public pure returns(string memory){
+        //Todo to define
+        return string(abi.encodePacked("filename",".glb"));
+    }
+
     /**
      * @dev Interrompe l'esecuzione se la funzione è chiamata da un account che non è proprietario.
      */
@@ -30,4 +35,6 @@ contract MutableAsset {
         require(msg.sender == currentOwner, "Caller is not the owner");
         _;
     }
+
+
 }
