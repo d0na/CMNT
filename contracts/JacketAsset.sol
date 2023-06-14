@@ -4,6 +4,7 @@ pragma solidity ^0.8.18;
 // Uncomment this line to use console.log
 import "hardhat/console.sol";
 import "./interfaces/MutableAsset.sol";
+import "@openzeppelin/contracts/utils/Strings.sol";
 
 /**
  * @title Smart Asset which represents a Jacket
@@ -12,11 +13,12 @@ import "./interfaces/MutableAsset.sol";
  * it to mutate
  */
 contract JacketAsset is MutableAsset {
-    // constructor(address owner) {
-    //     require(owner == address(owner), "Invalid owner address");
-    //     currentOwner = owner;
-    // }
-    constructor() {}
+    using Strings for string;
+
+    constructor(address owner) {
+        require(owner == address(owner), "Invalid owner address");
+        currentOwner = owner;
+    }
 
     /**
      * @dev Interrompe l'esecuzione se la funzione è chiamata da un account diverso dal contratto

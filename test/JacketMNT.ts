@@ -2,31 +2,96 @@ import { time, loadFixture } from "@nomicfoundation/hardhat-network-helpers";
 import { anyValue } from "@nomicfoundation/hardhat-chai-matchers/withArgs";
 import { expect } from "chai";
 import { ethers } from "hardhat";
+import { BigNumber } from "ethers";
 
 describe("JacketMNT", function () {
   // We define a fixture to reuse the same setup in every test.
-  // We use loadFixture to run this setup once, snapshot that state,
+  // We use loadFixture to run this setu-p once, snapshot that state,
   // and reset Hardhat Network to that snapshot in every test.
   async function deployBase() {
-    const ONE_YEAR_IN_SECS = 365 * 24 * 60 * 60;
-    const ONE_GWEI = 1_000_000_000;
-
-    const lockedAmount = ONE_GWEI;
-    const unlockTime = (await time.latest()) + ONE_YEAR_IN_SECS;
-
     // Contracts are deployed using the first signer/account by default
-    const [owner, otherAccount] = await ethers.getSigners();
-
+    const [owner] = await ethers.getSigners();
     const JacketMNT = await ethers.getContractFactory("JacketMNT");
-    const jacketMNT = await JacketMNT.deploy({ value: lockedAmount });
-
-    return { jacketMNT, test };
+    const jacketMNT = await JacketMNT.deploy();
+    return { jacketMNT, owner };
   }
 
-  describe("Deployment", function () {
-    it("Should set the right message", async function () {
-      const { test, jacketMNT } = await loadFixture(deployBase);
-      expect(await jacketMNT.unlockTime()).to.equal(test);
+  describe("MNT", function () {
+    it("Should revert if the minter is  0 address", async function () {
+      const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
+      // valid alternative to ZERO_ADDRESS is
+      // ethers.constants.AddressZero
+      const { jacketMNT } = await loadFixture(deployBase);
+      expect(jacketMNT.mint(ZERO_ADDRESS)).to.be.revertedWith(
+        "Ownable: new owner is the zero address"
+      );
+    });
+
+    it("Should be able to be minted and owned", async function () {
+      // valid alternative ethers.constants.AddressZero
+      const { jacketMNT, owner } = await loadFixture(deployBase);
+      await jacketMNT.mint(owner.address);
+      expect(await jacketMNT.owner()).to.equal(owner.address);
+    });
+
+    it("Should be minted and trigger events with the right onwer and tokenId", async function () {
+      const { jacketMNT, owner } = await loadFixture(deployBase);
+      const Minted = {
+        owner: owner.address,
+        tokenId: 921600849408656576225127304129841157239410643646,
+      };
+
+      const txResponse = await jacketMNT.mint(owner.address);
+      const txReceipt = await txResponse.wait();
+
+      // console.log("txReceipt", txReceipt);
+
+      const transferEvent = txReceipt.events;
+      const OwnershipTransferred = transferEvent && transferEvent[0].args;
+
+      const Transfer = transferEvent && transferEvent[1].args;
+      const newOwner = OwnershipTransferred && OwnershipTransferred.newOwner;
+      const tokenId: Number = Transfer && Transfer.tokenId;
+      // console.log("OwnershipTransferred Event", OwnershipTransferred && OwnershipTransferred)
+      // console.log("Transfer Event", Transfer && Transfer[1].args)
+      // console.log("NewOwner", newOwner);
+      // console.log("tokenId", tokenId);
+
+      expect(newOwner).to.equal(Minted.owner);
+      expect(Number(tokenId)).to.equal(Minted.tokenId);
+    });
+
+    it("Should be named 'Mutable Jacket for a PUB Decentraland UniPi Project'", async function () {
+      const { jacketMNT } = await loadFixture(deployBase);
+      expect(await jacketMNT.name()).to.equal(
+        "Mutable Jacket for a PUB Decentraland UniPi Project"
+      );
+    });
+
+    it("Should have symbol named 'PUBMNTJACKET'", async function () {
+      const { jacketMNT } = await loadFixture(deployBase);
+      expect(await jacketMNT.symbol()).to.equal("PUBMNTJACKET");
+    });
+
+    it("Should have tokenUri 'filename.glb'", async function () {
+      const { jacketMNT, owner } = await loadFixture(deployBase);
+      const Minted = {
+        owner: owner.address,
+        tokenId: "921600849408656576225127304129841157239410643646",
+        uri: "filename.glb",
+      };
+
+      await jacketMNT.mint(owner.address);
+      expect(
+        await jacketMNT.ownerOf(
+          "921600849408656576225127304129841157239410643646"
+        )
+      ).to.be.equal(Minted.owner);
+      expect(
+        await jacketMNT.tokenURI(
+          "921600849408656576225127304129841157239410643646"
+        )
+      ).to.equal(Minted.uri);
     });
 
     // it("Should set the right owner", async function () {
