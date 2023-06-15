@@ -7,10 +7,9 @@ import "./interfaces/MutableNFT.sol";
 import "./JacketAsset.sol";
 
 /**
- * @title
- * @author
- * @notice
- * Jacket Mutable NFT which maintain the association with the Jacket Asset
+ * @title Jacket Mutable NFT 
+ * @author Francesco Donini <francesco.donini@phd.unipi.it>
+ * @notice Mutable NFT contracat which maintain the association with the Jacket Asset 
  */
 contract JacketMNT is MutableNFT {
     constructor()
@@ -21,14 +20,13 @@ contract JacketMNT is MutableNFT {
     {}
 
     function _mint(address to) internal override returns (address, uint) {
-        //Creo un nuovo asset passando l'indirizzo del creatore
+        // Creation of the asset by specifying the creator's address
         JacketAsset jacket = new JacketAsset(to);
 
-        /* Il proprietario di questo contratto sarà il beneficiario il quale potrà invocare
-        tutti i metodi previsti da esso*/
+        // The asset creator will also be the asset owner who can invoke all methods provided
         jacket.transferOwnership(to);
 
-        //Determinazione del tokenID e chiamata alla funzione di minting del contratto ERC721
+        // Retrieving the tokenID and calling the ERC721 contract minting function
         uint tokenId = uint160(address(jacket));
         
         _safeMint(to, tokenId, "");
@@ -45,10 +43,10 @@ contract JacketMNT is MutableNFT {
         _requireMinted(tokenId);
         
 
-        //Recupero l'indirizzo del contratto
+        // Retrieving the contract address of the asset
         address asset_contract = _intToAddress(tokenId);
 
-        //Otteniamo dal contratto del cappello l'URI che ne descrive lo stato corrente
+        // Retrieving the URI describing the asset's current state from the asset contract
         JacketAsset asset = JacketAsset(asset_contract);
         return asset.get3DModel();
     }
