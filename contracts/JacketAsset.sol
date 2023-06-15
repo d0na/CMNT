@@ -5,10 +5,11 @@ pragma solidity ^0.8.18;
 import "hardhat/console.sol";
 import "./interfaces/MutableAsset.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
+import "./PolicyDecisionPoint.sol";
 
 /**
  * @title Smart Asset which represents a Jacket
- * @author Francesco Donini
+ * @author Francesco Donini <francesco.donini@phd.unipi.it>
  * @notice This Smart Contract contains all the Jacket properties and features which allows
  * it to mutate
  */
@@ -41,13 +42,13 @@ contract JacketAsset is MutableAsset {
     //     PLAIN,
     //     CHECKED
     // }
-    // enum _COLOR {
-    //     RED,
-    //     GREEN,
-    //     BLUE,
-    //     YELLOW,
-    //     GRAY
-    // }
+    enum _COLOR {
+        RED,
+        GREEN,
+        BLUE,
+        YELLOW,
+        GRAY
+    }
 
     // /**
     //  * @notice Asset Properties describing how can change the asset
@@ -64,4 +65,18 @@ contract JacketAsset is MutableAsset {
     // // function get3DModel() external view override {}
 
     // // function init() external view override {}
+
+    /**
+     * @notice Let change the jacket color
+     */
+    function changeColor(_COLOR,address tailor) public {
+        bool isColorChangeble = PolicyDecisionPoint.globalRule();
+        if (isColorChangeble){
+          _changeColor();      
+        } 
+    }
+
+    function _changeColor() internal {
+
+    }
 }
