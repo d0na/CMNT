@@ -15,10 +15,14 @@ import "./PolicyDecisionPoint.sol";
  */
 contract JacketAsset is MutableAsset {
     using Strings for string;
+    bytes32 currentOwnerb32 = bytes32(uint256(uint160(address(currentOwner))));
+    PolicyDecisionPoint pdpChangeColor = new PolicyDecisionPoint(address(currentOwner));
+
 
     constructor(address owner) {
         require(owner == address(owner), "Invalid owner address");
         currentOwner = owner;
+
     }
 
     /**
@@ -69,14 +73,14 @@ contract JacketAsset is MutableAsset {
     /**
      * @notice Let change the jacket color
      */
-    function changeColor(_COLOR,address tailor) public {
-        bool isColorChangeble = PolicyDecisionPoint.globalRule();
-        if (isColorChangeble){
-          _changeColor();      
-        } 
+    function changeColor(_COLOR, address tailor) public {
+        if (isColorChangeble) {
+            _changeColor();
+        }
     }
 
-    function _changeColor() internal {
-
+    modifier isColorChangeable() {
+        require(msg.sender == currentOwner, "Caller is not the owner");
+        _;
     }
 }

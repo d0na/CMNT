@@ -1,12 +1,20 @@
 pragma solidity ^0.8.18;
 
-contract PIPInterface { function env1date() public pure returns(bytes32) {} 
-                        function env2time() public pure returns(bytes32) {} 
-                        function env3hot() public pure returns(bool) {} 
-                        function env4dateTime() public pure returns(bytes32) {} 
-                        function res1resourceId() public pure returns(bytes32) {} 
-                        function res2status() public pure returns(bool) {} 
-                        function res3maintenance() public pure returns(bool) {} }
+contract PIPInterface {
+    function env1date() public pure returns (bytes32) {}
+
+    function env2time() public pure returns (bytes32) {}
+
+    function env3hot() public pure returns (bool) {}
+
+    function env4dateTime() public pure returns (bytes32) {}
+
+    function res1resourceId() public pure returns (bytes32) {}
+
+    function res2status() public pure returns (bool) {}
+
+    function res3maintenance() public pure returns (bool) {}
+}
 
 contract PolicyDecisionPoint {
     struct User {
@@ -24,65 +32,66 @@ contract PolicyDecisionPoint {
     uint private id;
     Session[] private register;
 
-    function PolicyDecisionPoint(address pipAddr) public {
+    constructor(address pipAddr) public {
         admin = msg.sender;
         PIPcontr = PIPInterface(pipAddr);
         id = 0;
     }
 
-    function getSessionById(uint _id) public view returns(bytes32, bool) {
+    function getSessionById(uint _id) public view returns (bytes32, bool) {
         if (_id >= register.length) {
             revert();
         }
 
-        return (register[_id].users.userName,
-                register[_id].users.authorized);
+        return (register[_id].users.userName, register[_id].users.authorized);
     }
 
-    function getPermission(bytes32 subject) public returns(uint) {
+    function getPermission(bytes32 subject) public returns (uint) {
         if (msg.sender != admin) {
             revert();
         }
 
-        bool outcome = globalRule(subject);
-
-        var u = User(subject, outcome);
-        var s = Session(id, u);
+        bool outcome = globalRule();
+        User memory u = User(subject, outcome);
+        Session memory s = Session(id, u);
 
         id++;
         register.push(s);
         return (id - 1);
     }
 
-    function rule1() private view returns(bool) {
+    function rule1() private view returns (bool) {
         return bytes32("26/06/2017") == bytes32(PIPcontr.env1date());
     }
 
-    function rule2() private view returns(bool) {
+    function rule2() private view returns (bool) {
         return bytes32("17:39") == bytes32(PIPcontr.env2time());
     }
 
-    function rule3() private view returns(bool) {
+    function rule3() private view returns (bool) {
         return (true == PIPcontr.env3hot());
     }
 
-    function rule4() private view returns(bool) {
+    function rule4() private view returns (bool) {
         return bytes32("17:39-26/06/2017") == bytes32(PIPcontr.env4dateTime());
     }
 
-    function rule5() private view returns(bool) {
+    function rule5() private view returns (bool) {
         return bytes32("res.org") >= bytes32(PIPcontr.res1resourceId());
     }
 
-    function rule6() private view returns(bool) {
+    function rule6() private view returns (bool) {
         return (true == PIPcontr.res2status());
     }
 
-    function rule7() private view returns(bool) {
+    function rule7() private view returns (bool) {
         return (false == PIPcontr.res3maintenance());
     }
 
-    function globalRule(bytes32 subject) private view returns(bool) {
-        return ((rule1() && rule2()) || (rule3())) && ((rule4() && rule5()) || (rule6()) || (rule7()));
+    // function globalRule(bytes32 subject) private view returns (bool) {
+    function globalRule() public view returns (bool) {
+        return
+            ((rule1() && rule2()) || (rule3())) &&
+            ((rule4() && rule5()) || (rule6()) || (rule7()));
     }
 }
