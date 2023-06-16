@@ -1,19 +1,10 @@
+// SPDX-License-Identifier: MIT 
 pragma solidity ^0.8.18;
 
 contract PIPInterface {
-    function env1date() public pure returns (bytes32) {}
+    function envIsTailorAuthorized(string memory _tailor) public pure returns (bool) {}
 
-    function env2time() public pure returns (bytes32) {}
-
-    function env3hot() public pure returns (bool) {}
-
-    function env4dateTime() public pure returns (bytes32) {}
-
-    function res1resourceId() public pure returns (bytes32) {}
-
-    function res2status() public pure returns (bool) {}
-
-    function res3maintenance() public pure returns (bool) {}
+    function envIsColorAllowed(string memory _color) public pure returns (bool) {}
 }
 
 contract PolicyDecisionPoint {
@@ -32,7 +23,7 @@ contract PolicyDecisionPoint {
     uint private id;
     Session[] private register;
 
-    constructor(address pipAddr) public {
+    constructor(address pipAddr) {
         admin = msg.sender;
         PIPcontr = PIPInterface(pipAddr);
         id = 0;
@@ -51,7 +42,8 @@ contract PolicyDecisionPoint {
             revert();
         }
 
-        bool outcome = globalRule();
+        // bool outcome = globalRule();
+        bool outcome = true;
         User memory u = User(subject, outcome);
         Session memory s = Session(id, u);
 
@@ -60,38 +52,18 @@ contract PolicyDecisionPoint {
         return (id - 1);
     }
 
-    function rule1() private view returns (bool) {
-        return bytes32("26/06/2017") == bytes32(PIPcontr.env1date());
+    function rule1(string memory _color) private view returns (bool) {
+        return PIPcontr.envIsColorAllowed(_color);
     }
 
-    function rule2() private view returns (bool) {
-        return bytes32("17:39") == bytes32(PIPcontr.env2time());
+    function rule2(string memory _tailor) private view returns (bool) {
+        return PIPcontr.envIsTailorAuthorized(_tailor);
     }
 
-    function rule3() private view returns (bool) {
-        return (true == PIPcontr.env3hot());
-    }
-
-    function rule4() private view returns (bool) {
-        return bytes32("17:39-26/06/2017") == bytes32(PIPcontr.env4dateTime());
-    }
-
-    function rule5() private view returns (bool) {
-        return bytes32("res.org") >= bytes32(PIPcontr.res1resourceId());
-    }
-
-    function rule6() private view returns (bool) {
-        return (true == PIPcontr.res2status());
-    }
-
-    function rule7() private view returns (bool) {
-        return (false == PIPcontr.res3maintenance());
-    }
 
     // function globalRule(bytes32 subject) private view returns (bool) {
-    function globalRule() public view returns (bool) {
+    function globalRule(string memory _color, string memory _tailor) public view returns (bool) {
         return
-            ((rule1() && rule2()) || (rule3())) &&
-            ((rule4() && rule5()) || (rule6()) || (rule7()));
+            (rule1(_color) && rule2(_tailor));
     }
 }

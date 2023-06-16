@@ -14,20 +14,22 @@ import "./PolicyDecisionPoint.sol";
  * it to mutate
  */
 contract JacketAsset is MutableAsset {
+
     using Strings for string;
+    // CurrentOwner in byte32, TODO: to change asap
     bytes32 currentOwnerb32 = bytes32(uint256(uint160(address(currentOwner))));
+    address _pip;
     PolicyDecisionPoint pdpChangeColor = new PolicyDecisionPoint(address(currentOwner));
+    
+    string color;
 
-
-    constructor(address owner) {
-        require(owner == address(owner), "Invalid owner address");
-        currentOwner = owner;
-
+    constructor(address _owner) {
+        require(_owner == address(_owner), "Invalid owner address");
+        currentOwner = _owner;
     }
 
     /**
-     * @dev Interrompe l'esecuzione se la funzione è chiamata da un account diverso dal contratto
-     * di gestione esami dell'università.
+     * @dev Example
      */
     modifier otherModifier() {
         _;
@@ -40,19 +42,37 @@ contract JacketAsset is MutableAsset {
         super.transferOwnership(to);
     }
 
+    /**
+     * @notice Let change the jacket color
+     */
+    function changeColor(string memory _color, string memory _tailor) isColorChangeable(_color,_tailor) public {
+        color = _color;
+    }
+
+    // PEP - functions which return decisions from pdp
+
+    // soggetto, azione , risorsa e altri parametri
+    modifier isColorChangeable(string memory _color, string memory _tailor) {
+        require(pdpChangeColor.globalRule(_color,_tailor) == true, "Change Color operation is not allowed");
+        _;
+    }
+
+
+
+
     // // https://www.google.com/search?q=pattern+clothes+anmes&oq=pattern+clothes+anmes&aqs=chrome..69i57j0i22i30j0i8i10i13i15i30.6999j1j7&sourceid=chrome&ie=UTF-8#imgrc=mZSD24o1hA8VdM
     // enum _PATTERN {
     //     STRIPPED,
     //     PLAIN,
     //     CHECKED
     // }
-    enum _COLOR {
-        RED,
-        GREEN,
-        BLUE,
-        YELLOW,
-        GRAY
-    }
+    // enum _COLOR {
+    //     RED,
+    //     GREEN,
+    //     BLUE,
+    //     YELLOW,
+    //     GRAY
+    // }
 
     // /**
     //  * @notice Asset Properties describing how can change the asset
@@ -70,17 +90,5 @@ contract JacketAsset is MutableAsset {
 
     // // function init() external view override {}
 
-    /**
-     * @notice Let change the jacket color
-     */
-    function changeColor(_COLOR, address tailor) public {
-        if (isColorChangeble) {
-            _changeColor();
-        }
-    }
 
-    modifier isColorChangeable() {
-        require(msg.sender == currentOwner, "Caller is not the owner");
-        _;
-    }
 }

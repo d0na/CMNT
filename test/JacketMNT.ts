@@ -17,7 +17,7 @@ describe("JacketMNT", function () {
   }
 
   describe("MNT", function () {
-    it("Should revert if the minter is  0 address", async function () {
+    it("Should revert if the miner is  0 address", async function () {
       const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
       // valid alternative to ZERO_ADDRESS is
       // ethers.constants.AddressZero
@@ -44,7 +44,7 @@ describe("JacketMNT", function () {
       const txResponse = await jacketMNT.mint(owner.address);
       const txReceipt = await txResponse.wait();
 
-      // console.log("txReceipt", txReceipt);
+      console.log("txResponse", txResponse);
 
       const transferEvent = txReceipt.events;
       const OwnershipTransferred = transferEvent && transferEvent[0].args;
@@ -120,69 +120,31 @@ describe("JacketMNT", function () {
     // });
   });
 
-  // describe("Withdrawals", function () {
-  //   describe("Validations", function () {
-  //     it("Should revert with the right error if called too soon", async function () {
-  //       const { lock } = await loadFixture(deployOneYearLockFixture);
+  describe("Policy", function () {
+    async function deployPIPBase() {
+      // Contracts are deployed using the first signer/account by default
+      const [owner] = await ethers.getSigners();
+      const EnvContract = await ethers.getContractFactory("PUB_AM");
+      const envContract = await EnvContract.deploy();
+      const Pip = await ethers.getContractFactory("PolicyInformationPoint");
+      const pip = await Pip.deploy(envContract.address);
+      return { pip, owner };
+    }
 
-  //       await expect(lock.withdraw()).to.be.revertedWith(
-  //         "You can't withdraw yet"
-  //       );
-  //     });
-
-  //     it("Should revert with the right error if called from another account", async function () {
-  //       const { lock, unlockTime, otherAccount } = await loadFixture(
-  //         deployOneYearLockFixture
-  //       );
-
-  //       // We can increase the time in Hardhat Network
-  //       await time.increaseTo(unlockTime);
-
-  //       // We use lock.connect() to send a transaction from another account
-  //       await expect(lock.connect(otherAccount).withdraw()).to.be.revertedWith(
-  //         "You aren't the owner"
-  //       );
-  //     });
-
-  //     it("Shouldn't fail if the unlockTime has arrived and the owner calls it", async function () {
-  //       const { lock, unlockTime } = await loadFixture(
-  //         deployOneYearLockFixture
-  //       );
-
-  //       // Transactions are sent using the first signer by default
-  //       await time.increaseTo(unlockTime);
-
-  //       await expect(lock.withdraw()).not.to.be.reverted;
-  //     });
-  //   });
-
-  //   describe("Events", function () {
-  //     it("Should emit an event on withdrawals", async function () {
-  //       const { lock, unlockTime, lockedAmount } = await loadFixture(
-  //         deployOneYearLockFixture
-  //       );
-
-  //       await time.increaseTo(unlockTime);
-
-  //       await expect(lock.withdraw())
-  //         .to.emit(lock, "Withdrawal")
-  //         .withArgs(lockedAmount, anyValue); // We accept any value as `when` arg
-  //     });
-  //   });
-
-  //   describe("Transfers", function () {
-  //     it("Should transfer the funds to the owner", async function () {
-  //       const { lock, unlockTime, lockedAmount, owner } = await loadFixture(
-  //         deployOneYearLockFixture
-  //       );
-
-  //       await time.increaseTo(unlockTime);
-
-  //       await expect(lock.withdraw()).to.changeEtherBalances(
-  //         [owner, lock],
-  //         [lockedAmount, -lockedAmount]
-  //       );
-  //     });
-  //   });
-  // });
+    describe("PIP", function () {
+      it("Should create a valid PIP", async function () {
+        const { pip } = await loadFixture(deployPIPBase);
+        console.log("pip address", pip.address);
+        await expect(pip.address).to.not.be.eq(0);
+      });
+    });
+    describe("PDP", function () {
+      it("Should change in 'red' color by the tailor 'mario' ", async function () {
+        const { pip } = await loadFixture(deployPIPBase);
+        const { jacketMNT } = await loadFixture(deployBase);
+        // console.log("pip address", jacketMNT.);
+        await expect(pip.address).to.not.be.eq(0);
+      });
+    });
+  });
 });
