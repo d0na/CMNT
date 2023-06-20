@@ -14,6 +14,7 @@ import "./PolicyDecisionPoint.sol";
  * it to mutate
  */
 contract JacketAsset is MutableAsset {
+
     using Strings for string;
     // CurrentOwner in byte32, TODO: to change asap
     bytes32 currentOwnerb32 = bytes32(uint256(uint160(address(currentOwner))));
@@ -26,7 +27,7 @@ contract JacketAsset is MutableAsset {
     constructor(address _currentOwner) {
         require(
             _currentOwner == address(_currentOwner),
-            "Invalid owner address"
+            "Invalid current owner address"
         );
         currentOwner = _currentOwner;
     }
@@ -53,7 +54,7 @@ contract JacketAsset is MutableAsset {
         string memory _tailor
     )
         public
-        PdP_IsColorChangeable(
+        pepIsColorChangeable(
             currentOwner,
             "0x6368616e67655f636f6c6f72",
             address(0),
@@ -67,8 +68,7 @@ contract JacketAsset is MutableAsset {
 
     // PEP - functions which return decisions from pdp
 
-    // soggetto, azione , risorsa e altri parametri
-    modifier PdP_IsColorChangeable(
+    modifier pepIsColorChangeable(
         address _subject,
         bytes32 _action,
         address _resource,

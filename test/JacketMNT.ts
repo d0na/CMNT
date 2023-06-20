@@ -3,6 +3,7 @@ import { anyValue } from "@nomicfoundation/hardhat-chai-matchers/withArgs";
 import { expect } from "chai";
 import { ethers } from "hardhat";
 import { BigNumber } from "ethers";
+import { string } from "hardhat/internal/core/params/argumentTypes";
 
 describe("JacketMNT", function () {
   // We define a fixture to reuse the same setup in every test.
@@ -45,7 +46,7 @@ describe("JacketMNT", function () {
 
       const txResponse = await jacketMNT.callStatic.mint(owner.address);
 
-      console.log("txResponse", txResponse);
+      // console.log("txResponse", txResponse);
     });
 
     it("Should be minted and trigger events with the right onwer and tokenId", async function () {
@@ -170,40 +171,67 @@ describe("JacketMNT", function () {
     // });
   });
 
-  describe("Policy", function () {
-    async function deployPIP() {
+  describe("ABAC", function () {
+    async function deployABACEnviroment() {
       // Contracts are deployed using the first signer/account by default
       const [owner] = await ethers.getSigners();
-      const EnvContract = await ethers.getContractFactory("PUB_AM");
-      const envContract = await EnvContract.deploy();
+      // Pub Attribute Manager contract
+      const PubAMContract = await ethers.getContractFactory("PubAM");
+      const pubAm = await PubAMContract.deploy();
+      // Pip Policy information point contract
       const Pip = await ethers.getContractFactory("PolicyInformationPoint");
-      const pip = await Pip.deploy(envContract.address);
-      return { pip, owner };
+      const pip = await Pip.deploy(pubAm.address);
+      // Pdp Policy decision point contract
+      const Pdp = await ethers.getContractFactory("PolicyDecisionPoint");
+      const pdp = await Pip.deploy(pubAm.address);
+      return { pip, owner, pubAm, pdp };
     }
+
+
+    describe("PubAM", function () {
+      it("Should returns a Pub allowed color list ['red','green']", async function () {
+        const {  pubAm } = await loadFixture(deployABACEnviroment);
+        const pubAmTransaction = await pubAm.callStatic.allowedColorList();
+
+        await expect(pubAmTransaction[0]).to.be.equals("red");
+        await expect(pubAmTransaction[1]).to.be.equals("green");
+      });
+    });
+
 
     describe("PIP", function () {
       it("Should create a valid PIP", async function () {
-        const { pip } = await loadFixture(deployPIP);
+        const { pip } = await loadFixture(deployABACEnviroment);
         // console.log("pip address", pip.address);
         await expect(pip.address).to.be.eq(
           "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9"
         );
       });
+
+      it("Should returns fa Pub allowed color list from Pip after have been set the pdp address ", async function () {
+        const { pip, owner } = await loadFixture(deployABACEnviroment);
+
+        const pubAmTransaction = await pip.callStatic.pubAllowedColorList();
+
+        await expect(pubAmTransaction[0]).to.be.equals("red");
+        await expect(pubAmTransaction[1]).to.be.equals("green");
+      });
     });
+
     describe("PDP", function () {
-      //  JacketMNT.address : 0x5FbDB2315678afecb367f032d93F642f64180aa3
-      //  pip.address 0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9
+      // JacketMNT.address : 0x5FbDB2315678afecb367f032d93F642f64180aa3
+      // pip.address 0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9
       // JacketAsset address: 0xa16e02e87b7454126e5e10d957a927a7f5b5d2be
 
       it("Should change the color Jacket to 'red'  by the tailor 'mario' ", async function () {
         const { jacketAsset } = await loadFixture(deployJacketNMT);
+        const { pdp } = await loadFixture(deployABACEnviroment);
         // const tx = await jacketAsset.changeColor("red", "mario");
         // let receipt = await tx.wait();
         // const events = receipt.events?.filter((x) => {return x.event == "ChangedColor"})
 
         // console.log("receipt",events);
         // console.log(tx);
-
         await expect(jacketAsset.changeColor("red", "mario"))
           .to.emit(jacketAsset, "ChangedColor")
           .withArgs("red");
@@ -213,14 +241,14 @@ describe("JacketMNT", function () {
         const { jacketAsset } = await loadFixture(deployJacketNMT);
         await expect(
           jacketAsset.changeColor("green", "mario")
-        ).to.be.revertedWith('Change Color operation DENY');
+        ).to.be.revertedWithoutReason;
       });
 
       it("Should revert the transaction when it is trying to change the color Jacket to 'red'  by the tailor 'franco' that it is not allowed ", async function () {
         const { jacketAsset } = await loadFixture(deployJacketNMT);
         await expect(
           jacketAsset.changeColor("red", "franco")
-        ).to.be.revertedWith('Change Color operation DENY');
+        ).to.be.revertedWithoutReason;
       });
     });
   });

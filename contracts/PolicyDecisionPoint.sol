@@ -3,12 +3,7 @@ pragma solidity ^0.8.18;
 
 import "hardhat/console.sol";
 import "./JacketMNT.sol";
-
-contract PIPInterface {
-    function envAuthorizedTailorList() public pure returns (string[] memory) {}
-
-    function envAllowedColorList() public pure returns (string[] memory) {}
-}
+import "./PolicyInformationPoint.sol";
 
 contract PolicyDecisionPoint {
     /*
@@ -39,18 +34,22 @@ contract PolicyDecisionPoint {
     }
 
     address private admin;
-    PIPInterface private PIPcontr;
+    PolicyInformationPoint private pip;
     uint private id;
     Session[] private register;
 
-    constructor(address pipAddr) {
+    constructor(address _pubAmAddr) {
         admin = msg.sender;
-        PIPcontr = PIPInterface(pipAddr);
+        pip = PolicyInformationPoint(_pubAmAddr);
         id = 0;
         // change_pattern: 0x6368616e67655f7061747465726e
-        AllowedActions["0x6368616e67655f7061747465726e"] = "0x6368616e67655f7061747465726e";
+        AllowedActions[
+            "0x6368616e67655f7061747465726e"
+        ] = "0x6368616e67655f7061747465726e";
         // change_color : 0x6368616e67655f636f6c6f72
-        AllowedActions["0x6368616e67655f636f6c6f72"] = "0x6368616e67655f636f6c6f72";
+        AllowedActions[
+            "0x6368616e67655f636f6c6f72"
+        ] = "0x6368616e67655f636f6c6f72";
     }
 
     /***
@@ -86,38 +85,29 @@ contract PolicyDecisionPoint {
         return (id - 1);
     }
 
+    // Condition 1
     function isAuthorizedTailor(
         string memory _tailor
     ) private view returns (bool) {
-        return equal(_tailor,"mario");
-
-// 
-        // string[] memory colors = PIPcontr.envAllowedColorList();
-        // for (uint i = 0; i >= colors.length; i++) {
-            // if (equal(colors[i], _color)) {
-                // return true;
-            // }
-        // }
-        // return false;
+        //return equal(_tailor,"mario");
+        string[] memory tailors = pip.pubTailorList();
+        for (uint i = 0; i <= tailors.length; i++) {
+            if (equal(tailors[i], _tailor)) {
+                return true;
+            }
+        }
+        return false;
     }
 
+    // Condition 2
     function isAllowedColor(string memory _color) private view returns (bool) {
-        return equal(_color,"red");
-        // string[] memory tailors = PIPcontr.envAuthorizedTailorList();
-        // console.log("test",PIPcontr.envAuthorizedTailorList()[0]);
-        // for (uint i = 0; i >= tailors.length; i++) {
-        //     if (equal(tailors[i], _tailor)) {
-        //         return true;
-        //     }
-        // }
-        // return false;
-    }
-
-    function rule1(
-        string memory _color,
-        string memory _tailor
-    ) public view returns (bool) {
-        return (isAllowedColor(_color) && isAuthorizedTailor(_tailor));
+        string[] memory colors = pip.pubAllowedColorList();
+        for (uint i = 0; i <= colors.length; i++) {
+            if (equal(colors[i], _color)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     function evalChangeColor(
@@ -128,35 +118,37 @@ contract PolicyDecisionPoint {
         string memory _tailor
     )
         public
+        view
         onlyAuthorizedSubject(_subject, _resource)
-        // onlyAllowedActions(_action)        
+        onlyAllowedAction(_action)
         returns (bool)
     {
-
-        require(_action == AllowedActions[_action],"Invalid action name for this Action");
         return (isAllowedColor(_color) && isAuthorizedTailor(_tailor));
     }
 
-    function evalChangePattern(
-        address _subject,
-        bytes32 _action,
-        address _resource,
-        string memory _pattern,
-        string memory _tailor
-    )
-        public
-        // onlyAllowedActions(_action)
-        onlyAuthorizedSubject(_subject, _resource)
-        returns (bool)
-    {}
+    // function evalChangePattern(
+    //     address _subject,
+    //     bytes32 _action,
+    //     address _resource,
+    //     string memory _pattern,
+    //     string memory _tailor
+    // )
+    //     public
+    //     // onlyAllowedActions(_action)
+    //     onlyAuthorizedSubject(_subject, _resource)
+    //     returns (bool)
+    // {}
 
-    // modifier onlyAllowedActions(bytes32 _action) {
-    //     require(AllowedActions[_action], "Action not allowed");
-    //     _;
-    // }
+    modifier onlyAllowedAction(bytes32 _action) {
+        require(
+            _action == AllowedActions[_action],
+            "Invalid action name invoked for this action"
+        );
+        _;
+    }
 
     modifier onlyAuthorizedSubject(address _subject, address _resource) {
-        require(1==1);
+        require(1 == 1, "Subject not allowed");
         _;
         // JacketMNT nmt = JacketMNT(_resource);
         // require(_resource == address(_resource), "Invalid Resource address");

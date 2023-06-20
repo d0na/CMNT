@@ -53,7 +53,7 @@ contract JacketMNT is MutableNFT {
         return asset.get3DModel();
     }
 
-    function getJacketAddress(uint256 tokenId) public view returns (address) {
+    function getJacketAddress() public view returns (address) {
         return _jacketAsset;
     }
 
