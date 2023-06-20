@@ -8,12 +8,14 @@ describe("JacketMNT", function () {
   // We define a fixture to reuse the same setup in every test.
   // We use loadFixture to run this setu-p once, snapshot that state,
   // and reset Hardhat Network to that snapshot in every test.
-  async function deployBase() {
+  async function deployJacketNMT() {
     // Contracts are deployed using the first signer/account by default
     const [owner] = await ethers.getSigners();
     const JacketMNT = await ethers.getContractFactory("JacketMNT");
     const jacketMNT = await JacketMNT.deploy();
-    return { jacketMNT, owner };
+    const JacketAsset = await ethers.getContractFactory("JacketAsset");
+    const jacketAsset = await JacketAsset.deploy(owner.address);
+    return { jacketMNT, owner, jacketAsset };
   }
 
   describe("MNT", function () {
@@ -21,7 +23,7 @@ describe("JacketMNT", function () {
       const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
       // valid alternative to ZERO_ADDRESS is
       // ethers.constants.AddressZero
-      const { jacketMNT } = await loadFixture(deployBase);
+      const { jacketMNT } = await loadFixture(deployJacketNMT);
       expect(jacketMNT.mint(ZERO_ADDRESS)).to.be.revertedWith(
         "Ownable: new owner is the zero address"
       );
@@ -29,13 +31,25 @@ describe("JacketMNT", function () {
 
     it("Should be able to be minted and owned", async function () {
       // valid alternative ethers.constants.AddressZero
-      const { jacketMNT, owner } = await loadFixture(deployBase);
+      const { jacketMNT, owner } = await loadFixture(deployJacketNMT);
       await jacketMNT.mint(owner.address);
       expect(await jacketMNT.owner()).to.equal(owner.address);
     });
 
+    it("Should be....", async function () {
+      const { jacketMNT, owner } = await loadFixture(deployJacketNMT);
+      const Minted = {
+        owner: owner.address,
+        tokenId: 921600849408656576225127304129841157239410643646,
+      };
+
+      const txResponse = await jacketMNT.callStatic.mint(owner.address);
+
+      console.log("txResponse", txResponse);
+    });
+
     it("Should be minted and trigger events with the right onwer and tokenId", async function () {
-      const { jacketMNT, owner } = await loadFixture(deployBase);
+      const { jacketMNT, owner } = await loadFixture(deployJacketNMT);
       const Minted = {
         owner: owner.address,
         tokenId: 921600849408656576225127304129841157239410643646,
@@ -44,7 +58,7 @@ describe("JacketMNT", function () {
       const txResponse = await jacketMNT.mint(owner.address);
       const txReceipt = await txResponse.wait();
 
-      console.log("txResponse", txResponse);
+      // console.log("txResponse", txResponse);
 
       const transferEvent = txReceipt.events;
       const OwnershipTransferred = transferEvent && transferEvent[0].args;
@@ -62,19 +76,19 @@ describe("JacketMNT", function () {
     });
 
     it("Should be named 'Mutable Jacket for a PUB Decentraland UniPi Project'", async function () {
-      const { jacketMNT } = await loadFixture(deployBase);
+      const { jacketMNT } = await loadFixture(deployJacketNMT);
       expect(await jacketMNT.name()).to.equal(
         "Mutable Jacket for a PUB Decentraland UniPi Project"
       );
     });
 
     it("Should have symbol named 'PUBMNTJACKET'", async function () {
-      const { jacketMNT } = await loadFixture(deployBase);
+      const { jacketMNT } = await loadFixture(deployJacketNMT);
       expect(await jacketMNT.symbol()).to.equal("PUBMNTJACKET");
     });
 
     it("Should have tokenUri 'filename.glb'", async function () {
-      const { jacketMNT, owner } = await loadFixture(deployBase);
+      const { jacketMNT, owner } = await loadFixture(deployJacketNMT);
       const Minted = {
         owner: owner.address,
         tokenId: "921600849408656576225127304129841157239410643646",
@@ -92,6 +106,42 @@ describe("JacketMNT", function () {
           "921600849408656576225127304129841157239410643646"
         )
       ).to.equal(Minted.uri);
+    });
+
+    //
+    // it("Should have address....", async function () {
+    // const { jacketMNT, owner } = await loadFixture(deployJacketNMT);
+    // const Minted = {
+    // owner: owner.address,
+    // tokenId: "921600849408656576225127304129841157239410643646",
+    // uri: "filename.glb",
+    // };
+    //
+    // await jacketMNT.mint(owner.address)
+    //
+    //console.log(await jacketMNT.getJacketAddress(
+    //"921600849408656576225127304129841157239410643646"))
+    // expect(
+    // await jacketMNT.getJacketAddress(
+    // "921600849408656576225127304129841157239410643646"
+    // )
+    // ).to.be.equal("0xa16e02e87b7454126e5e10d957a927a7f5b5d2be");
+    // });
+    //
+    it("Should be owned by the owner associated with the TokenId", async function () {
+      const { jacketMNT, owner } = await loadFixture(deployJacketNMT);
+      const Minted = {
+        owner: owner.address,
+        tokenId: "921600849408656576225127304129841157239410643646",
+        uri: "filename.glb",
+      };
+
+      await jacketMNT.mint(owner.address);
+      expect(
+        await jacketMNT.ownerOf(
+          "921600849408656576225127304129841157239410643646"
+        )
+      ).to.be.equal(Minted.owner);
     });
 
     // it("Should set the right owner", async function () {
@@ -121,7 +171,7 @@ describe("JacketMNT", function () {
   });
 
   describe("Policy", function () {
-    async function deployPIPBase() {
+    async function deployPIP() {
       // Contracts are deployed using the first signer/account by default
       const [owner] = await ethers.getSigners();
       const EnvContract = await ethers.getContractFactory("PUB_AM");
@@ -133,17 +183,28 @@ describe("JacketMNT", function () {
 
     describe("PIP", function () {
       it("Should create a valid PIP", async function () {
-        const { pip } = await loadFixture(deployPIPBase);
-        console.log("pip address", pip.address);
-        await expect(pip.address).to.not.be.eq(0);
+        const { pip } = await loadFixture(deployPIP);
+        // console.log("pip address", pip.address);
+        await expect(pip.address).to.be.eq(
+          "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9"
+        );
       });
     });
     describe("PDP", function () {
-      it("Should change in 'red' color by the tailor 'mario' ", async function () {
-        const { pip } = await loadFixture(deployPIPBase);
-        const { jacketMNT } = await loadFixture(deployBase);
-        // console.log("pip address", jacketMNT.);
-        await expect(pip.address).to.not.be.eq(0);
+      //  JacketMNT.address : 0x5FbDB2315678afecb367f032d93F642f64180aa3
+      //  pip.address 0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9
+      // JacketAsset address: 0xa16e02e87b7454126e5e10d957a927a7f5b5d2be
+
+      it("Should change the Jacket color in 'red'  by the tailor 'mario' ", async function () {
+        const { jacketAsset } = await loadFixture(deployJacketNMT);
+        const tx = await jacketAsset.changeColor("red", "mario");
+        console.log(tx);
+        await expect(jacketAsset.changeColor("red", "mario")).to.be.eq(true);
+      });
+
+      it("Should not change the Jacket color in 'green'  by the tailor 'mario' ", async function () {
+        const { jacketAsset } = await loadFixture(deployJacketNMT);
+        await expect(jacketAsset.changeColor("green", "mario")).to.be.eq(true);
       });
     });
   });

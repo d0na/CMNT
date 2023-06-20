@@ -2,11 +2,9 @@
 pragma solidity ^0.8.18;
 
 contract EnvironmentContract {
-    function isTailorAuthorized(
-        string memory _tailorName
-    ) public returns (bool) {}
+    function tailorList() public returns (string[] memory) {}
 
-    function isColorAllowed(string memory _color) public returns (bool) {}
+    function allowedColorList() public returns (string[] memory) {}
 }
 
 /**
@@ -39,15 +37,15 @@ contract PolicyInformationPoint {
         }
     }
 
-    function envIsColorAllowed(string memory _color) public returns (bool) {
+  
+
+    function envAllowedColorList() public returns (string[] memory) {
         checkSender(msg.sender);
-        return _envContr.isColorAllowed(_color);
+        return _envContr.allowedColorList();
     }
 
-    function envIsTailorAuthorized(
-        string memory _tailor
-    ) public returns (bool) {
+    function envTailorList() public returns (string[] memory) {
         checkSender(msg.sender);
-        return _envContr.isColorAllowed(_tailor);
+        return _envContr.tailorList();
     }
 }

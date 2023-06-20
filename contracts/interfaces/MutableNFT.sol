@@ -25,4 +25,8 @@ abstract contract MutableNFT is Ownable, ERC721 {
     function _intToAddress(uint index) internal pure returns (address) {
         return address(uint160(index));
     }
+
+    function addressToInt(address index) internal pure returns(uint){
+        return uint(uint160(index));
+    }
 }

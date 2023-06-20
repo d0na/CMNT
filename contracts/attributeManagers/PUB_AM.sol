@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.18;
+import "@openzeppelin/contracts/utils/Strings.sol";
 
 /**
  * @title PUB AM - Pisa University Brand Attribute Manager
@@ -7,18 +8,25 @@ pragma solidity ^0.8.18;
  * @notice Contains all the information related to PUB
  */
 contract PUB_AM {
-    function tailorIsAuthorized(
-        string memory tailorName
-    ) public pure returns (bool) {
-        return
-            keccak256(abi.encodePacked(tailorName)) ==
-            keccak256(abi.encodePacked("mario"));
+    using Strings for string;
+
+    string[] private _tailorList;
+    string[] private _colorList;
+
+    constructor() {
+        _tailorList.push("mario");
+        _tailorList.push("pino");
+        _colorList.push("red");
+        _colorList.push("green");
+    }
+    // Lista dei sarti autorizzati
+    function authorizedTailorList() public view returns (string[] memory) {
+        return _tailorList;
     }
 
-    function isColorAllowed(string memory color
-    ) public pure returns (bool) {
-        return
-            keccak256(abi.encodePacked(color)) ==
-            keccak256(abi.encodePacked("red"));
+
+    function colorAllowed() public view returns (string[]memory) {
+        return _colorList;
     }
+
 }

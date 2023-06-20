@@ -7,11 +7,13 @@ import "./interfaces/MutableNFT.sol";
 import "./JacketAsset.sol";
 
 /**
- * @title Jacket Mutable NFT 
+ * @title Jacket Mutable NFT
  * @author Francesco Donini <francesco.donini@phd.unipi.it>
- * @notice Mutable NFT contracat which maintain the association with the Jacket Asset 
+ * @notice Mutable NFT contracat which maintain the association with the Jacket Asset
  */
 contract JacketMNT is MutableNFT {
+    address private _jacketAsset;
+
     constructor()
         ERC721(
             "Mutable Jacket for a PUB Decentraland UniPi Project",
@@ -28,12 +30,13 @@ contract JacketMNT is MutableNFT {
 
         // Retrieving the tokenID and calling the ERC721 contract minting function
         uint tokenId = uint160(address(jacket));
-        
+
         _safeMint(to, tokenId, "");
         // console.log("asset address:", address(jacket));
         // console.log("asset tokenId:", tokenId);
         // console.log("res:",address(jacket), tokenId);
-        return (address(jacket), tokenId);
+        _jacketAsset = address(jacket);
+        return (_jacketAsset, tokenId);
     }
 
     function tokenURI(
@@ -41,7 +44,6 @@ contract JacketMNT is MutableNFT {
     ) public view override returns (string memory) {
         // console.log("tokenId",tokenId);
         _requireMinted(tokenId);
-        
 
         // Retrieving the contract address of the asset
         address asset_contract = _intToAddress(tokenId);
@@ -49,5 +51,13 @@ contract JacketMNT is MutableNFT {
         // Retrieving the URI describing the asset's current state from the asset contract
         JacketAsset asset = JacketAsset(asset_contract);
         return asset.get3DModel();
+    }
+
+    function getJacketAddress(uint256 tokenId) public view returns (address) {
+        return _jacketAsset;
+    }
+
+    function getJacketIntAddress() public view returns (uint160) {
+        return uint160(address(_jacketAsset));
     }
 }

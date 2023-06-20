@@ -14,18 +14,16 @@ import "./PolicyDecisionPoint.sol";
  * it to mutate
  */
 contract JacketAsset is MutableAsset {
-
     using Strings for string;
     // CurrentOwner in byte32, TODO: to change asap
     bytes32 currentOwnerb32 = bytes32(uint256(uint160(address(currentOwner))));
-    address _pip;
-    PolicyDecisionPoint pdpChangeColor = new PolicyDecisionPoint(address(currentOwner));
-    
+    address _pip = 0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9;
+    PolicyDecisionPoint pdp = new PolicyDecisionPoint(_pip);
     string color;
 
-    constructor(address _owner) {
-        require(_owner == address(_owner), "Invalid owner address");
-        currentOwner = _owner;
+    constructor(address _currentOwner) {
+        require(_currentOwner == address(_currentOwner), "Invalid owner address");
+        currentOwner = _currentOwner;
     }
 
     /**
@@ -45,20 +43,37 @@ contract JacketAsset is MutableAsset {
     /**
      * @notice Let change the jacket color
      */
-    function changeColor(string memory _color, string memory _tailor) isColorChangeable(_color,_tailor) public {
+    function changeColor(
+        string memory _color,
+        string memory _tailor
+    ) public isColorChangeable(     currentOwner,
+                '0x6368616e67655f636f6c6f72',
+                address(0),_color, _tailor) {
         color = _color;
     }
 
     // PEP - functions which return decisions from pdp
 
     // soggetto, azione , risorsa e altri parametri
-    modifier isColorChangeable(string memory _color, string memory _tailor) {
-        require(pdpChangeColor.globalRule(_color,_tailor) == true, "Change Color operation is not allowed");
+    modifier isColorChangeable(
+        address _subject,
+        string memory _action,
+        address _resource,
+        string memory _color,
+        string memory _tailor
+    ) {
+        require(
+            pdp.evalChangeColor(
+                currentOwner,
+                '0x6368616e67655f636f6c6f72',
+                address(0),
+                "red",
+                "mario"
+            ) == true,
+            "Change Color operation is not allowed"
+        );
         _;
     }
-
-
-
 
     // // https://www.google.com/search?q=pattern+clothes+anmes&oq=pattern+clothes+anmes&aqs=chrome..69i57j0i22i30j0i8i10i13i15i30.6999j1j7&sourceid=chrome&ie=UTF-8#imgrc=mZSD24o1hA8VdM
     // enum _PATTERN {
@@ -89,6 +104,4 @@ contract JacketAsset is MutableAsset {
     // // function get3DModel() external view override {}
 
     // // function init() external view override {}
-
-
 }
