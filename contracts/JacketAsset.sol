@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: UNLICENSED
+hore// SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.18;
 
 // Uncomment this line to use console.log
@@ -21,8 +21,13 @@ contract JacketAsset is MutableAsset {
     PolicyDecisionPoint pdp = new PolicyDecisionPoint(_pip);
     string color;
 
+    event ChangedColor(string color);
+
     constructor(address _currentOwner) {
-        require(_currentOwner == address(_currentOwner), "Invalid owner address");
+        require(
+            _currentOwner == address(_currentOwner),
+            "Invalid owner address"
+        );
         currentOwner = _currentOwner;
     }
 
@@ -46,31 +51,39 @@ contract JacketAsset is MutableAsset {
     function changeColor(
         string memory _color,
         string memory _tailor
-    ) public isColorChangeable(     currentOwner,
-                '0x6368616e67655f636f6c6f72',
-                address(0),_color, _tailor) {
+    )
+        public
+        PdP_IsColorChangeable(
+            currentOwner,
+            "0x6368616e67655f636f6c6f72",
+            address(0),
+            _color,
+            _tailor
+        )
+    {
+        emit ChangedColor(_color);
         color = _color;
     }
 
     // PEP - functions which return decisions from pdp
 
     // soggetto, azione , risorsa e altri parametri
-    modifier isColorChangeable(
+    modifier PdP_IsColorChangeable(
         address _subject,
-        string memory _action,
+        bytes32 _action,
         address _resource,
         string memory _color,
         string memory _tailor
     ) {
         require(
             pdp.evalChangeColor(
-                currentOwner,
-                '0x6368616e67655f636f6c6f72',
-                address(0),
-                "red",
-                "mario"
+                _subject,
+                _action,
+                _resource,
+                _color,
+                _tailor
             ) == true,
-            "Change Color operation is not allowed"
+            "Change Color operation DENY"
         );
         _;
     }

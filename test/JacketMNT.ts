@@ -19,7 +19,7 @@ describe("JacketMNT", function () {
   }
 
   describe("MNT", function () {
-    it("Should revert if the miner is  0 address", async function () {
+    it("Should revert if the miner is 0 address", async function () {
       const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
       // valid alternative to ZERO_ADDRESS is
       // ethers.constants.AddressZero
@@ -195,16 +195,32 @@ describe("JacketMNT", function () {
       //  pip.address 0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9
       // JacketAsset address: 0xa16e02e87b7454126e5e10d957a927a7f5b5d2be
 
-      it("Should change the Jacket color in 'red'  by the tailor 'mario' ", async function () {
+      it("Should change the color Jacket to 'red'  by the tailor 'mario' ", async function () {
         const { jacketAsset } = await loadFixture(deployJacketNMT);
-        const tx = await jacketAsset.changeColor("red", "mario");
-        console.log(tx);
-        await expect(jacketAsset.changeColor("red", "mario")).to.be.eq(true);
+        // const tx = await jacketAsset.changeColor("red", "mario");
+        // let receipt = await tx.wait();
+        // const events = receipt.events?.filter((x) => {return x.event == "ChangedColor"})
+
+        // console.log("receipt",events);
+        // console.log(tx);
+
+        await expect(jacketAsset.changeColor("red", "mario"))
+          .to.emit(jacketAsset, "ChangedColor")
+          .withArgs("red");
       });
 
-      it("Should not change the Jacket color in 'green'  by the tailor 'mario' ", async function () {
+      it("Should revert the transaction when it is trying to change the color Jacket to 'green'  by the tailor 'mario' ", async function () {
         const { jacketAsset } = await loadFixture(deployJacketNMT);
-        await expect(jacketAsset.changeColor("green", "mario")).to.be.eq(true);
+        await expect(
+          jacketAsset.changeColor("green", "mario")
+        ).to.be.revertedWith('Change Color operation DENY');
+      });
+
+      it("Should revert the transaction when it is trying to change the color Jacket to 'red'  by the tailor 'franco' that it is not allowed ", async function () {
+        const { jacketAsset } = await loadFixture(deployJacketNMT);
+        await expect(
+          jacketAsset.changeColor("red", "franco")
+        ).to.be.revertedWith('Change Color operation DENY');
       });
     });
   });

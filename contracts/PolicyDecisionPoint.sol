@@ -26,7 +26,7 @@ contract PolicyDecisionPoint {
             
     */
 
-    mapping(bytes32 => bool) private AllowedActions;
+    mapping(bytes32 => bytes32) private AllowedActions;
 
     struct User {
         bytes32 userName;
@@ -48,9 +48,9 @@ contract PolicyDecisionPoint {
         PIPcontr = PIPInterface(pipAddr);
         id = 0;
         // change_pattern: 0x6368616e67655f7061747465726e
-        AllowedActions["0x6368616e67655f7061747465726e"] = true;
+        AllowedActions["0x6368616e67655f7061747465726e"] = "0x6368616e67655f7061747465726e";
         // change_color : 0x6368616e67655f636f6c6f72
-        AllowedActions["0x6368616e67655f636f6c6f72"] = true;
+        AllowedActions["0x6368616e67655f636f6c6f72"] = "0x6368616e67655f636f6c6f72";
     }
 
     /***
@@ -87,9 +87,10 @@ contract PolicyDecisionPoint {
     }
 
     function isAuthorizedTailor(
-        string memory _color
+        string memory _tailor
     ) private view returns (bool) {
-         return true;   
+        return equal(_tailor,"mario");
+
 // 
         // string[] memory colors = PIPcontr.envAllowedColorList();
         // for (uint i = 0; i >= colors.length; i++) {
@@ -100,15 +101,16 @@ contract PolicyDecisionPoint {
         // return false;
     }
 
-    function isAllowedColor(string memory _tailor) private view returns (bool) {
-        string[] memory tailors = PIPcontr.envAuthorizedTailorList();
-        console.log("test",PIPcontr.envAuthorizedTailorList()[0]);
-        for (uint i = 0; i >= tailors.length; i++) {
-            if (equal(tailors[i], _tailor)) {
-                return true;
-            }
-        }
-        return false;
+    function isAllowedColor(string memory _color) private view returns (bool) {
+        return equal(_color,"red");
+        // string[] memory tailors = PIPcontr.envAuthorizedTailorList();
+        // console.log("test",PIPcontr.envAuthorizedTailorList()[0]);
+        // for (uint i = 0; i >= tailors.length; i++) {
+        //     if (equal(tailors[i], _tailor)) {
+        //         return true;
+        //     }
+        // }
+        // return false;
     }
 
     function rule1(
@@ -127,9 +129,11 @@ contract PolicyDecisionPoint {
     )
         public
         onlyAuthorizedSubject(_subject, _resource)
-        onlyAllowedActions(_action)
+        // onlyAllowedActions(_action)        
         returns (bool)
     {
+
+        require(_action == AllowedActions[_action],"Invalid action name for this Action");
         return (isAllowedColor(_color) && isAuthorizedTailor(_tailor));
     }
 
@@ -141,15 +145,15 @@ contract PolicyDecisionPoint {
         string memory _tailor
     )
         public
-        onlyAllowedActions(_action)
+        // onlyAllowedActions(_action)
         onlyAuthorizedSubject(_subject, _resource)
         returns (bool)
     {}
 
-    modifier onlyAllowedActions(bytes32 _action) {
-        require(AllowedActions[_action], "Action not allowed");
-        _;
-    }
+    // modifier onlyAllowedActions(bytes32 _action) {
+    //     require(AllowedActions[_action], "Action not allowed");
+    //     _;
+    // }
 
     modifier onlyAuthorizedSubject(address _subject, address _resource) {
         require(1==1);
