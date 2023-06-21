@@ -4,6 +4,7 @@ import { expect } from "chai";
 import { ethers } from "hardhat";
 import { BigNumber } from "ethers";
 import { string } from "hardhat/internal/core/params/argumentTypes";
+const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 
 describe("JacketMNT", function () {
   // We define a fixture to reuse the same setup in every test.
@@ -21,7 +22,6 @@ describe("JacketMNT", function () {
 
   describe("MNT", function () {
     it("Should revert if the miner is 0 address", async function () {
-      const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
       // valid alternative to ZERO_ADDRESS is
       // ethers.constants.AddressZero
       const { jacketMNT } = await loadFixture(deployJacketNMT);
@@ -60,6 +60,7 @@ describe("JacketMNT", function () {
       const txReceipt = await txResponse.wait();
 
       // console.log("txResponse", txResponse);
+      // console.log("txReceipt", txReceipt);
 
       const transferEvent = txReceipt.events;
       const OwnershipTransferred = transferEvent && transferEvent[0].args;
@@ -74,6 +75,23 @@ describe("JacketMNT", function () {
 
       expect(newOwner).to.equal(Minted.owner);
       expect(Number(tokenId)).to.equal(Minted.tokenId);
+    });
+
+    it("Should be minted and trigger events with the right onwer and tokenId (same test as above with different and right apporach) ", async function () {
+      const { jacketMNT, owner } = await loadFixture(deployJacketNMT);
+      const Minted = {
+        from: "0x0000000000000000000000000000000000000000",
+        owner: owner.address,
+        tokenId: '921600849408656576225127304129841157239410643646',
+      };
+
+      await expect(jacketMNT.mint(owner.address))
+        .to.emit(jacketMNT, "Transfer")
+        // from, to, tokenId
+        .withArgs(Minted.from, Minted.owner, Minted.tokenId)
+      // .to.emit(jacketMNT,"OwnershipTransferred")
+      // // address indexed previousOwner, address indexed newOwner
+      // .withArgs(Minted.from,Minted.owner);
     });
 
     it("Should be named 'Mutable Jacket for a PUB Decentraland UniPi Project'", async function () {
@@ -189,12 +207,20 @@ describe("JacketMNT", function () {
 
 
     describe("PubAM", function () {
-      it("Should returns a Pub allowed color list ['red','green']", async function () {
-        const {  pubAm } = await loadFixture(deployABACEnviroment);
+      it("Should return a list of allowed colors ['red','green'] by the brand Pub", async function () {
+        const { pubAm } = await loadFixture(deployABACEnviroment);
         const pubAmTransaction = await pubAm.callStatic.allowedColorList();
 
         await expect(pubAmTransaction[0]).to.be.equals("red");
         await expect(pubAmTransaction[1]).to.be.equals("green");
+      });
+
+      it("Should return a list of authorized tailors ['mario','pino'] by the brand Pub", async function () {
+        const { pubAm } = await loadFixture(deployABACEnviroment);
+        const pubAmTransaction = await pubAm.callStatic.authorizedTailorList();
+
+        await expect(pubAmTransaction[0]).to.be.equals("mario");
+        await expect(pubAmTransaction[1]).to.be.equals("pino");
       });
     });
 
@@ -208,7 +234,7 @@ describe("JacketMNT", function () {
         );
       });
 
-      it("Should returns fa Pub allowed color list from Pip after have been set the pdp address ", async function () {
+      it("Should returns Pip's Pub list of allowed colour list", async function () {
         const { pip, owner } = await loadFixture(deployABACEnviroment);
 
         const pubAmTransaction = await pip.callStatic.pubAllowedColorList();
@@ -223,29 +249,40 @@ describe("JacketMNT", function () {
       // pip.address 0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9
       // JacketAsset address: 0xa16e02e87b7454126e5e10d957a927a7f5b5d2be
 
-      it("Should change the color Jacket to 'red'  by the tailor 'mario' ", async function () {
+      it("Should change the color Jacket to 'green' by the tailor 'mario' ", async function () {
         const { jacketAsset } = await loadFixture(deployJacketNMT);
-        const { pdp } = await loadFixture(deployABACEnviroment);
+        await loadFixture(deployABACEnviroment);
         // const tx = await jacketAsset.changeColor("red", "mario");
         // let receipt = await tx.wait();
         // const events = receipt.events?.filter((x) => {return x.event == "ChangedColor"})
 
         // console.log("receipt",events);
         // console.log(tx);
+        await expect(jacketAsset.changeColor("green", "mario"))
+          .to.emit(jacketAsset, "ChangedColor")
+          .withArgs("green");
+      });
+
+      it("Should change the color Jacket to 'red' by the tailor 'mario' ", async function () {
+        const { jacketAsset } = await loadFixture(deployJacketNMT);
+        await loadFixture(deployABACEnviroment);
         await expect(jacketAsset.changeColor("red", "mario"))
           .to.emit(jacketAsset, "ChangedColor")
           .withArgs("red");
       });
 
-      it("Should revert the transaction when it is trying to change the color Jacket to 'green'  by the tailor 'mario' ", async function () {
+      it("Should be reverted when is trying to change the color Jacket to 'yellow' by the tailor 'mario' ", async function () {
         const { jacketAsset } = await loadFixture(deployJacketNMT);
-        await expect(
-          jacketAsset.changeColor("green", "mario")
-        ).to.be.revertedWithoutReason;
+        await loadFixture(deployABACEnviroment);
+        await expect(jacketAsset.changeColor("yellow", "mario"))
+          .to.be.revertedWithoutReason;
       });
 
-      it("Should revert the transaction when it is trying to change the color Jacket to 'red'  by the tailor 'franco' that it is not allowed ", async function () {
+
+      
+      it("Should revert the transaction when it is trying to change the color of the Jacket to 'red'  by the tailor 'franco' that it is not allowed ", async function () {
         const { jacketAsset } = await loadFixture(deployJacketNMT);
+        await loadFixture(deployABACEnviroment);
         await expect(
           jacketAsset.changeColor("red", "franco")
         ).to.be.revertedWithoutReason;
