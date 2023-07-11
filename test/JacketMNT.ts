@@ -77,21 +77,28 @@ describe("JacketMNT", function () {
       expect(Number(tokenId)).to.equal(Minted.tokenId);
     });
 
-    it("Should be minted and trigger events with the right onwer and tokenId (same test as above with different and right apporach) ", async function () {
+    it("Should minted two assets with two differents tokenIds and the same owner ", async function () {
       const { jacketMNT, owner } = await loadFixture(deployJacketNMT);
-      const Minted = {
+      const Minted1 = {
         from: "0x0000000000000000000000000000000000000000",
         owner: owner.address,
-        tokenId: '921600849408656576225127304129841157239410643646',
+        tokenId: "921600849408656576225127304129841157239410643646",
+      };
+
+      const Minted2 = {
+        from: "0x0000000000000000000000000000000000000000",
+        owner: owner.address,
+        tokenId: "1048441399354366663447528331587451327875741636968",
       };
 
       await expect(jacketMNT.mint(owner.address))
         .to.emit(jacketMNT, "Transfer")
         // from, to, tokenId
-        .withArgs(Minted.from, Minted.owner, Minted.tokenId)
-      // .to.emit(jacketMNT,"OwnershipTransferred")
-      // // address indexed previousOwner, address indexed newOwner
-      // .withArgs(Minted.from,Minted.owner);
+        .withArgs(Minted1.from, Minted1.owner, Minted1.tokenId);
+      await expect(jacketMNT.mint(owner.address))
+        .to.emit(jacketMNT, "Transfer")
+        // from, to, tokenId
+        .withArgs(Minted2.from, Minted2.owner, Minted2.tokenId);
     });
 
     it("Should be named 'Mutable Jacket for a PUB Decentraland UniPi Project'", async function () {
@@ -205,7 +212,6 @@ describe("JacketMNT", function () {
       return { pip, owner, pubAm, pdp };
     }
 
-
     describe("PubAM", function () {
       it("Should return a list of allowed colors ['red','green'] by the brand Pub", async function () {
         const { pubAm } = await loadFixture(deployABACEnviroment);
@@ -223,7 +229,6 @@ describe("JacketMNT", function () {
         await expect(pubAmTransaction[1]).to.be.equals("pino");
       });
     });
-
 
     describe("PIP", function () {
       it("Should create a valid PIP", async function () {
@@ -274,18 +279,15 @@ describe("JacketMNT", function () {
       it("Should be reverted when is trying to change the color Jacket to 'yellow' by the tailor 'mario' ", async function () {
         const { jacketAsset } = await loadFixture(deployJacketNMT);
         await loadFixture(deployABACEnviroment);
-        await expect(jacketAsset.changeColor("yellow", "mario"))
-          .to.be.revertedWithoutReason;
+        await expect(jacketAsset.changeColor("yellow", "mario")).to.be
+          .revertedWithoutReason;
       });
 
-
-      
       it("Should revert the transaction when it is trying to change the color of the Jacket to 'red'  by the tailor 'franco' that it is not allowed ", async function () {
         const { jacketAsset } = await loadFixture(deployJacketNMT);
         await loadFixture(deployABACEnviroment);
-        await expect(
-          jacketAsset.changeColor("red", "franco")
-        ).to.be.revertedWithoutReason;
+        await expect(jacketAsset.changeColor("red", "franco")).to.be
+          .revertedWithoutReason;
       });
     });
   });

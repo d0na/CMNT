@@ -21,6 +21,10 @@ contract JacketMNT is MutableNFT {
         )
     {}
 
+    /**
+     * 
+     * @param to  address of the new owner
+     */
     function _mint(address to) internal override returns (address, uint) {
         // Creation of the asset by specifying the creator's address
         JacketAsset jacket = new JacketAsset(to);
