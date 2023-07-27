@@ -1,4 +1,4 @@
-import { time, loadFixture } from "@nomicfoundation/hardhat-network-helpers";
+import { time, loadFixture, mine } from "@nomicfoundation/hardhat-network-helpers";
 import { anyValue } from "@nomicfoundation/hardhat-chai-matchers/withArgs";
 import { expect } from "chai";
 import { ethers } from "hardhat";
@@ -12,12 +12,12 @@ describe("JacketMNT", function () {
   // and reset Hardhat Network to that snapshot in every test.
   async function deployJacketNMT() {
     // Contracts are deployed using the first signer/account by default
-    const [owner] = await ethers.getSigners();
+    const [owner,account1] = await ethers.getSigners();
     const JacketMNT = await ethers.getContractFactory("JacketMNT");
     const jacketMNT = await JacketMNT.deploy();
     const JacketAsset = await ethers.getContractFactory("JacketAsset");
     const jacketAsset = await JacketAsset.deploy(owner.address);
-    return { jacketMNT, owner, jacketAsset };
+    return { jacketMNT, owner, jacketAsset,account1 };
   }
 
   describe("MNT", function () {
@@ -34,6 +34,7 @@ describe("JacketMNT", function () {
       // valid alternative ethers.constants.AddressZero
       const { jacketMNT, owner } = await loadFixture(deployJacketNMT);
       await jacketMNT.mint(owner.address);
+      console.log("miner address:",owner.address)
       expect(await jacketMNT.owner()).to.equal(owner.address);
     });
 
@@ -46,7 +47,7 @@ describe("JacketMNT", function () {
 
       const txResponse = await jacketMNT.callStatic.mint(owner.address);
 
-      // console.log("txResponse", txResponse);
+      console.log("txResponse", txResponse);
     });
 
     it("Should be minted and trigger events with the right onwer and tokenId", async function () {
@@ -108,6 +109,7 @@ describe("JacketMNT", function () {
       );
     });
 
+    
     it("Should have symbol named 'PUBMNTJACKET'", async function () {
       const { jacketMNT } = await loadFixture(deployJacketNMT);
       expect(await jacketMNT.symbol()).to.equal("PUBMNTJACKET");
@@ -169,6 +171,41 @@ describe("JacketMNT", function () {
         )
       ).to.be.equal(Minted.owner);
     });
+
+    it("Should be minted and tansfer to a different user", async function () {
+      const { jacketMNT, owner, account1 } = await loadFixture(deployJacketNMT);
+      const Minted = {
+        owner: owner.address,
+        tokenId: 921600849408656576225127304129841157239410643646,
+      };
+
+      const txResponse = await jacketMNT.mint(owner.address);
+      const txReceipt = await txResponse.wait();
+      const transferResponse = await jacketMNT.transferFrom(Minted.owner,account1.address,'921600849408656576225127304129841157239410643646');
+      const transferReceipt = await transferResponse.wait();
+
+      console.log("xxxx", Minted.owner,account1.address,921600849408656576225127304129841157239410643646);
+      console.log("txResponse", txResponse);
+      console.log("txReceipt", txReceipt);
+      console.log("transferResponse", transferResponse);
+      console.log("transferReceipt", transferReceipt);
+
+      const transferEvent = txReceipt.events;
+      const OwnershipTransferred = transferEvent && transferEvent[0].args;
+
+      const Transfer = transferEvent && transferEvent[1].args;
+      const newOwner = OwnershipTransferred && OwnershipTransferred.newOwner;
+      const tokenId: Number = Transfer && Transfer.tokenId;
+      // console.log("OwnershipTransferred Event", OwnershipTransferred && OwnershipTransferred)
+      // console.log("Transfer Event", Transfer && Transfer[1].args)
+      // console.log("NewOwner", newOwner);
+      // console.log("tokenId", tokenId);
+
+      expect(newOwner).to.equal(account1.address);
+      expect(Number(tokenId)).to.equal(Minted.tokenId);
+    });
+
+
 
     // it("Should set the right owner", async function () {
     //   const { lock, owner } = await loadFixture(deployOneYearLockFixture);

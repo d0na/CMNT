@@ -34,6 +34,7 @@ contract JacketMNT is MutableNFT {
 
         // Retrieving the tokenID and calling the ERC721 contract minting function
         uint tokenId = uint160(address(jacket));
+        console.log("tokenID",tokenId);
 
         _safeMint(to, tokenId, "");
         // console.log("asset address:", address(jacket));
