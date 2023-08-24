@@ -31,13 +31,19 @@ module.exports = {
     localhost: {
       url: "http://127.0.0.1:8545"
     },
-    polygon_mumbai: {
+    // polygon - if not workss use POLYGONSCAN_API_KEY
+    mumbai: {
       url: "https://rpc-mumbai.maticvigil.com",
       accounts: [process.env.PRIVATE_KEY],
     },
+    sepolia: {
+      url: `https://eth-sepolia-public.unifra.io`,
+      accounts: [process.env.PRIVATE_KEY]
+    }
   },
   etherscan: {
-    apiKey: process.env.POLYGONSCAN_API_KEY,
+    // apiKey: process.env.POLYGONSCAN_API_KEY,
+    apiKey: process.env.ALCHEMY_API_KEY,
   },
   paths: {
     sources: "./contracts",
