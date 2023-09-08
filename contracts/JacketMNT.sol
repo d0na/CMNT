@@ -60,7 +60,6 @@ contract JacketMNT is MutableNFT {
     }
 
     function _transferFrom(address from, address to, uint256 tokenId) internal {
-        console.log("_transferFrom");
         JacketAsset asset = JacketAsset(_intToAddress(tokenId));
         // console.log("_transferFrom addr:",address(asset));
         asset.transferOwnership(to);
