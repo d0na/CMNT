@@ -2,6 +2,7 @@
 pragma solidity ^0.8.18;
 
 contract MutableAsset {
+    string public model3d; //sostiusce il vecchio 3dmodel (ancora però no)
     address public currentOwner;
 
     // constructor(address owner){
@@ -23,9 +24,14 @@ contract MutableAsset {
         emit OwnershipTransferred(oldOwner, currentOwner);
     }
 
-    function get3DModel() public pure returns(string memory){
+    function get3DModel() public pure returns (string memory) {
         //Todo to define
-        return string(abi.encodePacked("filename",".glb"));
+        return string(abi.encodePacked("filename", ".glb"));
+    }
+
+    // Function to get the text
+    function getModel3d() public view returns (string memory) {
+        return string(abi.encodePacked(model3d));
     }
 
     /**
@@ -36,5 +42,15 @@ contract MutableAsset {
         _;
     }
 
-
+    function compare(
+        string memory str1,
+        string memory str2
+    ) public pure returns (bool) {
+        if (bytes(str1).length != bytes(str2).length) {
+            return false;
+        }
+        return
+            keccak256(abi.encodePacked(str1)) ==
+            keccak256(abi.encodePacked(str2));
+    }
 }
