@@ -14,15 +14,22 @@ import "./PolicyDecisionPoint.sol";
  * it to mutate
  */
 contract JacketAsset is MutableAsset {
-
     using Strings for string;
+
+    address constant _pip = 0x57A8aAfc40EDCa45F13B4a74009CBAD162e82e23;
+    string constant defaultJacket = "defaultJacket";
+    string constant greenJacket = "greenJacket";
+    string constant redJacket = "redJacket";
+
     // CurrentOwner in byte32, TODO: to change asap
     bytes32 currentOwnerb32 = bytes32(uint256(uint160(address(currentOwner))));
-    address _pip = 0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9;
     PolicyDecisionPoint pdp = new PolicyDecisionPoint(_pip);
+
+    //Jacket Properties
     string color;
 
     event ChangedColor(string color);
+    event StateChanged(string color);
 
     constructor(address _currentOwner) {
         require(
@@ -30,6 +37,8 @@ contract JacketAsset is MutableAsset {
             "Invalid current owner address"
         );
         currentOwner = _currentOwner;
+        model3d = defaultJacket;
+        console.log("model3d", model3d);
     }
 
     /**
@@ -64,6 +73,7 @@ contract JacketAsset is MutableAsset {
     {
         emit ChangedColor(_color);
         color = _color;
+        _updateState();
     }
 
     // PEP - functions which return decisions from pdp
@@ -86,6 +96,21 @@ contract JacketAsset is MutableAsset {
             "Change Color operation DENY"
         );
         _;
+    }
+
+    /**
+     * Should contains the logic to change internale state by reflecting changing in the model3d variables
+     */
+    function _updateState() internal {
+        if (compare(color, "green")) {
+            model3d = greenJacket;
+            emit StateChanged(color);
+        }
+
+        if (compare(color, "red")) {
+            model3d = redJacket;
+            emit StateChanged(color);
+        }
     }
 
     // // https://www.google.com/search?q=pattern+clothes+anmes&oq=pattern+clothes+anmes&aqs=chrome..69i57j0i22i30j0i8i10i13i15i30.6999j1j7&sourceid=chrome&ie=UTF-8#imgrc=mZSD24o1hA8VdM
