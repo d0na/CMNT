@@ -31,7 +31,7 @@ module.exports = {
     localhost: {
       url: "http://127.0.0.1:8545"
     },
-    // polygon - if not workss use POLYGONSCAN_API_KEY
+    // polygon - if doesn't works use POLYGONSCAN_API_KEY
     mumbai: {
       url: "https://rpc-mumbai.maticvigil.com",
       accounts: [process.env.PRIVATE_KEY],
