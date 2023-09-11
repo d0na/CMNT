@@ -196,6 +196,11 @@ describe("JacketMNT", function () {
       expect(Number(tokenId)).to.equal(Minted.tokenId);
     });
 
+    it("Should have asset with model3d equals to ... ", async function () {
+      const { jacketAsset, owner, account1 } = await loadFixture(deployJacketNMT);
+      expect( await jacketAsset.model3d()).to.equal("redJacket");
+    });
+
 
     // it("Should fail if the unlockTime is not in the future", async function () {
     //   // We don't use the fixture here because we want a different deployment
@@ -246,7 +251,7 @@ describe("JacketMNT", function () {
         const { pip } = await loadFixture(deployABACEnviroment);
         // console.log("pip address", pip.address);
         await expect(pip.address).to.be.eq(
-          "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707"
+          "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9"
         );
       });
 
@@ -277,6 +282,35 @@ describe("JacketMNT", function () {
         await expect(jacketAsset.changeColor("green", "mario"))
           .to.emit(jacketAsset, "ChangedColor")
           .withArgs("green");
+      });
+
+      it("Should change the color Jacket to 'green' and emit StateChanged ", async function () {
+        const { jacketAsset } = await loadFixture(deployJacketNMT);
+        await loadFixture(deployABACEnviroment);
+        // const tx = await jacketAsset.changeColor("red", "mario");
+        // let receipt = await tx.wait();
+        // const events = receipt.events?.filter((x) => {return x.event == "ChangedColor"})
+
+        // console.log("receipt",events);
+        // console.log(tx);
+        await expect(jacketAsset.changeColor("green", "mario"))
+          .to.emit(jacketAsset, "StateChanged")
+          .withArgs("green");
+      });
+
+      it("Should change the color Jacket to 'green' and change model3d ", async function () {
+        const { jacketAsset } = await loadFixture(deployJacketNMT);
+        await loadFixture(deployABACEnviroment);
+        // const tx = await jacketAsset.changeColor("red", "mario");
+        // let receipt = await tx.wait();
+        // const events = receipt.events?.filter((x) => {return x.event == "ChangedColor"})
+
+        // console.log("receipt",events);
+        // console.log(tx);
+        await expect(jacketAsset.changeColor("green", "mario"))
+          .to.emit(jacketAsset, "StateChanged")
+          .withArgs("green");
+         expect(await jacketAsset.model3d()).to.equal("greenJacket")
       });
 
       it("Should change the color Jacket to 'red' by the tailor 'mario' ", async function () {
