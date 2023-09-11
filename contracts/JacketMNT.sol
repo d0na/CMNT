@@ -12,8 +12,6 @@ import "./JacketAsset.sol";
  * @notice Mutable NFT contracat which maintain the association with the Jacket Asset
  */
 contract JacketMNT is MutableNFT {
-    address private _jacketAsset;
-
     constructor()
         ERC721(
             "Mutable Jacket for a PUB Decentraland UniPi Project",
@@ -22,7 +20,7 @@ contract JacketMNT is MutableNFT {
     {}
 
     /**
-     * 
+     *
      * @param to  address of the new owner
      */
     function _mint(address to) internal override returns (address, uint) {
@@ -40,8 +38,7 @@ contract JacketMNT is MutableNFT {
         // console.log("asset address:", address(jacket));
         // console.log("asset tokenId:", tokenId);
         // console.log("res:",address(jacket), tokenId);
-        _jacketAsset = address(jacket);
-        return (_jacketAsset, tokenId);
+        return (address(jacket), tokenId);
     }
 
     function tokenURI(
@@ -58,11 +55,33 @@ contract JacketMNT is MutableNFT {
         return asset.get3DModel();
     }
 
-    function getJacketAddress() public view returns (address) {
-        return _jacketAsset;
+    function getJacketAddress(uint256 _tokenId) public pure returns (address) {
+        return _intToAddress(_tokenId);
     }
 
-    function getJacketIntAddress() public view returns (uint160) {
-        return uint160(address(_jacketAsset));
+    function _transferFrom(address from, address to, uint256 tokenId) internal {
+        JacketAsset asset = JacketAsset(_intToAddress(tokenId));
+        // console.log("_transferFrom addr:",address(asset));
+        asset.transferOwnership(to);
+        // Ownable.transferOwnership(to);
+        ERC721.transferFrom(from, to, tokenId);
+    }
+
+    //-----Override delle funzioni previste dallo standard per il trasferimento dei token-----
+    function safeTransferFrom(
+        address from,
+        address to,
+        uint256 tokenId
+    ) public virtual override {
+        _transferFrom(from, to, tokenId);
+    }
+
+    function transferFrom(
+        address from,
+        address to,
+        uint256 tokenId
+    ) public virtual override {
+        // console.log("transferFrom");
+        _transferFrom(from, to, tokenId);
     }
 }
