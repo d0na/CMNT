@@ -18,8 +18,10 @@ describe("JacketMNT", function () {
     const [owner, account1, account2] = await ethers.getSigners();
     const JacketMNT = await ethers.getContractFactory("JacketMNT");
     const jacketMNT = await JacketMNT.deploy();
+    const OwnerSmartPolicy = await ethers.getContractFactory("OwnerSmartPolicy");
+    const ownerSmartPolicy = await JacketMNT.deploy();
     const JacketAsset = await ethers.getContractFactory("JacketAsset");
-    const jacketAsset = await JacketAsset.deploy(owner.address);
+    const jacketAsset = await JacketAsset.deploy(owner.address,ownerSmartPolicy.address);
     return { jacketMNT, owner, jacketAsset, account1, account2 };
   }
 
@@ -44,8 +46,8 @@ describe("JacketMNT", function () {
       const { jacketMNT, owner } = await loadFixture(deployJacketNMT);
       const Minted = {
         owner: owner.address,
-        tokenId: 921600849408656576225127304129841157239410643646,
-        assetAddress: '0xa16E02E87b7454126E5E10d957A927A7F5B5d2be',
+        tokenId: 1048441399354366663447528331587451327875741636968,
+        assetAddress: '0xB7A5bd0345EF1Cc5E66bf61BdeC17D2461fBd968',
       };
 
       const mintResponse = await jacketMNT.callStatic.mint(owner.address);
@@ -60,7 +62,7 @@ describe("JacketMNT", function () {
       const { jacketMNT, owner } = await loadFixture(deployJacketNMT);
       const Minted = {
         owner: owner.address,
-        tokenId: 921600849408656576225127304129841157239410643646,
+        tokenId: 1048441399354366663447528331587451327875741636968,
       };
 
       const txResponse = await jacketMNT.mint(owner.address);
@@ -82,7 +84,7 @@ describe("JacketMNT", function () {
       const Minted1 = {
         from: "0x0000000000000000000000000000000000000000",
         owner: owner.address,
-        tokenId: "921600849408656576225127304129841157239410643646",
+        tokenId: "1048441399354366663447528331587451327875741636968",
       };
 
       const Minted2 = {
@@ -95,7 +97,7 @@ describe("JacketMNT", function () {
         .to.emit(jacketMNT, "Transfer")
         // from, to, tokenId
         .withArgs(Minted1.from, account1.address, Minted1.tokenId);
-      await expect(jacketMNT.mint(account2.address))
+      await expect()
         .to.emit(jacketMNT, "Transfer")
         // from, to, tokenId
         .withArgs(Minted2.from, account2.address, Minted2.tokenId);
