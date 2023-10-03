@@ -114,7 +114,6 @@ contract CreatorSmartPolicy {
         return pip.pubRemoveSleeves();
     }
 
-
     /** Policy to evaluate if is possible to setColor */
     function evalSetColor(
         address _subject,
@@ -125,13 +124,13 @@ contract CreatorSmartPolicy {
         return (isAllowedColor(_color) && isAuthorizedTailor(_subject));
     }
 
-   /** Policy to evaluate if is possible to setColor */
+    /** Policy to evaluate if is possible to setColor */
     function evalSetSleevs(
         address _subject,
         bytes32 _action,
         address _resource
     ) public view onlyAllowedAction(_action) returns (bool) {
-        return ( hasRemoveSleeves() && isAuthorizedTailor(_subject));
+        return (hasRemoveSleeves() && isAuthorizedTailor(_subject));
     }
 
     // function evalChangePattern(
@@ -146,6 +145,10 @@ contract CreatorSmartPolicy {
     //     onlyAuthorizedSubject(_subject, _resource)
     //     returns (bool)
     // {}
+
+    // function evaluate(address subject, bytes calldata action, address resource, bytes32 params) public returns(bool){
+
+    // }
 
     modifier onlyAllowedAction(bytes32 _action) {
         require(
@@ -166,4 +169,6 @@ contract CreatorSmartPolicy {
         // require(nmt.owner() == _subject, "Subject not allowed");
         // _;
     }
+
+   
 }

@@ -18,10 +18,15 @@ describe("JacketMNT", function () {
     const [owner, account1, account2] = await ethers.getSigners();
     const JacketMNT = await ethers.getContractFactory("JacketMNT");
     const jacketMNT = await JacketMNT.deploy();
-    const OwnerSmartPolicy = await ethers.getContractFactory("OwnerSmartPolicy");
+    const OwnerSmartPolicy = await ethers.getContractFactory(
+      "OwnerSmartPolicy"
+    );
     const ownerSmartPolicy = await JacketMNT.deploy();
     const JacketAsset = await ethers.getContractFactory("JacketAsset");
-    const jacketAsset = await JacketAsset.deploy(owner.address,ownerSmartPolicy.address);
+    const jacketAsset = await JacketAsset.deploy(
+      owner.address,
+      ownerSmartPolicy.address
+    );
     return { jacketMNT, owner, jacketAsset, account1, account2 };
   }
 
@@ -47,16 +52,15 @@ describe("JacketMNT", function () {
       const Minted = {
         owner: owner.address,
         tokenId: 1048441399354366663447528331587451327875741636968,
-        assetAddress: '0xB7A5bd0345EF1Cc5E66bf61BdeC17D2461fBd968',
+        assetAddress: "0xB7A5bd0345EF1Cc5E66bf61BdeC17D2461fBd968",
       };
 
       const mintResponse = await jacketMNT.callStatic.mint(owner.address);
       const assetAddress = mintResponse[0];
       const tokenId = mintResponse[1];
-      expect(Number(tokenId)).to.equal(Minted.tokenId)
-      expect(assetAddress).to.equal(Minted.assetAddress)
+      expect(Number(tokenId)).to.equal(Minted.tokenId);
+      expect(assetAddress).to.equal(Minted.assetAddress);
     });
-
 
     it("Should be minted and trigger events with the right onwer and tokenId", async function () {
       const { jacketMNT, owner } = await loadFixture(deployJacketNMT);
@@ -80,7 +84,9 @@ describe("JacketMNT", function () {
     });
 
     it("Should minted two assets with two differents tokenIds and the same owner ", async function () {
-      const { jacketMNT, owner, account1,account2 } = await loadFixture(deployJacketNMT);
+      const { jacketMNT, owner, account1, account2 } = await loadFixture(
+        deployJacketNMT
+      );
       const Minted1 = {
         from: "0x0000000000000000000000000000000000000000",
         owner: owner.address,
@@ -173,7 +179,9 @@ describe("JacketMNT", function () {
     });
 
     it("Should be minted and transfer twice the NFT ownership and checked the rigth owner through the ownerOf(tokenId) method", async function () {
-      const { jacketMNT, owner, account1, account2 } = await loadFixture(deployJacketNMT);
+      const { jacketMNT, owner, account1, account2 } = await loadFixture(
+        deployJacketNMT
+      );
       const Minted = {
         firstOwner: owner.address,
         secondOwner: account1.address,
@@ -185,11 +193,9 @@ describe("JacketMNT", function () {
       // Minting the NFT to the First Owner
       const mintResponse = await jacketMNT.mint(Minted.firstOwner);
       await mintResponse.wait();
-      expect(
-        await jacketMNT.ownerOf(
-          Minted.tokenId
-        )
-      ).to.be.equal(Minted.firstOwner);
+      expect(await jacketMNT.ownerOf(Minted.tokenId)).to.be.equal(
+        Minted.firstOwner
+      );
 
       // Trasfering the NFT to the Second Owner
       await jacketMNT.transferFrom(
@@ -199,25 +205,23 @@ describe("JacketMNT", function () {
       );
 
       // Check that the new owner is changed
-      expect(
-        await jacketMNT.ownerOf(
-          Minted.tokenId
-        )
-      ).to.be.equal(Minted.secondOwner);
-
-      // Trasfering NFT to the Third Owner
-      await jacketMNT.connect(account1).transferFrom(
-        Minted.secondOwner,
-        Minted.thirdOwner,
-        "921600849408656576225127304129841157239410643646"
+      expect(await jacketMNT.ownerOf(Minted.tokenId)).to.be.equal(
+        Minted.secondOwner
       );
 
+      // Trasfering NFT to the Third Owner
+      await jacketMNT
+        .connect(account1)
+        .transferFrom(
+          Minted.secondOwner,
+          Minted.thirdOwner,
+          "921600849408656576225127304129841157239410643646"
+        );
+
       // Check that the new owner is changed
-      expect(
-        await jacketMNT.ownerOf(
-          Minted.tokenId
-        )
-      ).to.be.equal(Minted.thirdOwner);
+      expect(await jacketMNT.ownerOf(Minted.tokenId)).to.be.equal(
+        Minted.thirdOwner
+      );
     });
 
     it("Should be minted and tansfer to a different user (Account1) and visible in the Transfer event", async function () {
@@ -239,7 +243,9 @@ describe("JacketMNT", function () {
       // Extracing Transfer Event information
       const transferFromReceipt = await transferFromResponse.wait();
       const transferFromEventList = transferFromReceipt.events;
-      const transferEventList = transferFromEventList.filter((e: { event: string }) => e.event === "Transfer");
+      const transferEventList = transferFromEventList.filter(
+        (e: { event: string }) => e.event === "Transfer"
+      );
       const transferEvent = transferEventList[0];
       const { from: previousOwner, to: newOwner, tokenId } = transferEvent.args;
 
@@ -249,10 +255,11 @@ describe("JacketMNT", function () {
     });
 
     it("Should have asset with model3d equals to ... ", async function () {
-      const { jacketAsset, owner, account1 } = await loadFixture(deployJacketNMT);
-      expect( await jacketAsset.model3d()).to.equal("redJacket");
+      const { jacketAsset, owner, account1 } = await loadFixture(
+        deployJacketNMT
+      );
+      expect(await jacketAsset.model3d()).to.equal("redJacket");
     });
-
 
     // it("Should fail if the unlockTime is not in the future", async function () {
     //   // We don't use the fixture here because we want a different deployment
@@ -275,12 +282,58 @@ describe("JacketMNT", function () {
       const Pip = await ethers.getContractFactory("PolicyInformationPoint");
       const pip = await Pip.deploy(pubAm.address);
       // Pdp Policy decision point contract
-      const Pdp = await ethers.getContractFactory("PolicyDecisionPoint");
-      const pdp = await Pip.deploy(pubAm.address);
-      return { pip, owner, pubAm, pdp };
+      const Pdp = await ethers.getContractFactory("CreatorSmartPolicy");
+      const pdp = await Pdp.deploy();
+      const Utils = await ethers.getContractFactory("NMTUtils");
+      const utils = await Utils.deploy();
+
+      return { pip, owner, pubAm, pdp,utils };
     }
 
+    describe("NMTUtils", function () {
+      it("Should shows endoded values", async function () {
+        const { utils } = await loadFixture(deployABACEnviroment);
+        console.log("encodesTestUint(200)", await utils.encodesTestUint());
+        console.log("encodesTestBool(false)", await utils.encodesTestBool());
+        console.log("encodesTestHex(FF00000)", await utils.encodesTestHex());
+        console.log(
+          "decode uint",
+          await utils.bytesToUint(
+            0x00000000000000000000000000000000000000000000000000000000000000c8
+          )
+        );
+        console.log("decode bool", await utils.bytesToBool(0x00));
+
+        await expect(
+          utils.bytesToUint(
+            0x00000000000000000000000000000000000000000000000000000000000000c8
+          )
+        ).to.be;
+      });
+
+      it("Should decode bytes and return 200", async function () {
+        const { utils } = await loadFixture(deployABACEnviroment);
+        expect(
+          await utils.bytesToUint(
+            0x00000000000000000000000000000000000000000000000000000000000000c8
+          )
+        ).to.be.equals(Number(200));
+      });
+
+      it("Should decode bool and return false", async function () {
+        const { utils } = await loadFixture(deployABACEnviroment);
+        expect(await utils.bytesToBool(0x00)).to.be.equals(false);
+      });
+
+      it("Should decode hex and return false", async function () {
+        const { utils } = await loadFixture(deployABACEnviroment);
+        expect(await utils.bytesToBool(0x00)).to.be.equals(false);
+      });
+    });
+
+
     describe("PubAM", function () {
+      
       it("Should return a list of allowed colors ['red','green'] by the brand Pub", async function () {
         const { pubAm } = await loadFixture(deployABACEnviroment);
         const pubAmTransaction = await pubAm.callStatic.allowedColorList();
@@ -362,7 +415,7 @@ describe("JacketMNT", function () {
         await expect(jacketAsset.changeColor("green", "mario"))
           .to.emit(jacketAsset, "StateChanged")
           .withArgs("green");
-         expect(await jacketAsset.model3d()).to.equal("greenJacket")
+        expect(await jacketAsset.model3d()).to.equal("greenJacket");
       });
 
       it("Should change the color Jacket to 'red' by the tailor 'mario' ", async function () {
