@@ -1,19 +1,66 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.18;
 
-contract MutableAsset {
-    string public model3d; //sostiusce il vecchio 3dmodel (ancora però no)
+abstract contract MutableAsset {
+    string public tokenURI;
     address public currentOwner;
+    address ownerSmartPolicy;
+    address creatorSmartPolicy;
 
-    // constructor(address owner){
-    //     require(owner == address(owner),"Invalid owner address");
-    //     currentOwner=owner;
+    // CurrentOwner in byte32, TODO: to change asap
+    // bytes32 currentOwnerb32 = bytes32(uint256(uint160(address(currentOwner))));
+
+    constructor(
+        address _owner,
+        address _creatorSmartPolicy,
+        address _ownerSmartPolicy
+    ) {
+        require(_owner == address(_owner), "Invalid owner address");
+        currentOwner = _owner;
+        ownerSmartPolicy = _ownerSmartPolicy;
+        creatorSmartPolicy = _creatorSmartPolicy;
+    }
+
+    // struct Attribute {
+    //     bool _boolean;
+    //     string _string;
+    //     address _address;
+    //     uint256 _uint;
     // }
+
+    // mapping(bytes32 => Attribute) public assetAttributes;
 
     event OwnershipTransferred(
         address indexed previousOwner,
         address indexed newOwner
     );
+
+    // event AssetAttributeChanged(Attribute assetAttribute);
+
+    // function _setAssetAttribute(
+    //     string memory _key,
+    //     Attribute memory _assetAttribute
+    // ) internal {
+    //     assetAttributes[keccak256(abi.encodePacked(_key))] = _assetAttribute;
+    //     emit AssetAttributeChanged(_assetAttribute);
+    // }
+
+    // function _getAssetAttribute(
+    //     string memory _key
+    // ) internal returns (Attribute) {
+    //     return assetAttributes[keccak256(abi.encodePacked(_key))];
+    // }
+
+    function setTokenURI(string memory _tokenUri) public virtual {
+        tokenURI = _tokenUri;
+    }
+
+    /** Set a new Mutable Asset Owner Smart policy  */
+    function setOwnerSmartPolicy(
+        address _ownerSmartPolicy
+    ) public virtual onlyOwner {
+        ownerSmartPolicy = _ownerSmartPolicy;
+    }
 
     function transferOwnership(address to) public virtual {
         require(to == address(to), "Invalid address");
@@ -22,16 +69,6 @@ contract MutableAsset {
         address oldOwner = currentOwner;
         currentOwner = to;
         emit OwnershipTransferred(oldOwner, currentOwner);
-    }
-
-    function get3DModel() public pure returns (string memory) {
-        //Todo to define
-        return string(abi.encodePacked("filename", ".glb"));
-    }
-
-    // Function to get the text
-    function getModel3d() public view returns (string memory) {
-        return string(abi.encodePacked(model3d));
     }
 
     /**
@@ -53,4 +90,5 @@ contract MutableAsset {
             keccak256(abi.encodePacked(str1)) ==
             keccak256(abi.encodePacked(str2));
     }
+
 }

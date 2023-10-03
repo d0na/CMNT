@@ -5,6 +5,7 @@ pragma solidity ^0.8.4;
 import "hardhat/console.sol";
 import "./interfaces/MutableNFT.sol";
 import "./JacketAsset.sol";
+import "./OwnerSmartPolicy.sol";
 
 /**
  * @title Jacket Mutable NFT
@@ -25,7 +26,10 @@ contract JacketMNT is MutableNFT {
      */
     function _mint(address to) internal override returns (address, uint) {
         // Creation of the asset by specifying the creator's address
-        JacketAsset jacket = new JacketAsset(to);
+        JacketAsset jacket = new JacketAsset(
+            to,
+            address(new OwnerSmartPolicy())
+        );
 
         // The asset creator will also be the asset owner who can invoke all methods provided
         jacket.transferOwnership(to);
@@ -52,7 +56,7 @@ contract JacketMNT is MutableNFT {
 
         // Retrieving the URI describing the asset's current state from the asset contract
         JacketAsset asset = JacketAsset(asset_contract);
-        return asset.get3DModel();
+        return asset.tokenURI();
     }
 
     function getJacketAddress(uint256 _tokenId) public pure returns (address) {

@@ -5,7 +5,8 @@ pragma solidity ^0.8.18;
 import "hardhat/console.sol";
 import "./interfaces/MutableAsset.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
-import "./PolicyDecisionPoint.sol";
+import "./CreatorSmartPolicy.sol";
+import "./OwnerSmartPolicy.sol";
 
 /**
  * @title Smart Asset which represents a Jacket
@@ -14,132 +15,144 @@ import "./PolicyDecisionPoint.sol";
  * it to mutate
  */
 contract JacketAsset is MutableAsset {
+    /** */
+    constructor(
+        address _owner,
+        address _ownerSmartPolicy
+    )
+        MutableAsset(
+            _owner,
+            address(new CreatorSmartPolicy()),
+            _ownerSmartPolicy
+        )
+    {}
+
     using Strings for string;
 
-    address constant _pip = 0x57A8aAfc40EDCa45F13B4a74009CBAD162e82e23;
-    string constant defaultJacket = "defaultJacket";
-    string constant greenJacket = "greenJacket";
-    string constant redJacket = "redJacket";
-
-    // CurrentOwner in byte32, TODO: to change asap
-    bytes32 currentOwnerb32 = bytes32(uint256(uint160(address(currentOwner))));
-    PolicyDecisionPoint pdp = new PolicyDecisionPoint(_pip);
-
-    //Jacket Properties
-    string color;
-
-    event ChangedColor(string color);
-    event StateChanged(string color);
-
-    constructor(address _currentOwner) {
-        require(
-            _currentOwner == address(_currentOwner),
-            "Invalid current owner address"
-        );
-        currentOwner = _currentOwner;
-        model3d = defaultJacket;
-        console.log("model3d", model3d);
+    //Jacket descriptor
+    struct JacketDescriptor {
+        string color;
+        bool removeSleeves;
     }
+
+    // Current state representing jacket descriptor with its attributes
+    JacketDescriptor public jacketDescriptor;
+
+    /** Retrieves all the attributes of the descriptor Jacket
+     *
+     * TODO forse visto che jacketDescriptor è public nn doverebbe servire
+     */
+    function getJacketDescriptor()
+        public
+        view
+        returns (JacketDescriptor memory)
+    {
+        return (jacketDescriptor);
+    }
+
+    event StateChanged(JacketDescriptor jacketDescriptor);
+
+    // constructor(
+    //     address _currentOwner,
+    //     address _ownerSmartPolicy
+    // )
+    //     MutableAsset(
+    //         _currentOwner,
+    //         address(new CreatorSmartPolicy()),
+    //         _ownerSmartPolicy
+    //     )
+    // {
+    //     require(
+    //         _currentOwner == address(_currentOwner),
+    //         "Invalid current owner address"
+    //     );
+    // }
 
     /**
-     * @dev Example
-     */
-    modifier otherModifier() {
-        _;
-    }
+     * USERS ACTIONS with attached policy
+     * */
 
-    function transferOwnership(address to) public override otherModifier {
-        // In questo modo richiamo trnasferOwnerShip del derivato ma aggiungo
-        // quello che pensi giusto ad esempio aggiungere uno o più modifer
-        // onlyOwner e otherModifier
-        super.transferOwnership(to);
-    }
-
-    /**
-     * @notice Let change the jacket color
-     */
-    function changeColor(
-        string memory _color,
-        string memory _tailor
+    function setColor(
+        string memory _color
     )
         public
-        pepIsColorChangeable(
-            currentOwner,
+        canSetColorByCreator(
+            msg.sender,
             "0x6368616e67655f636f6c6f72",
             address(0),
-            _color,
-            _tailor
+            _color
+        )
+        canSetColorByOwner(
+            msg.sender,
+            "0x6368616e67655f636f6c6f72",
+            address(0),
+            _color
         )
     {
-        emit ChangedColor(_color);
-        color = _color;
-        _updateState();
+        jacketDescriptor.color = _color;
+        emit StateChanged(jacketDescriptor);
     }
 
-    // PEP - functions which return decisions from pdp
+    function setRemoveSleeves(bool _removeSleeves) public {
+        jacketDescriptor.removeSleeves = _removeSleeves;
+        emit StateChanged(jacketDescriptor);
+    }
 
-    modifier pepIsColorChangeable(
+    /**
+     * MODIFIERS
+     * */
+
+    modifier canSetColorByCreator(
         address _subject,
         bytes32 _action,
         address _resource,
-        string memory _color,
-        string memory _tailor
+        string memory _color
     ) {
         require(
-            pdp.evalChangeColor(
+            CreatorSmartPolicy(creatorSmartPolicy).evalSetColor(
                 _subject,
                 _action,
                 _resource,
-                _color,
-                _tailor
+                _color
             ) == true,
-            "Change Color operation DENY"
+            "Color change operation DENIED by creator policy"
         );
         _;
     }
 
-    /**
-     * Should contains the logic to change internale state by reflecting changing in the model3d variables
-     */
-    function _updateState() internal {
-        if (compare(color, "green")) {
-            model3d = greenJacket;
-            emit StateChanged(color);
-        }
-
-        if (compare(color, "red")) {
-            model3d = redJacket;
-            emit StateChanged(color);
-        }
+    modifier canSetColorByOwner(
+        address _subject,
+        bytes32 _action,
+        address _resource,
+        string memory _color
+    ) {
+        require(
+            OwnerSmartPolicy(ownerSmartPolicy).evalSetColor(
+                _subject,
+                _action,
+                _resource,
+                _color
+            ) == true,
+            "Color change operation DENIED by owner policy"
+        );
+        _;
     }
 
-    // // https://www.google.com/search?q=pattern+clothes+anmes&oq=pattern+clothes+anmes&aqs=chrome..69i57j0i22i30j0i8i10i13i15i30.6999j1j7&sourceid=chrome&ie=UTF-8#imgrc=mZSD24o1hA8VdM
-    // enum _PATTERN {
-    //     STRIPPED,
-    //     PLAIN,
-    //     CHECKED
+    // modifier canSetSleevsByCreator(
+    //     address _subject,
+    //     bytes32 _action,
+    //     address _resource,
+    //     bool _sleeves
+    // ) {
+    //     require(
+    //         CreatorSmartPolicy(creatorSmartPolicy).evalSetSleeves(
+    //             _subject,
+    //             _action,
+    //             _resource
+    //         ) == true,
+    //         "Change Color operation DENY"
+    //     );
+    //     _;
     // }
-    // enum _COLOR {
-    //     RED,
-    //     GREEN,
-    //     BLUE,
-    //     YELLOW,
-    //     GRAY
-    // }
-
-    // /**
-    //  * @notice Asset Properties describing how can change the asset
-    //  * color: base color used with pattern
-    //  * pattern: ..
-    //  */
-    // struct AssetProperties {
-    //     _COLOR color;
-    //     _PATTERN pattern;
-    // }
-
-    // // function render() external view override returns (uint) {}
-
-    // // function get3DModel() external view override {}
-
-    // // function init() external view override {}
+    // function getAssetDescriptor() public virtual override {}
 }

@@ -5,7 +5,7 @@ import "hardhat/console.sol";
 import "./JacketMNT.sol";
 import "./PolicyInformationPoint.sol";
 
-contract PolicyDecisionPoint {
+contract CreatorSmartPolicy {
     /*
             
         Subject : who required the resource
@@ -37,10 +37,11 @@ contract PolicyDecisionPoint {
     PolicyInformationPoint private pip;
     uint private id;
     Session[] private register;
+    address constant _pip = 0x57A8aAfc40EDCa45F13B4a74009CBAD162e82e23;
 
-    constructor(address _pubAmAddr) {
+    constructor() {
         admin = msg.sender;
-        pip = PolicyInformationPoint(_pubAmAddr);
+        pip = PolicyInformationPoint(_pip);
         id = 0;
         // change_pattern: 0x6368616e67655f7061747465726e
         AllowedActions[
@@ -86,13 +87,11 @@ contract PolicyDecisionPoint {
     }
 
     // Condition 1
-    function isAuthorizedTailor(
-        string memory _tailor
-    ) private view returns (bool) {
+    function isAuthorizedTailor(address _tailor) private view returns (bool) {
         //return equal(_tailor,"mario");
-        string[] memory tailors = pip.pubTailorList();
+        address[] memory tailors = pip.pubTailorList();
         for (uint i = 0; i <= tailors.length; i++) {
-            if (equal(tailors[i], _tailor)) {
+            if (tailors[i] == _tailor) {
                 return true;
             }
         }
@@ -110,20 +109,29 @@ contract PolicyDecisionPoint {
         return false;
     }
 
-    function evalChangeColor(
+    // Condition 3
+    function hasRemoveSleeves() private view returns (bool) {
+        return pip.pubRemoveSleeves();
+    }
+
+
+    /** Policy to evaluate if is possible to setColor */
+    function evalSetColor(
         address _subject,
         bytes32 _action,
         address _resource,
-        string memory _color,
-        string memory _tailor
-    )
-        public
-        view
-        onlyAuthorizedSubject(_subject, _resource)
-        onlyAllowedAction(_action)
-        returns (bool)
-    {
-        return (isAllowedColor(_color) && isAuthorizedTailor(_tailor));
+        string memory _color
+    ) public view onlyAllowedAction(_action) returns (bool) {
+        return (isAllowedColor(_color) && isAuthorizedTailor(_subject));
+    }
+
+   /** Policy to evaluate if is possible to setColor */
+    function evalSetSleevs(
+        address _subject,
+        bytes32 _action,
+        address _resource
+    ) public view onlyAllowedAction(_action) returns (bool) {
+        return ( hasRemoveSleeves() && isAuthorizedTailor(_subject));
     }
 
     // function evalChangePattern(
@@ -147,6 +155,7 @@ contract PolicyDecisionPoint {
         _;
     }
 
+    // Probably to remove because unuseful
     modifier onlyAuthorizedSubject(address _subject, address _resource) {
         require(1 == 1, "Subject not allowed");
         _;

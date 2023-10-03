@@ -33,8 +33,13 @@ contract PolicyInformationPoint {
         return _pubAm.allowedColorList();
     }
 
-    function pubTailorList() public view returns (string[] memory) {
+    function pubTailorList() public view returns (address[] memory) {
         // checkSender(msg.sender);
         return _pubAm.authorizedTailorList();
+    }
+
+    function pubRemoveSleeves() public view returns (bool) {
+        // checkSender(msg.sender);
+        return _pubAm.removeSleeves();
     }
 }
