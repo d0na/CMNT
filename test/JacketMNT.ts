@@ -287,7 +287,7 @@ describe("JacketMNT", function () {
       const Utils = await ethers.getContractFactory("NMTUtils");
       const utils = await Utils.deploy();
 
-      return { pip, owner, pubAm, pdp,utils };
+      return { pip, owner, pubAm, pdp, utils };
     }
 
     describe("NMTUtils", function () {
@@ -296,6 +296,15 @@ describe("JacketMNT", function () {
         console.log("encodesTestUint(200)", await utils.encodesTestUint());
         console.log("encodesTestBool(false)", await utils.encodesTestBool());
         console.log("encodesTestHex(FF00000)", await utils.encodesTestHex());
+        console.log("encTest", await utils.encTest());
+        const a = await utils.decodeData(await utils.encTest());
+        console.log("decodeData(firs4Bytes-signature)", a[0]);
+        console.log("decodeData(params)", a[1]);
+        console.log("printTest", await utils.printTest());
+        console.log("comparingSig", await utils.comparingSig());
+        
+        //bytes4(keccak256("transfer(address,uint256)")
+
         console.log(
           "decode uint",
           await utils.bytesToUint(
@@ -331,9 +340,7 @@ describe("JacketMNT", function () {
       });
     });
 
-
     describe("PubAM", function () {
-      
       it("Should return a list of allowed colors ['red','green'] by the brand Pub", async function () {
         const { pubAm } = await loadFixture(deployABACEnviroment);
         const pubAmTransaction = await pubAm.callStatic.allowedColorList();
@@ -375,70 +382,77 @@ describe("JacketMNT", function () {
       // pip.address 0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9
       // JacketAsset address: 0xa16e02e87b7454126e5e10d957a927a7f5b5d2be
 
-      it("Should change the color Jacket to 'green' by the tailor 'mario' ", async function () {
+      it("Should change the color Jacket to 1 and succeed ", async function () {
         const { jacketAsset } = await loadFixture(deployJacketNMT);
         await loadFixture(deployABACEnviroment);
-        // const tx = await jacketAsset.changeColor("red", "mario");
+        // const tx = await jacketAsset.setColor(1);
         // let receipt = await tx.wait();
-        // const events = receipt.events?.filter((x) => {return x.event == "ChangedColor"})
-
+        // const events = receipt.events?.filter((x:any) => {return x.event == "StateChanged"})
         // console.log("receipt",events);
         // console.log(tx);
-        await expect(jacketAsset.changeColor("green", "mario"))
-          .to.emit(jacketAsset, "ChangedColor")
-          .withArgs("green");
-      });
-
-      it("Should change the color Jacket to 'green' and emit StateChanged ", async function () {
-        const { jacketAsset } = await loadFixture(deployJacketNMT);
-        await loadFixture(deployABACEnviroment);
-        // const tx = await jacketAsset.changeColor("red", "mario");
-        // let receipt = await tx.wait();
-        // const events = receipt.events?.filter((x) => {return x.event == "ChangedColor"})
-
-        // console.log("receipt",events);
-        // console.log(tx);
-        await expect(jacketAsset.changeColor("green", "mario"))
+        await expect(jacketAsset.setColor(1))
           .to.emit(jacketAsset, "StateChanged")
-          .withArgs("green");
+          .withArgs([1,false]);
       });
 
-      it("Should change the color Jacket to 'green' and change model3d ", async function () {
+      it("Should change the color Jacket to 2 and fail", async function () {
         const { jacketAsset } = await loadFixture(deployJacketNMT);
         await loadFixture(deployABACEnviroment);
-        // const tx = await jacketAsset.changeColor("red", "mario");
-        // let receipt = await tx.wait();
-        // const events = receipt.events?.filter((x) => {return x.event == "ChangedColor"})
-
-        // console.log("receipt",events);
-        // console.log(tx);
-        await expect(jacketAsset.changeColor("green", "mario"))
-          .to.emit(jacketAsset, "StateChanged")
-          .withArgs("green");
-        expect(await jacketAsset.model3d()).to.equal("greenJacket");
+        await expect(jacketAsset.setColor(2)).to.be.rejectedWith(
+               "Color change operation DENIED by creator policy"
+             );
       });
 
-      it("Should change the color Jacket to 'red' by the tailor 'mario' ", async function () {
-        const { jacketAsset } = await loadFixture(deployJacketNMT);
-        await loadFixture(deployABACEnviroment);
-        await expect(jacketAsset.changeColor("red", "mario"))
-          .to.emit(jacketAsset, "ChangedColor")
-          .withArgs("red");
-      });
+      // it("Should change the color Jacket to 'green' and emit StateChanged ", async function () {
+      //   const { jacketAsset } = await loadFixture(deployJacketNMT);
+      //   await loadFixture(deployABACEnviroment);
+      //   // const tx = await jacketAsset.changeColor("red", "mario");
+      //   // let receipt = await tx.wait();
+      //   // const events = receipt.events?.filter((x) => {return x.event == "ChangedColor"})
 
-      it("Should be reverted when is trying to change the color Jacket to 'yellow' by the tailor 'mario' ", async function () {
-        const { jacketAsset } = await loadFixture(deployJacketNMT);
-        await loadFixture(deployABACEnviroment);
-        await expect(jacketAsset.changeColor("yellow", "mario")).to.be
-          .revertedWithoutReason;
-      });
+      //   // console.log("receipt",events);
+      //   // console.log(tx);
+      //   await expect(jacketAsset.setColor("green", "mario"))
+      //     .to.emit(jacketAsset, "StateChanged")
+      //     .withArgs("green");
+      // });
 
-      it("Should revert the transaction when it is trying to change the color of the Jacket to 'red'  by the tailor 'franco' that it is not allowed ", async function () {
-        const { jacketAsset } = await loadFixture(deployJacketNMT);
-        await loadFixture(deployABACEnviroment);
-        await expect(jacketAsset.changeColor("red", "franco")).to.be
-          .revertedWithoutReason;
-      });
+      // it("Should change the color Jacket to 'green' and change model3d ", async function () {
+      //   const { jacketAsset } = await loadFixture(deployJacketNMT);
+      //   await loadFixture(deployABACEnviroment);
+      //   // const tx = await jacketAsset.changeColor("red", "mario");
+      //   // let receipt = await tx.wait();
+      //   // const events = receipt.events?.filter((x) => {return x.event == "ChangedColor"})
+
+      //   // console.log("receipt",events);
+      //   // console.log(tx);
+      //   await expect(jacketAsset.setColor("green", "mario"))
+      //     .to.emit(jacketAsset, "StateChanged")
+      //     .withArgs("green");
+      //   expect(await jacketAsset.model3d()).to.equal("greenJacket");
+      // });
+
+      // it("Should change the color Jacket to 'red' by the tailor 'mario' ", async function () {
+      //   const { jacketAsset } = await loadFixture(deployJacketNMT);
+      //   await loadFixture(deployABACEnviroment);
+      //   await expect(jacketAsset.setColor("red", "mario"))
+      //     .to.emit(jacketAsset, "ChangedColor")
+      //     .withArgs("red");
+      // });
+
+      // it("Should be reverted when is trying to change the color Jacket to 'yellow' by the tailor 'mario' ", async function () {
+      //   const { jacketAsset } = await loadFixture(deployJacketNMT);
+      //   await loadFixture(deployABACEnviroment);
+      //   await expect(jacketAsset.setColor("yellow", "mario")).to.be
+      //     .revertedWithoutReason;
+      // });
+
+      // it("Should revert the transaction when it is trying to change the color of the Jacket to 'red'  by the tailor 'franco' that it is not allowed ", async function () {
+      //   const { jacketAsset } = await loadFixture(deployJacketNMT);
+      //   await loadFixture(deployABACEnviroment);
+      //   await expect(jacketAsset.changeColor("red", "franco")).to.be
+      //     .revertedWithoutReason;
+      // });
     });
   });
 });

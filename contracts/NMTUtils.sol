@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.18;
+pragma solidity ^0.8.21;
 
- contract NMTUtils {
+import "hardhat/console.sol";
+
+contract NMTUtils {
     function encodesTestUint() public pure returns (bytes memory) {
         // value : 0x00000000000000000000000000000000000000000000000000000000000000c8
 
@@ -47,5 +49,52 @@ pragma solidity ^0.8.18;
             // Load the data after 32 bytes, so add 0x20
             b := mload(add(data, 0x20))
         }
+    }
+
+    function encTest() public pure returns (bytes memory) {
+        uint256 _number = 200;
+        return getEncodeWithSignature(_number);
+    }
+
+    function getEncodeWithSignature(
+        uint256 _value
+    ) public pure returns (bytes memory) {
+        bytes memory data = abi.encodeWithSignature(
+            "printNumber(uint256)",
+            _value
+        );
+
+        return data;
+    }
+
+    function printTest() public pure returns (bytes4) {
+        return bytes4(keccak256("printNumber(uint256)"));
+    }
+
+    function comparingSig() public view returns (bool) {
+        bytes memory data = getEncodeWithSignature(200);
+        bytes4 signature = bytes4(
+            bytes.concat(data[0], data[1], data[2], data[3])
+        );
+        return bytes4(keccak256("printNumber(uint8)")) == signature;
+    }
+
+    function decodeData(
+        bytes calldata approvePaylaod
+    ) public pure returns (bytes memory, uint256) {
+        uint256 num;
+        bytes calldata signature = approvePaylaod[0:4];
+        // `approvePaylaod[4:]` basically ignores the first 4 bytes of the payload
+        (num) = abi.decode(approvePaylaod[4:], (uint256));
+        return (signature, num);
+    }
+
+    function decodeSignature(
+        bytes calldata _payload
+    ) public view returns (bytes4) {
+        return
+            bytes4(
+                bytes.concat(_payload[0], _payload[1], _payload[2], _payload[3])
+            );
     }
 }

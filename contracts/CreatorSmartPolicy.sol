@@ -109,6 +109,11 @@ contract CreatorSmartPolicy {
         return false;
     }
 
+    function isAllowedColor(uint8 _color) private view returns (bool) {
+        return _color == 1;
+    }
+
+
     // Condition 3
     function hasRemoveSleeves() private view returns (bool) {
         return pip.pubRemoveSleeves();
@@ -158,6 +163,32 @@ contract CreatorSmartPolicy {
         _;
     }
 
+     function decodeData(
+        bytes calldata approvePaylaod
+    ) public pure returns (bytes memory, uint256) {
+        uint256 num;
+        bytes calldata signature = approvePaylaod[0:4];
+        // `approvePaylaod[4:]` basically ignores the first 4 bytes of the payload
+        (num) = abi.decode(approvePaylaod[4:], (uint256));
+        return (signature, num);
+    }
+
+        function decodeSignature(
+        bytes calldata _payload
+    ) public view returns (bytes4) {
+        return
+            bytes4(
+                bytes.concat(_payload[0], _payload[1], _payload[2], _payload[3])
+            );
+    }
+
+
+    // is public because if not is not possibile do the trick this.getSetColorParam and bypass the
+    // memory and calldata check
+    function getSetColorParam(bytes calldata _payload) public returns (uint8){
+        return abi.decode(_payload[4:], (uint8));
+    }
+
     // Probably to remove because unuseful
     modifier onlyAuthorizedSubject(address _subject, address _resource) {
         require(1 == 1, "Subject not allowed");
@@ -170,5 +201,24 @@ contract CreatorSmartPolicy {
         // _;
     }
 
-   
+    function evaluate(
+        address subject,
+        bytes memory action,
+        address resource
+    ) public returns (bool) {
+        console.logBytes(action);
+        bytes4 _sig = this.decodeSignature(action);
+        console.logBytes4(_sig);
+        console.logBytes4(bytes4(keccak256("setColor(uint8)")));
+
+        // Set Color
+        if (_sig == bytes4(keccak256("setColor(uint8)"))){
+            // retrieves specific params
+            uint8 _color = this.getSetColorParam(action);
+            // perfom conditions evaluation (AND | OR)
+            return isAllowedColor(_color);
+        } else{
+            return false;
+        }
+    }
 }
