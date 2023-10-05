@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.18;
 
+import "hardhat/console.sol";
+
 abstract contract MutableAsset {
     string public tokenURI;
     address public currentOwner;
@@ -16,6 +18,17 @@ abstract contract MutableAsset {
         address _ownerSmartPolicy
     ) {
         require(_owner == address(_owner), "Invalid owner address");
+        require(
+            _ownerSmartPolicy == address(_ownerSmartPolicy),
+            "Invalid ownerSmartPolicy address"
+        );
+        require(
+            _creatorSmartPolicy == address(_creatorSmartPolicy),
+            "Invalid creatorSmartPolicy address"
+        );
+        // console.log("_owner", _owner);
+        // console.log("_ownerSmartPolicy", _ownerSmartPolicy);
+        // console.log("_creatorSmartPolicy", _creatorSmartPolicy);
         currentOwner = _owner;
         ownerSmartPolicy = _ownerSmartPolicy;
         creatorSmartPolicy = _creatorSmartPolicy;
@@ -90,5 +103,4 @@ abstract contract MutableAsset {
             keccak256(abi.encodePacked(str1)) ==
             keccak256(abi.encodePacked(str2));
     }
-
 }

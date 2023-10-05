@@ -28,7 +28,7 @@ contract PolicyInformationPoint {
     //     }
     // }
 
-    function pubAllowedColorList() public view returns (string[] memory) {
+    function pubAllowedColorList() public view returns (uint256[] memory) {
         // checkSender(msg.sender);
         return _pubAm.allowedColorList();
     }

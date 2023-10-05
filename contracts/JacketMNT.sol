@@ -20,6 +20,10 @@ contract JacketMNT is MutableNFT {
         )
     {}
 
+    fallback() external {
+        //console.log("Fallback JacketMNT");
+    }
+
     /**
      *
      * @param to  address of the new owner

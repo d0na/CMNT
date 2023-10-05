@@ -25,13 +25,15 @@ contract JacketAsset is MutableAsset {
             address(new CreatorSmartPolicy()),
             _ownerSmartPolicy
         )
-    {}
+    {
+        // console.log("_ownerSmartPolicy address",_ownerSmartPolicy);
+    }
 
     using Strings for string;
 
     //Jacket descriptor
     struct JacketDescriptor {
-        uint8 color;
+        uint256 color;
         bool removeSleeves;
     }
 
@@ -72,22 +74,29 @@ contract JacketAsset is MutableAsset {
      * USERS ACTIONS with attached policy
      * */
 
+         // function setRemoveSleeves(bool _removeSleeves) public {
+    //     jacketDescriptor.removeSleeves = _removeSleeves;
+    //     emit StateChanged(jacketDescriptor);
+    // }
+
+    fallback() external {  }
+
     function setColor(
-        uint8 _color
+        uint256 _color
     )
         public
-        canSetColor(
+        evaluatedByOwner(
             msg.sender,
-            abi.encodeWithSignature("setColor(uint8)", _color),
-            msg.sender
+            abi.encodeWithSignature("setColor(uint256)", _color),
+            address(this)
+        )
+        evaluatedByCreator(
+            msg.sender,
+            abi.encodeWithSignature("setColor(uint256)", _color),
+            address(this)
         )
     {
         jacketDescriptor.color = _color;
-        emit StateChanged(jacketDescriptor);
-    }
-
-    function setRemoveSleeves(bool _removeSleeves) public {
-        jacketDescriptor.removeSleeves = _removeSleeves;
         emit StateChanged(jacketDescriptor);
     }
 
@@ -95,7 +104,23 @@ contract JacketAsset is MutableAsset {
      * MODIFIERS
      * */
 
-    modifier canSetColor(
+    modifier evaluatedByOwner(
+        address _subject,
+        bytes memory _action,
+        address _resource
+    ) {
+        require(
+            OwnerSmartPolicy(ownerSmartPolicy).evaluate(
+                _subject,
+                _action,
+                _resource
+            ) == true,
+            "Operation DENIED by OWNER policy"
+        );
+        _;
+    }
+
+    modifier evaluatedByCreator(
         address _subject,
         bytes memory _action,
         address _resource
@@ -106,62 +131,12 @@ contract JacketAsset is MutableAsset {
                 _action,
                 _resource
             ) == true,
-            "Color change operation DENIED by creator policy"
+            "Operation DENIED by CREATOR policy"
         );
         _;
     }
 
-    // modifier canSetColorByCreator(
-    //     address _subject,
-    //     bytes32 _action,
-    //     address _resource,
-    //     string memory _color
-    // ) {
-    //     require(
-    //         CreatorSmartPolicy(creatorSmartPolicy).evalSetColor(
-    //             _subject,
-    //             _action,
-    //             _resource,
-    //             _color
-    //         ) == true,
-    //         "Color change operation DENIED by creator policy"
-    //     );
-    //     _;
-    // }
 
-    // modifier canSetColorByOwner(
-    //     address _subject,
-    //     bytes32 _action,
-    //     address _resource,
-    //     string memory _color
-    // ) {
-    //     require(
-    //         OwnerSmartPolicy(ownerSmartPolicy).evalSetColor(
-    //             _subject,
-    //             _action,
-    //             _resource,
-    //             _color
-    //         ) == true,
-    //         "Color change operation DENIED by owner policy"
-    //     );
-    //     _;
-    // }
 
-    // modifier canSetSleevsByCreator(
-    //     address _subject,
-    //     bytes32 _action,
-    //     address _resource,
-    //     bool _sleeves
-    // ) {
-    //     require(
-    //         CreatorSmartPolicy(creatorSmartPolicy).evalSetSleeves(
-    //             _subject,
-    //             _action,
-    //             _resource
-    //         ) == true,
-    //         "Change Color operation DENY"
-    //     );
-    //     _;
-    // }
     // function getAssetDescriptor() public virtual override {}
 }

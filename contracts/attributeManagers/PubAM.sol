@@ -12,14 +12,14 @@ contract PubAM {
     using Strings for string;
 
     address[] private _tailorList;
-    string[] private _colorList;
+    uint256[] private _colorList;
     bool private _removeSleeves = true;
 
     constructor() {
         _tailorList.push(0x21387C745c98f092C376151197E68e56E33de81e);
         _tailorList.push(0x7DE5260b6964bAE3678f3C7a8c45628af2CeAc28);
-        _colorList.push("red");
-        _colorList.push("green");
+        _colorList.push(1);
+        _colorList.push(3);
     }
 
     // Lista dei sarti autorizzati
@@ -28,7 +28,7 @@ contract PubAM {
     }
 
 
-    function allowedColorList() public view returns (string[] memory) {
+    function allowedColorList() public view returns (uint256[] memory) {
         return _colorList;
     }
 

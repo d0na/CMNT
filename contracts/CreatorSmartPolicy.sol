@@ -2,223 +2,76 @@
 pragma solidity ^0.8.18;
 
 import "hardhat/console.sol";
-import "./JacketMNT.sol";
-import "./PolicyInformationPoint.sol";
+import "./JacketSmartPolicy.sol";
 
-contract CreatorSmartPolicy {
-    /*
-            
-        Subject : who required the resource
-        Resources: the elements which the Subject wants to access
-        Action: the action goal of the policy
-
-        Rule: determines rules for each policy, is effect  can be PERMIT/DENY 
-        Target: used to check the validity of the action regarding the resource
-                It is composed by:
-                1. One or more Subjects
-                2. An Action - the aciont goal of the policy
-                3. The involved resources to protect
-            
-    */
-
-    mapping(bytes32 => bytes32) private AllowedActions;
-
-    struct User {
-        bytes32 userName;
-        bool authorized;
-    }
-
-    struct Session {
-        uint id;
-        User users;
-    }
-
-    address private admin;
-    PolicyInformationPoint private pip;
-    uint private id;
-    Session[] private register;
-    address constant _pip = 0x57A8aAfc40EDCa45F13B4a74009CBAD162e82e23;
-
-    constructor() {
-        admin = msg.sender;
-        pip = PolicyInformationPoint(_pip);
-        id = 0;
-        // change_pattern: 0x6368616e67655f7061747465726e
-        AllowedActions[
-            "0x6368616e67655f7061747465726e"
-        ] = "0x6368616e67655f7061747465726e";
-        // change_color : 0x6368616e67655f636f6c6f72
-        AllowedActions[
-            "0x6368616e67655f636f6c6f72"
-        ] = "0x6368616e67655f636f6c6f72";
-    }
-
-    /***
-     * @dev Funzione che verifica se due stringhe sono uguali
-     */
-    function equal(
-        string memory a,
-        string memory b
-    ) internal pure returns (bool) {
-        return keccak256(bytes(a)) == keccak256(bytes(b));
-    }
-
-    function getSessionById(uint _id) public view returns (bytes32, bool) {
-        if (_id >= register.length) {
-            revert();
-        }
-
-        return (register[_id].users.userName, register[_id].users.authorized);
-    }
-
-    function getPermission(bytes32 subject) public returns (uint) {
-        if (msg.sender != admin) {
-            revert();
-        }
-
-        // bool outcome = globalRule();
-        bool outcome = true;
-        User memory u = User(subject, outcome);
-        Session memory s = Session(id, u);
-
-        id++;
-        register.push(s);
-        return (id - 1);
-    }
+contract CreatorSmartPolicy is JacketSmartPolicy {
 
     // Condition 1
-    function isAuthorizedTailor(address _tailor) private view returns (bool) {
-        //return equal(_tailor,"mario");
-        address[] memory tailors = pip.pubTailorList();
-        for (uint i = 0; i <= tailors.length; i++) {
-            if (tailors[i] == _tailor) {
-                return true;
-            }
-        }
-        return false;
+    function _isAuthorizedTailor(address _tailor) private pure returns (bool) {
+        // //return equal(_tailor,"mario");
+        // address[] memory tailors = pip.pubTailorList();
+        // for (uint i = 0; i < tailors.length; i++) {
+        //     if (tailors[i] == _tailor) {
+        //         return true;
+        //     }
+        // }
+        // return false;
+        return
+            _tailor == 0x21387C745c98f092C376151197E68e56E33de81e ||
+            _tailor == 0x70997970C51812dc3A010C7d01b50e0d17dc79C8 || // test account1
+            _tailor == 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266 || // test account0
+            _tailor == 0x7DE5260b6964bAE3678f3C7a8c45628af2CeAc28;
     }
 
     // Condition 2
-    function isAllowedColor(string memory _color) private view returns (bool) {
-        string[] memory colors = pip.pubAllowedColorList();
-        for (uint i = 0; i <= colors.length; i++) {
-            if (equal(colors[i], _color)) {
-                return true;
-            }
-        }
-        return false;
+    function _isAllowedColor(uint256 _color) internal pure returns (bool) {
+        // uint256[] memory colors = pip.pubAllowedColorList();
+        //     console.log("AAAA");
+        // for (uint i = 0; i <= colors.length; i++) {
+        //     console.log("XXXXXXX",colors[i] );
+        //     if (colors[i] == _color) {
+        //         return true;
+        //     }
+        // }
+        // return false;
+        return _color == 1 || _color == 3;
     }
-
-    function isAllowedColor(uint8 _color) private view returns (bool) {
-        return _color == 1;
-    }
-
 
     // Condition 3
-    function hasRemoveSleeves() private view returns (bool) {
-        return pip.pubRemoveSleeves();
-    }
-
-    /** Policy to evaluate if is possible to setColor */
-    function evalSetColor(
-        address _subject,
-        bytes32 _action,
-        address _resource,
-        string memory _color
-    ) public view onlyAllowedAction(_action) returns (bool) {
-        return (isAllowedColor(_color) && isAuthorizedTailor(_subject));
-    }
-
-    /** Policy to evaluate if is possible to setColor */
-    function evalSetSleevs(
-        address _subject,
-        bytes32 _action,
-        address _resource
-    ) public view onlyAllowedAction(_action) returns (bool) {
-        return (hasRemoveSleeves() && isAuthorizedTailor(_subject));
-    }
-
-    // function evalChangePattern(
-    //     address _subject,
-    //     bytes32 _action,
-    //     address _resource,
-    //     string memory _pattern,
-    //     string memory _tailor
-    // )
-    //     public
-    //     // onlyAllowedActions(_action)
-    //     onlyAuthorizedSubject(_subject, _resource)
-    //     returns (bool)
-    // {}
-
-    // function evaluate(address subject, bytes calldata action, address resource, bytes32 params) public returns(bool){
-
+    // function hasRemoveSleeves() private view returns (bool) {
+    //     return pip.pubRemoveSleeves();
     // }
 
-    modifier onlyAllowedAction(bytes32 _action) {
-        require(
-            _action == AllowedActions[_action],
-            "Invalid action name invoked for this action"
-        );
-        _;
-    }
+    // // TODO to implent new check that controls if is this action is allowed
+    // modifier onlyAllowedAction(bytes32 _action) {
+    //     require(
+    //         _action == AllowedActions[_action],
+    //         "Invalid action name invoked for this action"
+    //     );
+    //     _;
+    // }
 
-     function decodeData(
-        bytes calldata approvePaylaod
-    ) public pure returns (bytes memory, uint256) {
-        uint256 num;
-        bytes calldata signature = approvePaylaod[0:4];
-        // `approvePaylaod[4:]` basically ignores the first 4 bytes of the payload
-        (num) = abi.decode(approvePaylaod[4:], (uint256));
-        return (signature, num);
-    }
-
-        function decodeSignature(
-        bytes calldata _payload
-    ) public view returns (bytes4) {
-        return
-            bytes4(
-                bytes.concat(_payload[0], _payload[1], _payload[2], _payload[3])
-            );
-    }
-
-
-    // is public because if not is not possibile do the trick this.getSetColorParam and bypass the
-    // memory and calldata check
-    function getSetColorParam(bytes calldata _payload) public returns (uint8){
-        return abi.decode(_payload[4:], (uint8));
-    }
-
-    // Probably to remove because unuseful
-    modifier onlyAuthorizedSubject(address _subject, address _resource) {
-        require(1 == 1, "Subject not allowed");
-        _;
-        // JacketMNT nmt = JacketMNT(_resource);
-        // require(_resource == address(_resource), "Invalid Resource address");
-        // require(_subject == address(_subject), "Invalid Subject address");
-        // console.log("aa",);
-        // require(nmt.owner() == _subject, "Subject not allowed");
-        // _;
-    }
+    // Evalute if the action is allowed or denied
+    // TODO think to add a modifier that check if the action is in some list -> onlyAllowedAction
 
     function evaluate(
-        address subject,
-        bytes memory action,
-        address resource
-    ) public returns (bool) {
-        console.logBytes(action);
-        bytes4 _sig = this.decodeSignature(action);
-        console.logBytes4(_sig);
-        console.logBytes4(bytes4(keccak256("setColor(uint8)")));
-
+        address _subject,
+        bytes memory _action,
+        address _resource
+    ) public view virtual override returns (bool) {
+        bytes4 _signature = this.decodeSignature(_action);
         // Set Color
-        if (_sig == bytes4(keccak256("setColor(uint8)"))){
+        if (_signature == ACT_SET_COLOR) {
             // retrieves specific params
-            uint8 _color = this.getSetColorParam(action);
-            // perfom conditions evaluation (AND | OR)
-            return isAllowedColor(_color);
-        } else{
+            uint256 _color = this.getSetColorParam(_action);
+            // perform conditions evaluation (AND | OR)
+            return _isAllowedColor(_color) && _isAuthorizedTailor(_subject) && _resource == _resource;
+        } else {
             return false;
         }
+    }
+
+    fallback() external {
+        //console.log("Fallback CreatorSmartPolicy");
     }
 }
