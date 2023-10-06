@@ -5,7 +5,6 @@ import "hardhat/console.sol";
 import "./JacketSmartPolicy.sol";
 
 contract CreatorSmartPolicy is JacketSmartPolicy {
-
     // Condition 1
     function _isAuthorizedTailor(address _tailor) private pure returns (bool) {
         // //return equal(_tailor,"mario");
@@ -17,10 +16,12 @@ contract CreatorSmartPolicy is JacketSmartPolicy {
         // }
         // return false;
         return
-            _tailor == 0x21387C745c98f092C376151197E68e56E33de81e ||
-            _tailor == 0x70997970C51812dc3A010C7d01b50e0d17dc79C8 || // test account1
+            _tailor == 0x70997970C51812dc3A010C7d01b50e0d17dc79C8 || //test account1
+            _tailor == 0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC || //test account2
             _tailor == 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266 || // test account0
-            _tailor == 0x7DE5260b6964bAE3678f3C7a8c45628af2CeAc28;
+            _tailor == 0x21387C745c98f092C376151197E68e56E33de81e || // sepolia 1
+            _tailor == 0x7DE5260b6964bAE3678f3C7a8c45628af2CeAc28 || // sepolia 2
+            _tailor == 0x901D7C8d516a5c97bFeE31a781A1101D10BBc8e9;   // sepolia 3
     }
 
     // Condition 2
@@ -65,7 +66,10 @@ contract CreatorSmartPolicy is JacketSmartPolicy {
             // retrieves specific params
             uint256 _color = this.getSetColorParam(_action);
             // perform conditions evaluation (AND | OR)
-            return _isAllowedColor(_color) && _isAuthorizedTailor(_subject) && _resource == _resource;
+            return
+                _isAllowedColor(_color) &&
+                _isAuthorizedTailor(_subject) &&
+                _resource == _resource;
         } else {
             return false;
         }

@@ -13,12 +13,16 @@ contract OwnerSmartPolicy is JacketSmartPolicy {
         // }
         // return false;
 
-        return _tailor == 0x70997970C51812dc3A010C7d01b50e0d17dc79C8;
+        return
+            _tailor == 0x70997970C51812dc3A010C7d01b50e0d17dc79C8 || //test account1
+            _tailor == 0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC || //test account2
+            _tailor == 0x7DE5260b6964bAE3678f3C7a8c45628af2CeAc28 || // sepolia 2
+            _tailor == 0x901D7C8d516a5c97bFeE31a781A1101D10BBc8e9;   // sepolia 3
     }
 
     // Condition 2
     function _isAllowedColor(uint256 _color) private pure returns (bool) {
-        return _color == 1;
+        return _color == 1 || _color == 3;
     }
 
     // modifier onlyAllowedAction(bytes32 _action) {
@@ -37,6 +41,7 @@ contract OwnerSmartPolicy is JacketSmartPolicy {
         bytes memory _action,
         address _resource
     ) public view virtual override returns (bool) {
+        console.log("subj", _subject);
         bytes4 _signature = this.decodeSignature(_action);
         // Set Color
         if (_signature == ACT_SET_COLOR) {
