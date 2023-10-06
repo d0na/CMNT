@@ -34,11 +34,11 @@ module.exports = {
     // polygon - if doesn't works use POLYGONSCAN_API_KEY
     mumbai: {
       url: "https://rpc-mumbai.maticvigil.com",
-      accounts: [process.env.PRIVATE_KEY],
+      accounts: [process.env.PRIVATE_KEY1,process.env.PRIVATE_KEY2,process.env.PRIVATE_KEY3,],
     },
     sepolia: {
       url: `https://eth-sepolia-public.unifra.io`,
-      accounts: [process.env.PRIVATE_KEY]
+      accounts: [process.env.PRIVATE_KEY1,process.env.PRIVATE_KEY2,process.env.PRIVATE_KEY3,],
     }
   },
   etherscan: {
