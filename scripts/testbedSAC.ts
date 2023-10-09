@@ -1,9 +1,17 @@
+import { BigNumber } from "ethers";
 import { ethers } from "hardhat";
 
 async function getDescriptor(jacketAsset: any) {
   const restult = await jacketAsset.getJacketDescriptor();
   console.log(
     `Jacket Asset Descriptor[${jacketAsset.address}]:\n\tcolor:${restult["color"]}\n\tsleeves:${restult["removeSleeves"]}\n`
+  );
+}
+
+async function getGasUsed(text:string,transaction: any) {
+  const txReceipt = await transaction.wait();
+  console.log(
+    `* [GAS USED] ${text}:${Number(txReceipt.gasUsed as BigNumber)}\n`
   );
 }
 
@@ -17,7 +25,7 @@ async function main() {
   // const jacketMnt = await JacketMnt.attach(JACKET_MN_ADDR)
   const jacketMnt = await JacketMnt.deploy();
 
-  console.log(`Created Jacket MNT [${jacketMnt.address}]`);
+
   // Mint a new Jacket ASSET
   const mint = await jacketMnt.mint(owner.address);
   const txReceipt = await mint.wait();
@@ -28,42 +36,53 @@ async function main() {
   console.log(
     `Minted new jacket Asset:\n\t[tokenID]:${tokenId}\n\t[address]:${jacketAddress}\n\t[owner]:${jacketOwner}`
   );
+  getGasUsed('Mint operation',mint);
 
   // Get Jacket Asset
   const JacketAsset = await ethers.getContractFactory("JacketAsset");
   const jacketAsset = await JacketAsset.attach(jacketAddress);
   await getDescriptor(jacketAsset);
+
+  // THE OWNER DECIDE TO CHANGE
+  console.log(`** setColor No evaluated`)
+  const setColorNotEvaluated = await jacketAsset.connect(owner).setColorNotEvaluated(1);
+  getGasUsed('setColorNotEvaluated(1) operation',setColorNotEvaluated);
+
   // THE OWNER DECIDE TO CHANGE
   console.log(`** the owner [${owner.address}] decide to change color to 1 and the rules allow the operation`)
-  await jacketAsset.connect(owner).setColor(1);
+  const setColor1 = await jacketAsset.connect(owner).setColor(1);
+  getGasUsed('SetColor(1) operation',setColor1);
+
   await getDescriptor(jacketAsset);
-  console.log(`** the owner [${owner.address}] decide to change color to 2 and the owner rules deny the operation`)
+  console.log(`\n** the owner [${owner.address}] decide to change color to 2 and the owner rules deny the operation`)
   try {
     await jacketAsset.connect(owner).setColor(2);
-  } catch (e){
+  } catch (e) {
     console.log(e)
   }
   console.log(`** the owner [${owner.address}] decide to change color to 3 and the rules allow the operation`)
   try {
-    await jacketAsset.connect(owner).setColor(3);
+    const setColor3 = await jacketAsset.connect(owner).setColor(3);
+    getGasUsed('SetColor(3) operation',setColor3);
     await getDescriptor(jacketAsset);
-  } catch (e){
+  } catch (e) {
     console.log(e)
   }
 
-  console.log(`** the Tailor1 [${tailor.address}] can change change color to 1 and the rules allow the operation`)
+  console.log(`\n** the Tailor1 [${tailor.address}] can change change color to 1 and the rules allow the operation`)
   try {
-    await jacketAsset.connect(tailor).setColor(1);
+    const setColor4 = await jacketAsset.connect(tailor).setColor(1);
+    getGasUsed('SetColor(4) operation',setColor4);
     await getDescriptor(jacketAsset);
-  } catch (e){
+  } catch (e) {
     console.log(e)
   }
 
-  console.log(`** the Tailor1 [${creator.address}] can't change change color to 3 because is not allow by the rules`)
+  console.log(`\n** the Tailor1 [${creator.address}] can't change change color to 3 because is not allow by the rules`)
   try {
     await jacketAsset.connect(creator).setColor(1);
     await getDescriptor(jacketAsset);
-  } catch (e){
+  } catch (e) {
     console.log(e)
   }
   //console.log("Set OwnerSmartPolicy:",await jacketAsset.setOwnerSmartPolicy('0x9f20fDCA6f19BeB45672eEeD1e2921caA05Ab0f6'))

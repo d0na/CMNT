@@ -16,3 +16,10 @@ If it doesn't need to test contracts in a stateful way you can just use the hard
 npx hardhat test --grep Jack
 ```
 
+### Runnig scripts
+
+Run testbed script on Sepolia network
+
+```
+npx hardhat run scripts/testbedSAC.ts --network sepolia
+```

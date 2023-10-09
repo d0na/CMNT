@@ -100,6 +100,15 @@ contract JacketAsset is MutableAsset {
         emit StateChanged(jacketDescriptor);
     }
 
+    function setColorNotEvaluated(
+        uint256 _color
+    )
+        public
+    {
+        jacketDescriptor.color = _color;
+        emit StateChanged(jacketDescriptor);
+    }
+
     /**
      * MODIFIERS
      * */
