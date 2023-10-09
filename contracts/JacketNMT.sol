@@ -3,8 +3,8 @@ pragma solidity ^0.8.4;
 
 // Uncomment this line to use console.log
 import "hardhat/console.sol";
-import "./interfaces/MutableNFT.sol";
-import "./JacketAsset.sol";
+import "./base/NMT.sol";
+import "./JacketMutableAsset.sol";
 import "./OwnerSmartPolicy.sol";
 
 /**
@@ -12,7 +12,7 @@ import "./OwnerSmartPolicy.sol";
  * @author Francesco Donini <francesco.donini@phd.unipi.it>
  * @notice Mutable NFT contracat which maintain the association with the Jacket Asset
  */
-contract JacketMNT is MutableNFT {
+contract JacketNMT is NMT {
     constructor()
         ERC721(
             "Mutable Jacket for a PUB Decentraland UniPi Project",

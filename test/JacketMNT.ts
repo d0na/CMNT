@@ -11,53 +11,53 @@ import { string } from "hardhat/internal/core/params/argumentTypes";
 
 const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 
-describe("JacketMNT", function () {
+describe("JacketNMT", function () {
   // We define a fixture to reuse the same setup in every test.
   // We use loadFixture to run this setu-p once, snapshot that state,
   // and reset Hardhat Network to that snapshot in every test.
   async function deployJacketNMT() {
     // Contracts are deployed using the first signer/account by default
     const [owner, account1, account2] = await ethers.getSigners();
-    const JacketMNT = await ethers.getContractFactory("JacketMNT");
-    const jacketMNT = await JacketMNT.deploy();
+    const JacketNMT = await ethers.getContractFactory("JacketNMT");
+    const JacketNMT = await JacketNMT.deploy();
     const OwnerSmartPolicy = await ethers.getContractFactory(
       "OwnerSmartPolicy"
     );
-    const ownerSmartPolicy = await JacketMNT.deploy();
+    const ownerSmartPolicy = await JacketNMT.deploy();
     const JacketAsset = await ethers.getContractFactory("JacketAsset");
     const jacketAsset = await JacketAsset.deploy(
       owner.address,
       ownerSmartPolicy.address
     );
-    return { jacketMNT, owner, jacketAsset, account1, account2 };
+    return { JacketNMT, owner, jacketAsset, account1, account2 };
   }
 
   describe("MNT", function () {
     it("Should revert if the miner is 0 address", async function () {
       // valid alternative to ZERO_ADDRESS is
       // ethers.constants.AddressZero
-      const { jacketMNT } = await loadFixture(deployJacketNMT);
-      expect(jacketMNT.mint(ZERO_ADDRESS)).to.be.revertedWith(
+      const { JacketNMT } = await loadFixture(deployJacketNMT);
+      expect(JacketNMT.mint(ZERO_ADDRESS)).to.be.revertedWith(
         "Ownable: new owner is the zero address"
       );
     });
 
     it("Should be able to be minted and owned", async function () {
       // valid alternative ethers.constants.AddressZero
-      const { jacketMNT, owner } = await loadFixture(deployJacketNMT);
-      await jacketMNT.mint(owner.address);
-      expect(await jacketMNT.owner()).to.equal(owner.address);
+      const { JacketNMT, owner } = await loadFixture(deployJacketNMT);
+      await JacketNMT.mint(owner.address);
+      expect(await JacketNMT.owner()).to.equal(owner.address);
     });
 
     it("Should be able to be minted a new Asset and return the asset address and the asset tokenId", async function () {
-      const { jacketMNT, owner } = await loadFixture(deployJacketNMT);
+      const { JacketNMT, owner } = await loadFixture(deployJacketNMT);
       const Minted = {
         owner: owner.address,
         tokenId: 1048441399354366663447528331587451327875741636968,
         assetAddress: "0xB7A5bd0345EF1Cc5E66bf61BdeC17D2461fBd968",
       };
 
-      const mintResponse = await jacketMNT.callStatic.mint(owner.address);
+      const mintResponse = await JacketNMT.callStatic.mint(owner.address);
       const assetAddress = mintResponse[0];
       const tokenId = mintResponse[1];
       expect(Number(tokenId)).to.equal(Minted.tokenId);
@@ -65,13 +65,13 @@ describe("JacketMNT", function () {
     });
 
     it("Should be minted and trigger events with the right onwer and tokenId", async function () {
-      const { jacketMNT, owner } = await loadFixture(deployJacketNMT);
+      const { JacketNMT, owner } = await loadFixture(deployJacketNMT);
       const Minted = {
         owner: owner.address,
         tokenId: 1048441399354366663447528331587451327875741636968,
       };
 
-      const txResponse = await jacketMNT.mint(owner.address);
+      const txResponse = await JacketNMT.mint(owner.address);
       const txReceipt = await txResponse.wait();
 
       const events = txReceipt.events;
@@ -86,7 +86,7 @@ describe("JacketMNT", function () {
     });
 
     // it("Should minted two assets with two differents tokenIds and the same owner ", async function () {
-    //   const { jacketMNT, owner, account1, account2 } = await loadFixture(
+    //   const { JacketNMT, owner, account1, account2 } = await loadFixture(
     //     deployJacketNMT
     //   );
     //   const Minted1 = {
@@ -101,44 +101,44 @@ describe("JacketMNT", function () {
     //     tokenId: "1048441399354366663447528331587451327875741636968",
     //   };
 
-    //   await expect(jacketMNT.mint(account1.address))
-    //     .to.emit(jacketMNT, "Transfer")
+    //   await expect(JacketNMT.mint(account1.address))
+    //     .to.emit(JacketNMT, "Transfer")
     //     // from, to, tokenId
     //     .withArgs(Minted1.from, account1.address, Minted1.tokenId);
     //   await expect()
-    //     .to.emit(jacketMNT, "Transfer")
+    //     .to.emit(JacketNMT, "Transfer")
     //     // from, to, tokenId
     //     .withArgs(Minted2.from, account2.address, Minted2.tokenId);
     // });
 
     it("Should be named 'Mutable Jacket for a PUB Decentraland UniPi Project'", async function () {
-      const { jacketMNT } = await loadFixture(deployJacketNMT);
-      expect(await jacketMNT.name()).to.equal(
+      const { JacketNMT } = await loadFixture(deployJacketNMT);
+      expect(await JacketNMT.name()).to.equal(
         "Mutable Jacket for a PUB Decentraland UniPi Project"
       );
     });
 
     it("Should have symbol named 'PUBMNTJACKET'", async function () {
-      const { jacketMNT } = await loadFixture(deployJacketNMT);
-      expect(await jacketMNT.symbol()).to.equal("PUBMNTJACKET");
+      const { JacketNMT } = await loadFixture(deployJacketNMT);
+      expect(await JacketNMT.symbol()).to.equal("PUBMNTJACKET");
     });
 
     // it("Should have tokenUri 'filename.glb'", async function () {
-    //   const { jacketMNT, owner } = await loadFixture(deployJacketNMT);
+    //   const { JacketNMT, owner } = await loadFixture(deployJacketNMT);
     //   const Minted = {
     //     owner: owner.address,
     //     tokenId: "921600849408656576225127304129841157239410643646",
     //     uri: "filename.glb",
     //   };
 
-    //   await jacketMNT.mint(owner.address);
+    //   await JacketNMT.mint(owner.address);
     //   expect(
-    //     await jacketMNT.ownerOf(
+    //     await JacketNMT.ownerOf(
     //       "921600849408656576225127304129841157239410643646"
     //     )
     //   ).to.be.equal(Minted.owner);
     //   expect(
-    //     await jacketMNT.tokenURI(
+    //     await JacketNMT.tokenURI(
     //       "921600849408656576225127304129841157239410643646"
     //     )
     //   ).to.equal(Minted.uri);
@@ -146,42 +146,42 @@ describe("JacketMNT", function () {
 
     //
     // it("Should have address....", async function () {
-    // const { jacketMNT, owner } = await loadFixture(deployJacketNMT);
+    // const { JacketNMT, owner } = await loadFixture(deployJacketNMT);
     // const Minted = {
     // owner: owner.address,
     // tokenId: "921600849408656576225127304129841157239410643646",
     // uri: "filename.glb",
     // };
     //
-    // await jacketMNT.mint(owner.address)
+    // await JacketNMT.mint(owner.address)
     //
-    //console.log(await jacketMNT.getJacketAddress(
+    //console.log(await JacketNMT.getJacketAddress(
     //"921600849408656576225127304129841157239410643646"))
     // expect(
-    // await jacketMNT.getJacketAddress(
+    // await JacketNMT.getJacketAddress(
     // "921600849408656576225127304129841157239410643646"
     // )
     // ).to.be.equal("0xa16e02e87b7454126e5e10d957a927a7f5b5d2be");
     // });
     //
     //   it("Should be owned by the owner associated with the TokenId", async function () {
-    //     const { jacketMNT, owner } = await loadFixture(deployJacketNMT);
+    //     const { JacketNMT, owner } = await loadFixture(deployJacketNMT);
     //     const Minted = {
     //       owner: owner.address,
     //       tokenId: "921600849408656576225127304129841157239410643646",
     //       uri: "filename.glb",
     //     };
 
-    //     await jacketMNT.mint(owner.address);
+    //     await JacketNMT.mint(owner.address);
     //     expect(
-    //       await jacketMNT.ownerOf(
+    //       await JacketNMT.ownerOf(
     //         "921600849408656576225127304129841157239410643646"
     //       )
     //     ).to.be.equal(Minted.owner);
     //   });
 
     //   it("Should be minted and transfer twice the NFT ownership and checked the rigth owner through the ownerOf(tokenId) method", async function () {
-    //     const { jacketMNT, owner, account1, account2 } = await loadFixture(
+    //     const { JacketNMT, owner, account1, account2 } = await loadFixture(
     //       deployJacketNMT
     //     );
     //     const Minted = {
@@ -193,26 +193,26 @@ describe("JacketMNT", function () {
     //     };
 
     //     // Minting the NFT to the First Owner
-    //     const mintResponse = await jacketMNT.mint(Minted.firstOwner);
+    //     const mintResponse = await JacketNMT.mint(Minted.firstOwner);
     //     await mintResponse.wait();
-    //     expect(await jacketMNT.ownerOf(Minted.tokenId)).to.be.equal(
+    //     expect(await JacketNMT.ownerOf(Minted.tokenId)).to.be.equal(
     //       Minted.firstOwner
     //     );
 
     //     // Trasfering the NFT to the Second Owner
-    //     await jacketMNT.transferFrom(
+    //     await JacketNMT.transferFrom(
     //       Minted.firstOwner,
     //       Minted.secondOwner,
     //       "921600849408656576225127304129841157239410643646"
     //     );
 
     //     // Check that the new owner is changed
-    //     expect(await jacketMNT.ownerOf(Minted.tokenId)).to.be.equal(
+    //     expect(await JacketNMT.ownerOf(Minted.tokenId)).to.be.equal(
     //       Minted.secondOwner
     //     );
 
     //     // Trasfering NFT to the Third Owner
-    //     await jacketMNT
+    //     await JacketNMT
     //       .connect(account1)
     //       .transferFrom(
     //         Minted.secondOwner,
@@ -221,23 +221,23 @@ describe("JacketMNT", function () {
     //       );
 
     //     // Check that the new owner is changed
-    //     expect(await jacketMNT.ownerOf(Minted.tokenId)).to.be.equal(
+    //     expect(await JacketNMT.ownerOf(Minted.tokenId)).to.be.equal(
     //       Minted.thirdOwner
     //     );
     //   });
 
     //   it("Should be minted and tansfer to a different user (Account1) and visible in the Transfer event", async function () {
-    //     const { jacketMNT, owner, account1 } = await loadFixture(deployJacketNMT);
+    //     const { JacketNMT, owner, account1 } = await loadFixture(deployJacketNMT);
     //     const Minted = {
     //       owner: owner.address,
     //       tokenId: 921600849408656576225127304129841157239410643646,
     //     };
 
     //     // minting NFT
-    //     const mintResponse = await jacketMNT.mint(owner.address);
+    //     const mintResponse = await JacketNMT.mint(owner.address);
     //     const mintReceipt = await mintResponse.wait();
     //     // Trasfering NFT to Account1
-    //     const transferFromResponse = await jacketMNT.transferFrom(
+    //     const transferFromResponse = await JacketNMT.transferFrom(
     //       Minted.owner,
     //       account1.address,
     //       "921600849408656576225127304129841157239410643646"
@@ -389,7 +389,7 @@ describe("JacketMNT", function () {
     });
 
     describe("PDP", function () {
-      // JacketMNT.address : 0x5FbDB2315678afecb367f032d93F642f64180aa3
+      // JacketNMT.address : 0x5FbDB2315678afecb367f032d93F642f64180aa3
       // pip.address 0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9
       // JacketAsset address: 0xa16e02e87b7454126e5e10d957a927a7f5b5d2be
 

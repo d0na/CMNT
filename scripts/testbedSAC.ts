@@ -20,19 +20,19 @@ async function main() {
 
   const [creator, tailor, owner] = await ethers.getSigners();
   //Jacket MNT
-  const JacketMnt = await ethers.getContractFactory("JacketMNT");
+  const JacketNMT = await ethers.getContractFactory("JacketNMT");
   // const JACKET_MN_ADDR = '0x7B73b9ED4Af7ee9630CFdeCa866B5289Bf922876'
-  // const jacketMnt = await JacketMnt.attach(JACKET_MN_ADDR)
-  const jacketMnt = await JacketMnt.deploy();
+  // const JacketNMT = await JacketNMT.attach(JACKET_MN_ADDR)
+  const jacketNMT = await JacketNMT.deploy();
 
 
   // Mint a new Jacket ASSET
-  const mint = await jacketMnt.mint(owner.address);
+  const mint = await jacketNMT.mint(owner.address);
   const txReceipt = await mint.wait();
   const events = txReceipt.events;
   const { tokenId } = events[1].args;
-  const jacketAddress = await jacketMnt.getJacketAddress(tokenId);
-  const jacketOwner = await jacketMnt.ownerOf(tokenId);
+  const jacketAddress = await jacketNMT.getJacketAddress(tokenId);
+  const jacketOwner = await jacketNMT.ownerOf(tokenId);
   console.log(
     `Minted new jacket Asset:\n\t[tokenID]:${tokenId}\n\t[address]:${jacketAddress}\n\t[owner]:${jacketOwner}`
   );

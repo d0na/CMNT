@@ -3,7 +3,7 @@ pragma solidity ^0.8.18;
 
 // Uncomment this line to use console.log
 import "hardhat/console.sol";
-import "./interfaces/MutableAsset.sol";
+import "./base/MutableAsset.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "./CreatorSmartPolicy.sol";
 import "./OwnerSmartPolicy.sol";
