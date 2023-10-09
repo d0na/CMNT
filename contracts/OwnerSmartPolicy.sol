@@ -61,3 +61,4 @@ contract OwnerSmartPolicy is JacketSmartPolicy {
         //console.log("Fallback OwnerSmartPolicy");
     }
 }
+

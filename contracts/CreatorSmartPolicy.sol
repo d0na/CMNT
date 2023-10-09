@@ -25,7 +25,7 @@ contract CreatorSmartPolicy is JacketSmartPolicy {
     }
 
     // Condition 2
-    function _isAllowedColor(uint256 _color) internal pure returns (bool) {
+    function _isAllowedColor(uint256 _color) private pure returns (bool) {
         // uint256[] memory colors = pip.pubAllowedColorList();
         //     console.log("AAAA");
         // for (uint i = 0; i <= colors.length; i++) {
