@@ -45,6 +45,14 @@ module.exports = {
     // apiKey: process.env.POLYGONSCAN_API_KEY,
     apiKey: process.env.ALCHEMY_API_KEY,
   },
+  //https://medium.com/@abhijeet.sinha383/how-to-calculate-gas-and-costs-while-deploying-solidity-contracts-and-functions-54007d321626
+  gasReporter:{
+    enabled: true,
+    noColors: false,
+    currency: "EUR",
+    outputFile: "gas-report-matic.txt",
+    token: "MATIC"
+  },
   paths: {
     sources: "./contracts",
     tests: "./test",
