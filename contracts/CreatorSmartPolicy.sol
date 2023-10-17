@@ -35,7 +35,7 @@ contract CreatorSmartPolicy is JacketSmartPolicy {
         //     }
         // }
         // return false;
-        return _color == 1 || _color == 3;
+        return _color == 1 || _color == 3 || _color == 5;
     }
 
     // Condition 3

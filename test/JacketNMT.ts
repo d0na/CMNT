@@ -27,7 +27,7 @@ describe("JacketNMT", function () {
     // console.log(account2.address)
     const JacketNMT = await ethers.getContractFactory("JacketNMT");
     const jacketNMT = await JacketNMT.deploy();
-    
+
     return { jacketNMT, owner, account1, account2 };
   }
 
@@ -99,8 +99,8 @@ describe("JacketNMT", function () {
       tokenId: "95779725308633401620950732676832305712008989990",
     };
 
-    const mint1 = await jacketNMT.mint(account1.address)
-    const mint2 = await jacketNMT.mint(account1.address)
+    const mint1 = await jacketNMT.mint(account1.address);
+    const mint2 = await jacketNMT.mint(account1.address);
 
     await expect(mint1)
       .to.emit(jacketNMT, "Transfer")
@@ -112,8 +112,8 @@ describe("JacketNMT", function () {
       // from, to, tokenId
       .withArgs(Minted2.from, Minted2.owner, Minted2.tokenId);
 
-    expect(await jacketNMT.ownerOf(Minted1.tokenId)).to.equal(Minted1.owner)
-    expect(await jacketNMT.ownerOf(Minted2.tokenId)).to.equal(Minted1.owner)
+    expect(await jacketNMT.ownerOf(Minted1.tokenId)).to.equal(Minted1.owner);
+    expect(await jacketNMT.ownerOf(Minted2.tokenId)).to.equal(Minted1.owner);
   });
 
   it("Should be named 'Mutable Jacket for a PUB Decentraland UniPi Project'", async function () {
@@ -149,7 +149,6 @@ describe("JacketNMT", function () {
   //   ).to.equal(Minted.uri);
   // });
 
-
   it("Should mint a new asset with the right address", async function () {
     const { jacketNMT, owner } = await loadFixture(deployJacketNMT);
     const Minted = {
@@ -157,7 +156,7 @@ describe("JacketNMT", function () {
       tokenId: "921600849408656576225127304129841157239410643646",
     };
 
-    await jacketNMT.mint(owner.address)
+    await jacketNMT.mint(owner.address);
 
     expect(
       await jacketNMT.getJacketAddress(
@@ -165,6 +164,36 @@ describe("JacketNMT", function () {
       )
     ).to.be.equal("0xa16E02E87b7454126E5E10d957A927A7F5B5d2be");
   });
+
+  it("Should mint a new asset which should retrieves the same owner with getOwner", async function () {
+    const { jacketNMT, owner } = await loadFixture(deployJacketNMT);
+    const JacketMutableAsset = await ethers.getContractFactory(
+      "JacketMutableAsset"
+    );
+    const Minted = {
+      from: "0x0000000000000000000000000000000000000000",
+      owner: owner.address,
+      tokenId: "1048441399354366663447528331587451327875741636968",
+      address: "0xB7A5bd0345EF1Cc5E66bf61BdeC17D2461fBd968",
+    };
+
+    const mint = await jacketNMT.mint(owner.address);
+    // const jacketAddress = await jacketNMT.getJacketAddress(Minted.tokenId);
+
+    await expect(mint)
+      .to.emit(jacketNMT, "Transfer")
+      // from, to, tokenId
+      .withArgs(Minted.from, Minted.owner, Minted.tokenId);
+
+    expect(await jacketNMT.getJacketAddress(Minted.tokenId)).to.be.equal(
+      Minted.address
+    );
+    expect(await jacketNMT.ownerOf(Minted.tokenId)).to.equal(Minted.owner);
+    const jacketMutableAsset = JacketMutableAsset.attach(Minted.address);
+    expect(await jacketMutableAsset.getNMT()).to.be.equal(jacketNMT.address);
+    expect(await jacketMutableAsset.getOwner()).to.be.equal(Minted.owner);
+  });
+
   //
   //   it("Should be owned by the owner associated with the TokenId", async function () {
   //     const { jacketNMT, owner } = await loadFixture(deployJacketNMT);
@@ -182,55 +211,51 @@ describe("JacketNMT", function () {
   //     ).to.be.equal(Minted.owner);
   //   });
 
-    it("Should be minted and transfer twice the NFT ownership and checked the rigth owner through the ownerOf(tokenId) method", async function () {
-      const { jacketNMT, owner, account1, account2 } = await loadFixture(
-        deployJacketNMT
-      );
-      const Minted = {
-        from: "0x0000000000000000000000000000000000000000",
-        firstOwner: owner.address,
-        secondOwner: account1.address,
-        thirdOwner: account2.address,
-        tokenId: "1048441399354366663447528331587451327875741636968",
-      };
+  it("Should be minted and transfer twice the NFT ownership and checked the rigth owner through the ownerOf(tokenId) method", async function () {
+    const { jacketNMT, owner, account1, account2 } = await loadFixture(
+      deployJacketNMT
+    );
+    const Minted = {
+      from: "0x0000000000000000000000000000000000000000",
+      firstOwner: owner.address,
+      secondOwner: account1.address,
+      thirdOwner: account2.address,
+      tokenId: "1048441399354366663447528331587451327875741636968",
+    };
 
-      // Minting the NFT to the First Owner
-      const mintResponse = await jacketNMT.mint(Minted.firstOwner);
-      await expect(mintResponse)
+    // Minting the NFT to the First Owner
+    const mintResponse = await jacketNMT.mint(Minted.firstOwner);
+    await expect(mintResponse)
       .to.emit(jacketNMT, "Transfer")
       // from, to, tokenId
       .withArgs(Minted.from, Minted.firstOwner, Minted.tokenId);
-      
-      expect(await jacketNMT.ownerOf(Minted.tokenId)).to.be.equal(
-        Minted.firstOwner
-      );
 
-      // Trasfering the NFT to the Second Owner
-      await jacketNMT.transferFrom(
-        Minted.firstOwner,
-        Minted.secondOwner,
-        Minted.tokenId
-      );
+    expect(await jacketNMT.ownerOf(Minted.tokenId)).to.be.equal(
+      Minted.firstOwner
+    );
 
-      // Check that the new owner is changed
-      expect(await jacketNMT.ownerOf(Minted.tokenId)).to.be.equal(
-        Minted.secondOwner
-      );
+    // Trasfering the NFT to the Second Owner
+    await jacketNMT.transferFrom(
+      Minted.firstOwner,
+      Minted.secondOwner,
+      Minted.tokenId
+    );
 
-      // Trasfering NFT to the Third Owner
-      await jacketNMT
-        .connect(account1)
-        .transferFrom(
-          Minted.secondOwner,
-          Minted.thirdOwner,
-          Minted.tokenId
-        );
+    // Check that the new owner is changed
+    expect(await jacketNMT.ownerOf(Minted.tokenId)).to.be.equal(
+      Minted.secondOwner
+    );
 
-      // Check that the new owner is changed
-      expect(await jacketNMT.ownerOf(Minted.tokenId)).to.be.equal(
-        Minted.thirdOwner
-      );
-    });
+    // Trasfering NFT to the Third Owner
+    await jacketNMT
+      .connect(account1)
+      .transferFrom(Minted.secondOwner, Minted.thirdOwner, Minted.tokenId);
+
+    // Check that the new owner is changed
+    expect(await jacketNMT.ownerOf(Minted.tokenId)).to.be.equal(
+      Minted.thirdOwner
+    );
+  });
 
   //   it("Should be minted and tansfer to a different user (Account1) and visible in the Transfer event", async function () {
   //     const { jacketNMT, owner, account1 } = await loadFixture(deployJacketNMT);

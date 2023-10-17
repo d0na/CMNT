@@ -97,4 +97,16 @@ contract NMTUtils {
                 bytes.concat(_payload[0], _payload[1], _payload[2], _payload[3])
             );
     }
+
+    function compare(
+        string memory str1,
+        string memory str2
+    ) public pure returns (bool) {
+        if (bytes(str1).length != bytes(str2).length) {
+            return false;
+        }
+        return
+            keccak256(abi.encodePacked(str1)) ==
+            keccak256(abi.encodePacked(str2));
+    }
 }

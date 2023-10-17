@@ -30,8 +30,8 @@ contract JacketNMT is NMT {
      */
     function _mint(address to) internal override returns (address, uint) {
         // Creation of the asset by specifying the creator's address
-        JacketAsset jacket = new JacketAsset(
-            to,
+        JacketMutableAsset jacket = new JacketMutableAsset(
+            address(this),
             address(new OwnerSmartPolicy())
         );
 
@@ -59,7 +59,7 @@ contract JacketNMT is NMT {
         address asset_contract = _intToAddress(tokenId);
 
         // Retrieving the URI describing the asset's current state from the asset contract
-        JacketAsset asset = JacketAsset(asset_contract);
+        JacketMutableAsset asset = JacketMutableAsset(asset_contract);
         return asset.tokenURI();
     }
 
@@ -68,7 +68,7 @@ contract JacketNMT is NMT {
     }
 
     function _transferFrom(address from, address to, uint256 tokenId) internal {
-        JacketAsset asset = JacketAsset(_intToAddress(tokenId));
+        JacketMutableAsset asset = JacketMutableAsset(_intToAddress(tokenId));
         // console.log("_transferFrom addr:",address(asset));
         asset.transferOwnership(to);
         // Ownable.transferOwnership(to);

@@ -13,6 +13,9 @@ contract OwnerSmartPolicy is JacketSmartPolicy {
         // }
         // return false;
 
+    // creator    - 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+    // buyer - 0x70997970C51812dc3A010C7d01b50e0d17dc79C8
+    // tailor - 0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC
         return
             _tailor == 0x70997970C51812dc3A010C7d01b50e0d17dc79C8 || //test account1
             _tailor == 0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC || //test account2
@@ -41,7 +44,6 @@ contract OwnerSmartPolicy is JacketSmartPolicy {
         bytes memory _action,
         address _resource
     ) public view virtual override returns (bool) {
-        console.log("subj", _subject);
         bytes4 _signature = this.decodeSignature(_action);
         // Set Color
         if (_signature == ACT_SET_COLOR) {

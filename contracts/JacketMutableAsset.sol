@@ -4,6 +4,7 @@ pragma solidity ^0.8.18;
 // Uncomment this line to use console.log
 import "hardhat/console.sol";
 import "./base/MutableAsset.sol";
+import "./JacketNMT.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "./CreatorSmartPolicy.sol";
 import "./OwnerSmartPolicy.sol";
@@ -14,19 +15,13 @@ import "./OwnerSmartPolicy.sol";
  * @notice This Smart Contract contains all the Jacket properties and features which allows
  * it to mutate
  */
-contract JacketAsset is MutableAsset {
+contract JacketMutableAsset is MutableAsset {
     /** */
     constructor(
-        address _owner,
+        address _nmt,
         address _ownerSmartPolicy
-    )
-        MutableAsset(
-            _owner,
-            address(new CreatorSmartPolicy()),
-            _ownerSmartPolicy
-        )
-    {
-        // console.log("_ownerSmartPolicy address",_ownerSmartPolicy);
+    ) MutableAsset(_nmt, address(new CreatorSmartPolicy()), _ownerSmartPolicy) {
+        jacketNmt = JacketNMT(_nmt);
     }
 
     using Strings for string;
@@ -34,11 +29,12 @@ contract JacketAsset is MutableAsset {
     //Jacket descriptor
     struct JacketDescriptor {
         uint256 color;
-        bool removeSleeves;
+        bool sleeves;
     }
 
     // Current state representing jacket descriptor with its attributes
     JacketDescriptor public jacketDescriptor;
+    JacketNMT jacketNmt;
 
     /** Retrieves all the attributes of the descriptor Jacket
      *
@@ -74,37 +70,32 @@ contract JacketAsset is MutableAsset {
      * USERS ACTIONS with attached policy
      * */
 
-         // function setRemoveSleeves(bool _removeSleeves) public {
+    // function setRemoveSleeves(bool _removeSleeves) public {
     //     jacketDescriptor.removeSleeves = _removeSleeves;
     //     emit StateChanged(jacketDescriptor);
     // }
 
-    fallback() external {  }
+    fallback() external {}
 
     function setColor(
         uint256 _color
     )
         public
-        evaluatedByOwner(
-            msg.sender,
-            abi.encodeWithSignature("setColor(uint256)", _color),
-            address(this)
-        )
         evaluatedByCreator(
             msg.sender,
             abi.encodeWithSignature("setColor(uint256)", _color),
             address(this)
         )
+        evaluatedByOwner(
+            msg.sender,
+            abi.encodeWithSignature("setColor(uint256)", _color),
+            address(this)
+        )
     {
-        jacketDescriptor.color = _color;
-        emit StateChanged(jacketDescriptor);
+        setColorNotEvaluated(_color);
     }
 
-    function setColorNotEvaluated(
-        uint256 _color
-    )
-        public
-    {
+    function setColorNotEvaluated(uint256 _color) public {
         jacketDescriptor.color = _color;
         emit StateChanged(jacketDescriptor);
     }
@@ -145,7 +136,13 @@ contract JacketAsset is MutableAsset {
         _;
     }
 
-
-
     // function getAssetDescriptor() public virtual override {}
+    function getOwner() public virtual override returns (address) {
+        address owner = jacketNmt.ownerOf(uint160(address(this)));
+        return owner;
+    }
+
+    function getNMT() public view returns (address) {
+        return address(jacketNmt);
+    }
 }

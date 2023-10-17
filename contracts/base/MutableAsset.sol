@@ -5,19 +5,19 @@ import "hardhat/console.sol";
 
 abstract contract MutableAsset {
     string public tokenURI;
-    address public currentOwner;
-    address ownerSmartPolicy;
-    address creatorSmartPolicy;
+    address public nmt;
+    address public ownerSmartPolicy;
+    address public creatorSmartPolicy;
 
     // CurrentOwner in byte32, TODO: to change asap
     // bytes32 currentOwnerb32 = bytes32(uint256(uint160(address(currentOwner))));
 
     constructor(
-        address _owner,
+        address _nmt,
         address _creatorSmartPolicy,
         address _ownerSmartPolicy
     ) {
-        require(_owner == address(_owner), "Invalid owner address");
+        require(_nmt == address(_nmt), "Invalid NMT address");
         require(
             _ownerSmartPolicy == address(_ownerSmartPolicy),
             "Invalid ownerSmartPolicy address"
@@ -26,10 +26,9 @@ abstract contract MutableAsset {
             _creatorSmartPolicy == address(_creatorSmartPolicy),
             "Invalid creatorSmartPolicy address"
         );
-        // console.log("_owner", _owner);
         // console.log("_ownerSmartPolicy", _ownerSmartPolicy);
         // console.log("_creatorSmartPolicy", _creatorSmartPolicy);
-        currentOwner = _owner;
+        nmt = _nmt;
         ownerSmartPolicy = _ownerSmartPolicy;
         creatorSmartPolicy = _creatorSmartPolicy;
     }
@@ -75,32 +74,24 @@ abstract contract MutableAsset {
         ownerSmartPolicy = _ownerSmartPolicy;
     }
 
+    function getOwner() public virtual returns (address);
+
     function transferOwnership(address to) public virtual {
         require(to == address(to), "Invalid address");
         require(to != address(0), "Ownable: new owner is the zero address");
 
-        address oldOwner = currentOwner;
-        currentOwner = to;
-        emit OwnershipTransferred(oldOwner, currentOwner);
+        address oldOwner = nmt;
+        nmt = to;
+        emit OwnershipTransferred(oldOwner, nmt);
     }
 
     /**
      * @dev Interrompe l'esecuzione se la funzione è chiamata da un account che non è proprietario.
      */
     modifier onlyOwner() {
-        require(msg.sender == currentOwner, "Caller is not the owner");
+        require(msg.sender == getOwner(), "Caller is not the owner");
         _;
     }
 
-    function compare(
-        string memory str1,
-        string memory str2
-    ) public pure returns (bool) {
-        if (bytes(str1).length != bytes(str2).length) {
-            return false;
-        }
-        return
-            keccak256(abi.encodePacked(str1)) ==
-            keccak256(abi.encodePacked(str2));
-    }
+
 }
