@@ -4,7 +4,10 @@
   "description": "Composable Mutable MNT",
   "main": "index.js",
   "scripts": {
-    "test": "npx hardhat test"
+    "test": "npx hardhat test",
+    "deploy": "npx hardhat deploy",
+    "compile": "npx hardhat compile",
+    "run": "npx hardhat run"
   },
   "repository": {
     "type": "git",

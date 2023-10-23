@@ -7,7 +7,7 @@ import "./base/MutableAsset.sol";
 import "./JacketNMT.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "./CreatorSmartPolicy.sol";
-import "./OwnerSmartPolicy.sol";
+import "./HolderSmartPolicy.sol";
 
 /**
  * @title Smart Asset which represents a Jacket
@@ -19,8 +19,8 @@ contract JacketMutableAsset is MutableAsset {
     /** */
     constructor(
         address _nmt,
-        address _ownerSmartPolicy
-    ) MutableAsset(_nmt, address(new CreatorSmartPolicy()), _ownerSmartPolicy) {
+        address _holderSmartPolicy
+    ) MutableAsset(_nmt, address(new CreatorSmartPolicy()), _holderSmartPolicy) {
         jacketNmt = JacketNMT(_nmt);
     }
 
@@ -52,17 +52,17 @@ contract JacketMutableAsset is MutableAsset {
 
     // constructor(
     //     address _currentOwner,
-    //     address _ownerSmartPolicy
+    //     address _holderSmartPolicy
     // )
     //     MutableAsset(
     //         _currentOwner,
     //         address(new CreatorSmartPolicy()),
-    //         _ownerSmartPolicy
+    //         _holderSmartPolicy
     //     )
     // {
     //     require(
     //         _currentOwner == address(_currentOwner),
-    //         "Invalid current owner address"
+    //         "Invalid current holder address"
     //     );
     // }
 
@@ -110,7 +110,7 @@ contract JacketMutableAsset is MutableAsset {
         address _resource
     ) {
         require(
-            OwnerSmartPolicy(ownerSmartPolicy).evaluate(
+            HolderSmartPolicy(holderSmartPolicy).evaluate(
                 _subject,
                 _action,
                 _resource
@@ -137,9 +137,9 @@ contract JacketMutableAsset is MutableAsset {
     }
 
     // function getAssetDescriptor() public virtual override {}
-    function getOwner() public virtual override returns (address) {
-        address owner = jacketNmt.ownerOf(uint160(address(this)));
-        return owner;
+    function getHolder() public virtual override returns (address) {
+        address holder = jacketNmt.ownerOf(uint160(address(this)));
+        return holder;
     }
 
     function getNMT() public view returns (address) {

@@ -3,7 +3,7 @@ pragma solidity ^0.8.18;
 
 import "hardhat/console.sol";
 
-contract SmartPolicy {
+abstract contract SmartPolicy {
     function decodeData(
         bytes calldata approvePaylaod
     ) public pure returns (bytes memory, uint256) {
@@ -25,7 +25,7 @@ contract SmartPolicy {
     }
 
     /***
-     * @dev Funzione che verifica se due stringhe sono uguali
+     * @dev Compare if strings are equals
      */
     function equal(
         string memory a,
@@ -33,4 +33,10 @@ contract SmartPolicy {
     ) internal pure returns (bool) {
         return keccak256(bytes(a)) == keccak256(bytes(b));
     }
+
+    function evaluate(
+        address _subject,
+        bytes memory _action,
+        address _resource
+    ) public view virtual returns (bool);
 }

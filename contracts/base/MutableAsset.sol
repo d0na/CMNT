@@ -6,7 +6,7 @@ import "hardhat/console.sol";
 abstract contract MutableAsset {
     string public tokenURI;
     address public nmt;
-    address public ownerSmartPolicy;
+    address public holderSmartPolicy;
     address public creatorSmartPolicy;
 
     // CurrentOwner in byte32, TODO: to change asap
@@ -15,21 +15,21 @@ abstract contract MutableAsset {
     constructor(
         address _nmt,
         address _creatorSmartPolicy,
-        address _ownerSmartPolicy
+        address _holderSmartPolicy
     ) {
         require(_nmt == address(_nmt), "Invalid NMT address");
         require(
-            _ownerSmartPolicy == address(_ownerSmartPolicy),
-            "Invalid ownerSmartPolicy address"
+            _holderSmartPolicy == address(_holderSmartPolicy),
+            "Invalid holderSmartPolicy address"
         );
         require(
             _creatorSmartPolicy == address(_creatorSmartPolicy),
             "Invalid creatorSmartPolicy address"
         );
-        // console.log("_ownerSmartPolicy", _ownerSmartPolicy);
+        // console.log("_holderSmartPolicy", _holderSmartPolicy);
         // console.log("_creatorSmartPolicy", _creatorSmartPolicy);
         nmt = _nmt;
-        ownerSmartPolicy = _ownerSmartPolicy;
+        holderSmartPolicy = _holderSmartPolicy;
         creatorSmartPolicy = _creatorSmartPolicy;
     }
 
@@ -68,17 +68,17 @@ abstract contract MutableAsset {
     }
 
     /** Set a new Mutable Asset Owner Smart policy  */
-    function setOwnerSmartPolicy(
-        address _ownerSmartPolicy
+    function setHolderSmartPolicy(
+        address _holderSmartPolicy
     ) public virtual onlyOwner {
-        ownerSmartPolicy = _ownerSmartPolicy;
+        holderSmartPolicy = _holderSmartPolicy;
     }
 
-    function getOwner() public virtual returns (address);
+    function getHolder() public virtual returns (address);
 
     function transferOwnership(address to) public virtual {
         require(to == address(to), "Invalid address");
-        require(to != address(0), "Ownable: new owner is the zero address");
+        require(to != address(0), "Ownable: new holder is the zero address");
 
         address oldOwner = nmt;
         nmt = to;
@@ -89,7 +89,7 @@ abstract contract MutableAsset {
      * @dev Interrompe l'esecuzione se la funzione è chiamata da un account che non è proprietario.
      */
     modifier onlyOwner() {
-        require(msg.sender == getOwner(), "Caller is not the owner");
+        require(msg.sender == getHolder(), "Caller is not the holder");
         _;
     }
 

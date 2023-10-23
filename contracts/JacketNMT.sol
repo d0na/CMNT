@@ -5,7 +5,7 @@ pragma solidity ^0.8.4;
 import "hardhat/console.sol";
 import "./base/NMT.sol";
 import "./JacketMutableAsset.sol";
-import "./OwnerSmartPolicy.sol";
+import "./HolderSmartPolicy.sol";
 
 /**
  * @title Jacket Mutable NFT
@@ -26,16 +26,16 @@ contract JacketNMT is NMT {
 
     /**
      *
-     * @param to  address of the new owner
+     * @param to  address of the new holder
      */
     function _mint(address to) internal override returns (address, uint) {
         // Creation of the asset by specifying the creator's address
         JacketMutableAsset jacket = new JacketMutableAsset(
             address(this),
-            address(new OwnerSmartPolicy())
+            address(new HolderSmartPolicy())
         );
 
-        // The asset creator will also be the asset owner who can invoke all methods provided
+        // The asset creator will also be the asset holder who can invoke all methods provided
         jacket.transferOwnership(to);
 
         // Retrieving the tokenID and calling the ERC721 contract minting function
