@@ -6,6 +6,7 @@ import "hardhat/console.sol";
 import "./base/NMT.sol";
 import "./JacketMutableAsset.sol";
 import "./CreatorSmartPolicy.sol";
+import "./DenyAllSmartPolicy.sol";
 import "./HolderSmartPolicy.sol";
 
 /**
@@ -34,7 +35,8 @@ contract JacketNMT is NMT {
         JacketMutableAsset jacket = new JacketMutableAsset(
             address(this),
             address(new CreatorSmartPolicy()),
-            address(new HolderSmartPolicy())
+            // address(new HolderSmartPolicy())
+            address(new DenyAllSmartPolicy())
         );
 
         // The asset creator will also be the asset holder who can invoke all methods provided

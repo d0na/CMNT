@@ -7,7 +7,6 @@ import "./base/MutableAsset.sol";
 import "./JacketNMT.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "./base/SmartPolicy.sol";
-import "./HolderSmartPolicy.sol";
 
 /**
  * @title Smart Asset which represents a Jacket
@@ -87,7 +86,7 @@ contract JacketMutableAsset is MutableAsset {
             abi.encodeWithSignature("setColor(uint256)", _color),
             address(this)
         )
-        evaluatedByOwner(
+        evaluatedByHolder(
             msg.sender,
             abi.encodeWithSignature("setColor(uint256)", _color),
             address(this)
@@ -105,14 +104,14 @@ contract JacketMutableAsset is MutableAsset {
      * MODIFIERS
      * */
 
-    modifier evaluatedByOwner(
+    modifier evaluatedByHolder(
         address _subject,
         bytes memory _action,
         address _resource
     ) {
         require(
             SmartPolicy(holderSmartPolicy).evaluate(_subject, _action, _resource) == true,
-            "Operation DENIED by OWNER policy"
+            "Operation DENIED by HOLDER policy"
         );
         _;
     }

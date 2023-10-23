@@ -87,6 +87,7 @@ contract HolderSmartPolicy is SmartPolicy {
         address _resource
     ) public view virtual override returns (bool) {
         bytes4 _signature = this.decodeSignature(_action);
+        // console.log("holderSmart",address(this));
         // Set Color
         if (_signature == ACT_SET_COLOR) {
             // retrieves specific params
