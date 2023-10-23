@@ -10,7 +10,7 @@ import { ethers } from "hardhat";
 import { string } from "hardhat/internal/core/params/argumentTypes";
 
 const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
-
+const TOKEN_ID1= 47462988468818027504783345388516217693145579817
 describe("JacketNMT", function () {
   // We define a fixture to reuse the same setup in every test.
   // We use loadFixture to run this setu-p once, snapshot that state,
@@ -27,6 +27,7 @@ describe("JacketNMT", function () {
     // console.log(account2.address)
     const JacketNMT = await ethers.getContractFactory("JacketNMT");
     const jacketNMT = await JacketNMT.deploy();
+    
 
     return { jacketNMT, owner, account1, account2 };
   }
@@ -58,6 +59,7 @@ describe("JacketNMT", function () {
     const mintResponse = await jacketNMT.callStatic.mint(owner.address);
     const assetAddress = mintResponse[0];
     const tokenId = mintResponse[1];
+
     expect(Number(tokenId)).to.equal(Minted.tokenId);
     expect(assetAddress).to.equal(Minted.assetAddress);
   });
@@ -165,7 +167,7 @@ describe("JacketNMT", function () {
     ).to.be.equal("0xa16E02E87b7454126E5E10d957A927A7F5B5d2be");
   });
 
-  it("Should mint a new asset which should retrieves the same owner with getOwner", async function () {
+  it("Should mint a new asset and retrieves the same owner with getOwner", async function () {
     const { jacketNMT, owner } = await loadFixture(deployJacketNMT);
     const JacketMutableAsset = await ethers.getContractFactory(
       "JacketMutableAsset"
@@ -177,6 +179,7 @@ describe("JacketNMT", function () {
       address: "0xB7A5bd0345EF1Cc5E66bf61BdeC17D2461fBd968",
     };
 
+    // 1. It is minted a new Jacket
     const mint = await jacketNMT.mint(owner.address);
     // const jacketAddress = await jacketNMT.getJacketAddress(Minted.tokenId);
 
@@ -185,13 +188,18 @@ describe("JacketNMT", function () {
       // from, to, tokenId
       .withArgs(Minted.from, Minted.owner, Minted.tokenId);
 
+    // 2. It is retrieved the jacketAddress from th NMT contract   
     expect(await jacketNMT.getJacketAddress(Minted.tokenId)).to.be.equal(
       Minted.address
     );
+    // 3. It is retrieved the ownerOf(tokeind of the new minted address) from th NMT contract   
     expect(await jacketNMT.ownerOf(Minted.tokenId)).to.equal(Minted.owner);
+    // 4. A JacektMutableAsset instance is created from its minted address
     const jacketMutableAsset = JacketMutableAsset.attach(Minted.address);
+    // 5. it's verified that the Asset has the same address that it is stored on the NTM
     expect(await jacketMutableAsset.getNMT()).to.be.equal(jacketNMT.address);
-    expect(await jacketMutableAsset.getOwner()).to.be.equal(Minted.owner);
+    // 6. it's verified that the Asset has the same owner that it is stored on the NTM
+    expect(await jacketMutableAsset.callStatic.getOwner()).to.be.equal(Minted.owner);
   });
 
   //
