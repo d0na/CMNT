@@ -6,7 +6,7 @@ import "hardhat/console.sol";
 import "./base/MutableAsset.sol";
 import "./JacketNMT.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
-import "./CreatorSmartPolicy.sol";
+import "./base/SmartPolicy.sol";
 import "./HolderSmartPolicy.sol";
 
 /**
@@ -19,8 +19,9 @@ contract JacketMutableAsset is MutableAsset {
     /** */
     constructor(
         address _nmt,
+        address _creatorSmartPolicy,
         address _holderSmartPolicy
-    ) MutableAsset(_nmt, address(new CreatorSmartPolicy()), _holderSmartPolicy) {
+    ) MutableAsset(_nmt, _creatorSmartPolicy, _holderSmartPolicy) {
         jacketNmt = JacketNMT(_nmt);
     }
 
@@ -52,17 +53,17 @@ contract JacketMutableAsset is MutableAsset {
 
     // constructor(
     //     address _currentOwner,
-    //     address _holderSmartPolicy
+    //     address _ownerSmartPolicy
     // )
     //     MutableAsset(
     //         _currentOwner,
     //         address(new CreatorSmartPolicy()),
-    //         _holderSmartPolicy
+    //         _ownerSmartPolicy
     //     )
     // {
     //     require(
     //         _currentOwner == address(_currentOwner),
-    //         "Invalid current holder address"
+    //         "Invalid current owner address"
     //     );
     // }
 
@@ -110,11 +111,7 @@ contract JacketMutableAsset is MutableAsset {
         address _resource
     ) {
         require(
-            HolderSmartPolicy(holderSmartPolicy).evaluate(
-                _subject,
-                _action,
-                _resource
-            ) == true,
+            SmartPolicy(holderSmartPolicy).evaluate(_subject, _action, _resource) == true,
             "Operation DENIED by OWNER policy"
         );
         _;
@@ -126,7 +123,7 @@ contract JacketMutableAsset is MutableAsset {
         address _resource
     ) {
         require(
-            CreatorSmartPolicy(creatorSmartPolicy).evaluate(
+            SmartPolicy(creatorSmartPolicy).evaluate(
                 _subject,
                 _action,
                 _resource
@@ -138,8 +135,8 @@ contract JacketMutableAsset is MutableAsset {
 
     // function getAssetDescriptor() public virtual override {}
     function getHolder() public virtual override returns (address) {
-        address holder = jacketNmt.ownerOf(uint160(address(this)));
-        return holder;
+        address owner = jacketNmt.ownerOf(uint160(address(this)));
+        return owner;
     }
 
     function getNMT() public view returns (address) {

@@ -5,6 +5,7 @@ pragma solidity ^0.8.4;
 import "hardhat/console.sol";
 import "./base/NMT.sol";
 import "./JacketMutableAsset.sol";
+import "./CreatorSmartPolicy.sol";
 import "./HolderSmartPolicy.sol";
 
 /**
@@ -29,9 +30,10 @@ contract JacketNMT is NMT {
      * @param to  address of the new holder
      */
     function _mint(address to) internal override returns (address, uint) {
-        // Creation of the asset by specifying the creator's address
+        // Creation of the asset by specifying the creator's address and smart Policies (creator and owner)
         JacketMutableAsset jacket = new JacketMutableAsset(
             address(this),
+            address(new CreatorSmartPolicy()),
             address(new HolderSmartPolicy())
         );
 

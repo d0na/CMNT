@@ -39,7 +39,7 @@ describe("JacketMutableAsset", function () {
 
     // OwnerSmartPolicy
     const OwnerSmartPolicy = await ethers.getContractFactory(
-      "OwnerSmartPolicy"
+      "HolderSmartPolicy"
     );
     const ownerSmartPolicy = await JacketNMT.deploy();
 
@@ -60,9 +60,9 @@ describe("JacketMutableAsset", function () {
     const nmt = await jacketMutableAsset.callStatic.getNMT();
     expect(nmt).to.be.equal(jacketNMT.address);
   });
-  it("Should retrieve the owner of the mutable asset by getOwner method", async function () {
+  it("Should retrieve the owner of the mutable asset by getHolder method", async function () {
     const { jacketMutableAsset, buyer } = await deployJacketNMT();
-    const jowner = await jacketMutableAsset.callStatic.getOwner();
+    const jowner = await jacketMutableAsset.callStatic.getHolder();
     expect(jowner).to.be.equal(buyer.address);
   });
   it("Should retrieve jacketDescriptor with color:0 and sleeves:false", async function () {
@@ -143,8 +143,8 @@ describe("JacketMutableAsset", function () {
   describe("Changing owner smart policy",function(){
     it("Should be forbidden to the non-owner", async function () {
       const { jacketMutableAsset, creator,jacketAddress } = await loadFixture(deployJacketNMT);
-      await expect(jacketMutableAsset.connect(creator).setOwnerSmartPolicy(jacketAddress)).to.be.rejectedWith(
-        "Caller is not the owner"
+      await expect(jacketMutableAsset.connect(creator).setHolderSmartPolicy(jacketAddress)).to.be.rejectedWith(
+        "Caller is not the holder"
       );
     });
     // it("Should change smart policy", async function () {

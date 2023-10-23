@@ -10,7 +10,14 @@ import { ethers } from "hardhat";
 import { string } from "hardhat/internal/core/params/argumentTypes";
 
 const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
-const TOKEN_ID1= 47462988468818027504783345388516217693145579817
+
+const TOKEN_ID1 = 1362977003582113853616137038883344414728671430787;
+const TOKEN_ID1_STRING = "1362977003582113853616137038883344414728671430787";
+const TOKEN_ID2_STRING = "766153064835020333949020150884921372432210681498";
+
+const ASSET_ADDRESS1 = "0xeEBe00Ac0756308ac4AaBfD76c05c4F3088B8883";
+const ASSET_ADDRESS2 = "0x86337dDaF2661A069D0DcB5D160585acC2d15E9a";
+
 describe("JacketNMT", function () {
   // We define a fixture to reuse the same setup in every test.
   // We use loadFixture to run this setu-p once, snapshot that state,
@@ -27,7 +34,6 @@ describe("JacketNMT", function () {
     // console.log(account2.address)
     const JacketNMT = await ethers.getContractFactory("JacketNMT");
     const jacketNMT = await JacketNMT.deploy();
-    
 
     return { jacketNMT, owner, account1, account2 };
   }
@@ -52,8 +58,8 @@ describe("JacketNMT", function () {
     const { jacketNMT, owner } = await loadFixture(deployJacketNMT);
     const Minted = {
       owner: owner.address,
-      tokenId: 1048441399354366663447528331587451327875741636968,
-      assetAddress: "0xB7A5bd0345EF1Cc5E66bf61BdeC17D2461fBd968",
+      tokenId: TOKEN_ID1,
+      assetAddress: ASSET_ADDRESS1,
     };
 
     const mintResponse = await jacketNMT.callStatic.mint(owner.address);
@@ -68,7 +74,7 @@ describe("JacketNMT", function () {
     const { jacketNMT, owner } = await loadFixture(deployJacketNMT);
     const Minted = {
       owner: owner.address,
-      tokenId: 1048441399354366663447528331587451327875741636968,
+      tokenId: TOKEN_ID1,
     };
 
     const txResponse = await jacketNMT.mint(owner.address);
@@ -90,15 +96,15 @@ describe("JacketNMT", function () {
       deployJacketNMT
     );
     const Minted1 = {
-      from: "0x0000000000000000000000000000000000000000",
+      from: ZERO_ADDRESS,
       owner: account1.address,
-      tokenId: "1048441399354366663447528331587451327875741636968",
+      tokenId: TOKEN_ID1_STRING,
     };
 
     const Minted2 = {
-      from: "0x0000000000000000000000000000000000000000",
+      from: ZERO_ADDRESS,
       owner: account1.address,
-      tokenId: "95779725308633401620950732676832305712008989990",
+      tokenId: TOKEN_ID2_STRING,
     };
 
     const mint1 = await jacketNMT.mint(account1.address);
@@ -155,16 +161,15 @@ describe("JacketNMT", function () {
     const { jacketNMT, owner } = await loadFixture(deployJacketNMT);
     const Minted = {
       owner: owner.address,
-      tokenId: "921600849408656576225127304129841157239410643646",
+      tokenId: TOKEN_ID2_STRING,
+      assetAddres: ASSET_ADDRESS2,
     };
 
     await jacketNMT.mint(owner.address);
 
-    expect(
-      await jacketNMT.getJacketAddress(
-        "921600849408656576225127304129841157239410643646"
-      )
-    ).to.be.equal("0xa16E02E87b7454126E5E10d957A927A7F5B5d2be");
+    expect(await jacketNMT.getJacketAddress(Minted.tokenId)).to.be.equal(
+      Minted.assetAddres
+    );
   });
 
   it("Should mint a new asset and retrieves the same owner with getOwner", async function () {
@@ -173,10 +178,10 @@ describe("JacketNMT", function () {
       "JacketMutableAsset"
     );
     const Minted = {
-      from: "0x0000000000000000000000000000000000000000",
+      from: ZERO_ADDRESS,
       owner: owner.address,
-      tokenId: "1048441399354366663447528331587451327875741636968",
-      address: "0xB7A5bd0345EF1Cc5E66bf61BdeC17D2461fBd968",
+      tokenId: TOKEN_ID1_STRING,
+      address: ASSET_ADDRESS1,
     };
 
     // 1. It is minted a new Jacket
@@ -188,18 +193,20 @@ describe("JacketNMT", function () {
       // from, to, tokenId
       .withArgs(Minted.from, Minted.owner, Minted.tokenId);
 
-    // 2. It is retrieved the jacketAddress from th NMT contract   
+    // 2. It is retrieved the jacketAddress from th NMT contract
     expect(await jacketNMT.getJacketAddress(Minted.tokenId)).to.be.equal(
       Minted.address
     );
-    // 3. It is retrieved the ownerOf(tokeind of the new minted address) from th NMT contract   
+    // 3. It is retrieved the ownerOf(tokeind of the new minted address) from th NMT contract
     expect(await jacketNMT.ownerOf(Minted.tokenId)).to.equal(Minted.owner);
     // 4. A JacektMutableAsset instance is created from its minted address
     const jacketMutableAsset = JacketMutableAsset.attach(Minted.address);
     // 5. it's verified that the Asset has the same address that it is stored on the NTM
     expect(await jacketMutableAsset.getNMT()).to.be.equal(jacketNMT.address);
     // 6. it's verified that the Asset has the same owner that it is stored on the NTM
-    expect(await jacketMutableAsset.callStatic.getOwner()).to.be.equal(Minted.owner);
+    expect(await jacketMutableAsset.callStatic.getHolder()).to.be.equal(
+      Minted.owner
+    );
   });
 
   //
@@ -224,11 +231,11 @@ describe("JacketNMT", function () {
       deployJacketNMT
     );
     const Minted = {
-      from: "0x0000000000000000000000000000000000000000",
+      from: ZERO_ADDRESS,
       firstOwner: owner.address,
       secondOwner: account1.address,
       thirdOwner: account2.address,
-      tokenId: "1048441399354366663447528331587451327875741636968",
+      tokenId: TOKEN_ID1_STRING,
     };
 
     // Minting the NFT to the First Owner
