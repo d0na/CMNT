@@ -80,20 +80,12 @@ contract JacketNMT is NMT {
     }
 
     //-----Override delle funzioni previste dallo standard per il trasferimento dei token-----
-    function safeTransferFrom(
-        address from,
-        address to,
-        uint256 tokenId
-    ) public virtual override {
-        _transferFrom(from, to, tokenId);
-    }
-
     function transferFrom(
         address from,
         address to,
         uint256 tokenId
     ) public virtual override {
         // console.log("transferFrom");
-        _transferFrom(from, to, tokenId);
+        safeTransferFrom(from, to, tokenId);
     }
 }

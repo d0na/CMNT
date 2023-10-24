@@ -60,7 +60,7 @@ contract JacketMutableAsset is MutableAsset {
     fallback() external {}
 
     function setColor(
-        uint256 _color
+        uint256 _color, string memory _tokenURI
     )
         public
         evaluatedByCreator(
@@ -74,15 +74,15 @@ contract JacketMutableAsset is MutableAsset {
             address(this)
         )
     {
-        setColorNotEvaluated(_color);
+        _setColor(_color,_tokenURI);
     }
 
-    function setColorNotEvaluated(uint256 _color) public {
+    // Public only for evaluating costs
+    function _setColor(uint256 _color, string memory _tokenURI) public {
         jacketDescriptor.color = _color;
+        setTokenURI(_tokenURI);
         emit StateChanged(jacketDescriptor);
     }
-
-    
 
     // function getAssetDescriptor() public virtual override {}
     function getHolder() public virtual override returns (address) {

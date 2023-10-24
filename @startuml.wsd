@@ -9,27 +9,6 @@ allowmixing
 ' -- classes --
 
 
-
-class JacketNMT {
-    ' -- inheritance --
-	{abstract}NMT
-
-    ' -- usingFor --
-
-    ' -- vars --
-
-    ' -- methods --
-	+**__constructor__**()
-	+**__constructor__**()
-	#_mint()
-	+🔍tokenURI()
-	+🔍getJacketAddress()
-	#_transferFrom()
-	+safeTransferFrom()
-	+transferFrom()
-
-}
- JacketNMT --[#DarkGoldenRod]|> NMT
 class NMT {
     ' -- inheritance --
 	{abstract}Ownable
@@ -42,14 +21,35 @@ class NMT {
     ' -- methods --
 	+mint()
 	#_mint()
-	#🔍_intToAddress()
-	#🔍_addressToInt()
 
 }
 ' -- inheritance / usingFor --
 NMT --[#DarkGoldenRod]|> Ownable
 NMT --[#DarkGoldenRod]|> ERC721
 
+
+
+
+class MutableAsset {
+    ' -- inheritance --
+
+    ' -- usingFor --
+
+    ' -- vars --
+	+[[address]] nmt
+	+[[address]] linked
+	+[[string]] tokenURI
+	+[[address]] holderSmartPolicy
+	+[[address]] creatorSmartPolicy
+
+    ' -- methods --
+	+**__constructor__**()
+	#setTokenURI()
+	+setLinked()
+	+setHolderSmartPolicy()
+	+getHolder()
+
+}
 
 class JacketMutableAsset {
     ' -- inheritance --
@@ -64,7 +64,6 @@ class JacketMutableAsset {
     ' -- methods --
 	+**__constructor__**()
 	+🔍getJacketDescriptor()
-	+**__constructor__**()
 	+setColor()
 	+setColorNotEvaluated()
 	+getHolder()
@@ -74,27 +73,24 @@ class JacketMutableAsset {
 ' -- inheritance / usingFor --
 JacketMutableAsset --[#DarkGoldenRod]|> MutableAsset
 
-
-
-class MutableAsset {
+class JacketNMT {
     ' -- inheritance --
+	{abstract}NMT
 
     ' -- usingFor --
 
     ' -- vars --
-	+[[string]] tokenURI
-	+[[address]] nmt
-	+[[address]] holderSmartPolicy
-	+[[address]] creatorSmartPolicy
 
     ' -- methods --
 	+**__constructor__**()
-	+setTokenURI()
-	+setHolderSmartPolicy()
-	+getHolder()
-	+transferOwnership()
+	#_mint()
+	+🔍getJacketAddress()
+	+transferFrom()
 
 }
+' -- inheritance / usingFor --
+JacketNMT --[#DarkGoldenRod]|> NMT
+
 
 class DenyAllSmartPolicy {
     ' -- inheritance --
@@ -158,5 +154,4 @@ class SmartPolicy {
 	+🔍evaluate()
 
 }
-
 @enduml
