@@ -5,6 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "npx hardhat test",
+    "test:nmt": "npx hardhat test --grep JacketNMT",
+    "test:asset": "npx hardhat test --grep JacketMutableAsset",
     "deploy": "npx hardhat deploy",
     "compile": "npx hardhat compile",
     "run": "npx hardhat run"

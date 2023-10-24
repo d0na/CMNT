@@ -9,6 +9,48 @@ allowmixing
 ' -- classes --
 
 
+
+class JacketNMT {
+    ' -- inheritance --
+	{abstract}NMT
+
+    ' -- usingFor --
+
+    ' -- vars --
+
+    ' -- methods --
+	+**__constructor__**()
+	+**__constructor__**()
+	#_mint()
+	+🔍tokenURI()
+	+🔍getJacketAddress()
+	#_transferFrom()
+	+safeTransferFrom()
+	+transferFrom()
+
+}
+ JacketNMT --[#DarkGoldenRod]|> NMT
+class NMT {
+    ' -- inheritance --
+	{abstract}Ownable
+	{abstract}ERC721
+
+    ' -- usingFor --
+
+    ' -- vars --
+
+    ' -- methods --
+	+mint()
+	#_mint()
+	#🔍_intToAddress()
+	#🔍_addressToInt()
+
+}
+' -- inheritance / usingFor --
+NMT --[#DarkGoldenRod]|> Ownable
+NMT --[#DarkGoldenRod]|> ERC721
+
+
 class JacketMutableAsset {
     ' -- inheritance --
 	{abstract}MutableAsset
@@ -53,48 +95,6 @@ class MutableAsset {
 	+transferOwnership()
 
 }
-
-
-class JacketNMT {
-    ' -- inheritance --
-	{abstract}NMT
-
-    ' -- usingFor --
-
-    ' -- vars --
-
-    ' -- methods --
-	+**__constructor__**()
-	+**__constructor__**()
-	#_mint()
-	+🔍tokenURI()
-	+🔍getJacketAddress()
-	#_transferFrom()
-	+safeTransferFrom()
-	+transferFrom()
-
-}
- 
-class NMT {
-    ' -- inheritance --
-	{abstract}Ownable
-	{abstract}ERC721
-
-    ' -- usingFor --
-
-    ' -- vars --
-
-    ' -- methods --
-	+mint()
-	#_mint()
-	#🔍_intToAddress()
-	#🔍_addressToInt()
-
-}
-' -- inheritance / usingFor --
-NMT --[#DarkGoldenRod]|> Ownable
-NMT --[#DarkGoldenRod]|> ERC721
-
 
 class DenyAllSmartPolicy {
     ' -- inheritance --
@@ -144,5 +144,19 @@ class CreatorSmartPolicy {
 ' -- inheritance / usingFor --
 CreatorSmartPolicy --[#DarkGoldenRod]|> SmartPolicy
 
+class SmartPolicy {
+    ' -- inheritance --
+
+    ' -- usingFor --
+
+    ' -- vars --
+
+    ' -- methods --
+	+🔍decodeData()
+	+🔍decodeSignature()
+	#🔍equal()
+	+🔍evaluate()
+
+}
 
 @enduml
