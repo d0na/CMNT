@@ -2,10 +2,12 @@
 pragma solidity ^0.8.18;
 
 import "hardhat/console.sol";
+import "./SmartPolicy.sol";
 
 abstract contract MutableAsset {
-    string public tokenURI;
     address public nmt;
+    address public linked;
+    string public tokenURI;
     address public holderSmartPolicy;
     address public creatorSmartPolicy;
 
@@ -33,38 +35,32 @@ abstract contract MutableAsset {
         creatorSmartPolicy = _creatorSmartPolicy;
     }
 
-    // struct Attribute {
-    //     bool _boolean;
-    //     string _string;
-    //     address _address;
-    //     uint256 _uint;
-    // }
-
-    // mapping(bytes32 => Attribute) public assetAttributes;
-
     event OwnershipTransferred(
         address indexed previousOwner,
         address indexed newOwner
     );
 
-    // event AssetAttributeChanged(Attribute assetAttribute);
-
-    // function _setAssetAttribute(
-    //     string memory _key,
-    //     Attribute memory _assetAttribute
-    // ) internal {
-    //     assetAttributes[keccak256(abi.encodePacked(_key))] = _assetAttribute;
-    //     emit AssetAttributeChanged(_assetAttribute);
-    // }
-
-    // function _getAssetAttribute(
-    //     string memory _key
-    // ) internal returns (Attribute) {
-    //     return assetAttributes[keccak256(abi.encodePacked(_key))];
-    // }
-
-    function setTokenURI(string memory _tokenUri) public virtual {
+    function setTokenURI(string memory _tokenUri) internal virtual {
         tokenURI = _tokenUri;
+    }
+
+    function setLinked(
+        address linkedNmt
+    )
+        public
+        virtual
+        evaluatedByCreator(
+            msg.sender,
+            abi.encodeWithSignature("setLinked(address)", linkedNmt),
+            address(this)
+        )
+        evaluatedByHolder(
+            msg.sender,
+            abi.encodeWithSignature("setLinked(address)", linkedNmt),
+            address(this)
+        )
+    {
+        linked = linkedNmt;
     }
 
     /** Set a new Mutable Asset Owner Smart policy  */
@@ -76,22 +72,47 @@ abstract contract MutableAsset {
 
     function getHolder() public virtual returns (address);
 
-    function transferOwnership(address to) public virtual {
-        require(to == address(to), "Invalid address");
-        require(to != address(0), "Ownable: new holder is the zero address");
+    /**
+     * MODIFIERS
+     * */
 
-        address oldOwner = nmt;
-        nmt = to;
-        emit OwnershipTransferred(oldOwner, nmt);
+    modifier evaluatedByHolder(
+        address _subject,
+        bytes memory _action,
+        address _resource
+    ) {
+        require(
+            SmartPolicy(holderSmartPolicy).evaluate(
+                _subject,
+                _action,
+                _resource
+            ) == true,
+            "Operation DENIED by HOLDER policy"
+        );
+        _;
+    }
+
+    modifier evaluatedByCreator(
+        address _subject,
+        bytes memory _action,
+        address _resource
+    ) {
+        require(
+            SmartPolicy(creatorSmartPolicy).evaluate(
+                _subject,
+                _action,
+                _resource
+            ) == true,
+            "Operation DENIED by CREATOR policy"
+        );
+        _;
     }
 
     /**
-     * @dev Interrompe l'esecuzione se la funzione è chiamata da un account che non è proprietario.
+     * @dev Revert the execution if the call is not from the owner
      */
     modifier onlyOwner() {
         require(msg.sender == getHolder(), "Caller is not the holder");
         _;
     }
-
-
 }

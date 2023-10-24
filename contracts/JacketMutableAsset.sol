@@ -22,7 +22,7 @@ contract JacketMutableAsset is MutableAsset {
     ) MutableAsset(_nmt, _creatorSmartPolicy, _holderSmartPolicy) {
         jacketNmt = JacketNMT(_nmt);
     }
-    
+
     //Jacket descriptor
     struct JacketDescriptor {
         uint256 color;
@@ -47,22 +47,7 @@ contract JacketMutableAsset is MutableAsset {
 
     event StateChanged(JacketDescriptor jacketDescriptor);
 
-    // constructor(
-    //     address _currentOwner,
-    //     address _ownerSmartPolicy
-    // )
-    //     MutableAsset(
-    //         _currentOwner,
-    //         address(new CreatorSmartPolicy()),
-    //         _ownerSmartPolicy
-    //     )
-    // {
-    //     require(
-    //         _currentOwner == address(_currentOwner),
-    //         "Invalid current owner address"
-    //     );
-    // }
-
+   
     /**
      * USERS ACTIONS with attached policy
      * */
@@ -97,37 +82,7 @@ contract JacketMutableAsset is MutableAsset {
         emit StateChanged(jacketDescriptor);
     }
 
-    /**
-     * MODIFIERS
-     * */
-
-    modifier evaluatedByHolder(
-        address _subject,
-        bytes memory _action,
-        address _resource
-    ) {
-        require(
-            SmartPolicy(holderSmartPolicy).evaluate(_subject, _action, _resource) == true,
-            "Operation DENIED by HOLDER policy"
-        );
-        _;
-    }
-
-    modifier evaluatedByCreator(
-        address _subject,
-        bytes memory _action,
-        address _resource
-    ) {
-        require(
-            SmartPolicy(creatorSmartPolicy).evaluate(
-                _subject,
-                _action,
-                _resource
-            ) == true,
-            "Operation DENIED by CREATOR policy"
-        );
-        _;
-    }
+    
 
     // function getAssetDescriptor() public virtual override {}
     function getHolder() public virtual override returns (address) {

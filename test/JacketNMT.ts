@@ -8,15 +8,16 @@ import { anyValue } from "@nomicfoundation/hardhat-chai-matchers/withArgs";
 import { expect } from "chai";
 import { ethers } from "hardhat";
 import { string } from "hardhat/internal/core/params/argumentTypes";
+import { BigNumber } from "ethers";
 
 const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 
-const TOKEN_ID1 = 1362977003582113853616137038883344414728671430787;
-const TOKEN_ID1_STRING = "1362977003582113853616137038883344414728671430787";
-const TOKEN_ID2_STRING = "766153064835020333949020150884921372432210681498";
+const TOKEN_ID1 = 1048441399354366663447528331587451327875741636968;
+const TOKEN_ID1_STRING = "1048441399354366663447528331587451327875741636968";
+const TOKEN_ID2_STRING = "95779725308633401620950732676832305712008989990";
 
-const ASSET_ADDRESS1 = "0xeEBe00Ac0756308ac4AaBfD76c05c4F3088B8883";
-const ASSET_ADDRESS2 = "0x86337dDaF2661A069D0DcB5D160585acC2d15E9a";
+const ASSET_ADDRESS1 = "0xB7A5bd0345EF1Cc5E66bf61BdeC17D2461fBd968";
+const ASSET_ADDRESS2 = "0x10C6E9530F1C1AF873a391030a1D9E8ed0630D26";
 
 describe("JacketNMT", function () {
   // We define a fixture to reuse the same setup in every test.
@@ -35,7 +36,10 @@ describe("JacketNMT", function () {
     const JacketNMT = await ethers.getContractFactory("JacketNMT");
     const jacketNMT = await JacketNMT.deploy();
 
-    return { jacketNMT, owner, account1, account2 };
+    const CreatorSmartPolicy = await ethers.getContractFactory("CreatorSmartPolicy");
+    const creatorSmartPolicy = await CreatorSmartPolicy.deploy();
+
+    return { jacketNMT, owner, account1, account2, creatorSmartPolicy };
   }
 
   it("Should revert if the miner is 0 address", async function () {
@@ -49,20 +53,20 @@ describe("JacketNMT", function () {
 
   it("Should mint and own", async function () {
     // valid alternative ethers.constants.AddressZero
-    const { jacketNMT, owner } = await loadFixture(deployJacketNMT);
-    await jacketNMT.mint(owner.address);
+    const { jacketNMT, owner, creatorSmartPolicy } = await loadFixture(deployJacketNMT);
+    await jacketNMT.mint(owner.address, creatorSmartPolicy.address);
     expect(await jacketNMT.owner()).to.equal(owner.address);
   });
 
   it("Should mint a new asset and return its address and tokenId", async function () {
-    const { jacketNMT, owner } = await loadFixture(deployJacketNMT);
+    const { jacketNMT, owner, creatorSmartPolicy } = await loadFixture(deployJacketNMT);
     const Minted = {
       owner: owner.address,
       tokenId: TOKEN_ID1,
       assetAddress: ASSET_ADDRESS1,
     };
 
-    const mintResponse = await jacketNMT.callStatic.mint(owner.address);
+    const mintResponse = await jacketNMT.callStatic.mint(owner.address, creatorSmartPolicy.address);
     const assetAddress = mintResponse[0];
     const tokenId = mintResponse[1];
 
@@ -70,29 +74,28 @@ describe("JacketNMT", function () {
     expect(assetAddress).to.equal(Minted.assetAddress);
   });
 
+
   it("Should mint new asset and trigger the Transfer event with the right onwer and tokenId", async function () {
-    const { jacketNMT, owner } = await loadFixture(deployJacketNMT);
+    const { jacketNMT, owner, creatorSmartPolicy } = await loadFixture(deployJacketNMT);
     const Minted = {
       owner: owner.address,
       tokenId: TOKEN_ID1,
     };
 
-    const txResponse = await jacketNMT.mint(owner.address);
+    const txResponse = await jacketNMT.mint(owner.address, creatorSmartPolicy.address);
     const txReceipt = await txResponse.wait();
+    console.log("aaa")
 
     const events = txReceipt.events;
-    const OwnershipTransferredEvent = events[0].args;
 
-    const TransferEvent = events[1].args;
-    const newOwner = OwnershipTransferredEvent?.newOwner;
+    const TransferEvent = events[0].args;
     const tokenId: Number = TransferEvent?.tokenId;
 
-    expect(newOwner).to.equal(Minted.owner);
     expect(Number(tokenId)).to.equal(Minted.tokenId);
   });
 
   it("Should mint two assets with two differents tokenIds and the same owner within the Transfer event", async function () {
-    const { jacketNMT, owner, account1, account2 } = await loadFixture(
+    const { jacketNMT, owner, account1, account2, creatorSmartPolicy } = await loadFixture(
       deployJacketNMT
     );
     const Minted1 = {
@@ -106,9 +109,8 @@ describe("JacketNMT", function () {
       owner: account1.address,
       tokenId: TOKEN_ID2_STRING,
     };
-
-    const mint1 = await jacketNMT.mint(account1.address);
-    const mint2 = await jacketNMT.mint(account1.address);
+    const mint1 = await jacketNMT.mint(account1.address, creatorSmartPolicy.address);
+    const mint2 = await jacketNMT.mint(account1.address, creatorSmartPolicy.address);
 
     await expect(mint1)
       .to.emit(jacketNMT, "Transfer")
@@ -158,14 +160,14 @@ describe("JacketNMT", function () {
   // });
 
   it("Should mint a new asset with the right address", async function () {
-    const { jacketNMT, owner } = await loadFixture(deployJacketNMT);
+    const { jacketNMT, owner, creatorSmartPolicy } = await loadFixture(deployJacketNMT);
     const Minted = {
       owner: owner.address,
       tokenId: TOKEN_ID2_STRING,
       assetAddres: ASSET_ADDRESS2,
     };
 
-    await jacketNMT.mint(owner.address);
+    await jacketNMT.mint(owner.address, creatorSmartPolicy.address);
 
     expect(await jacketNMT.getJacketAddress(Minted.tokenId)).to.be.equal(
       Minted.assetAddres
@@ -173,19 +175,19 @@ describe("JacketNMT", function () {
   });
 
   it("Should mint a new asset and retrieves the same owner with getOwner", async function () {
-    const { jacketNMT, owner } = await loadFixture(deployJacketNMT);
+    const { jacketNMT, owner, creatorSmartPolicy, account1 } = await loadFixture(deployJacketNMT);
     const JacketMutableAsset = await ethers.getContractFactory(
       "JacketMutableAsset"
     );
     const Minted = {
       from: ZERO_ADDRESS,
-      owner: owner.address,
+      owner: account1.address,
       tokenId: TOKEN_ID1_STRING,
       address: ASSET_ADDRESS1,
     };
 
     // 1. It is minted a new Jacket
-    const mint = await jacketNMT.mint(owner.address);
+    const mint = await jacketNMT.mint(account1.address, creatorSmartPolicy.address);
     // const jacketAddress = await jacketNMT.getJacketAddress(Minted.tokenId);
 
     await expect(mint)
@@ -227,7 +229,7 @@ describe("JacketNMT", function () {
   //   });
 
   it("Should be minted and transfer twice the NFT ownership and checked the rigth owner through the ownerOf(tokenId) method", async function () {
-    const { jacketNMT, owner, account1, account2 } = await loadFixture(
+    const { jacketNMT, owner, account1, account2, creatorSmartPolicy } = await loadFixture(
       deployJacketNMT
     );
     const Minted = {
@@ -239,7 +241,7 @@ describe("JacketNMT", function () {
     };
 
     // Minting the NFT to the First Owner
-    const mintResponse = await jacketNMT.mint(Minted.firstOwner);
+    const mintResponse = await jacketNMT.mint(Minted.firstOwner, creatorSmartPolicy.address);
     await expect(mintResponse)
       .to.emit(jacketNMT, "Transfer")
       // from, to, tokenId

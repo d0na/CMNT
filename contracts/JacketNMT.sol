@@ -30,23 +30,26 @@ contract JacketNMT is NMT {
      *
      * @param to  address of the new holder
      */
-    function _mint(address to) internal override returns (address, uint) {
+    function _mint(
+        address to,
+        address creatorSmartPolicy
+    ) internal override returns (address, uint) {
         // Asset creation by specifying the creator's address and smart Policies (creator and owner)
         JacketMutableAsset jacket = new JacketMutableAsset(
             address(this),
-            address(new CreatorSmartPolicy()),
+            address(creatorSmartPolicy),
             // address(new HolderSmartPolicy())
+            // As Default it is given a deny all smart policy
             address(new DenyAllSmartPolicy())
         );
 
-        // The asset creator will also be the asset holder who can invoke all methods provided
-        jacket.transferOwnership(to);
+        //transferOwnership(to);
 
         // Retrieving the tokenID and calling the ERC721 contract minting function
         uint tokenId = uint160(address(jacket));
         // console.log("tokenID",tokenId);
 
-        _safeMint(to, tokenId, "");
+        _safeMint(to, tokenId);
         // console.log("asset address:", address(jacket));
         // console.log("asset tokenId:", tokenId);
         // console.log("res:",address(jacket), tokenId);
@@ -72,9 +75,6 @@ contract JacketNMT is NMT {
     }
 
     function _transferFrom(address from, address to, uint256 tokenId) internal {
-        JacketMutableAsset asset = JacketMutableAsset(_intToAddress(tokenId));
-        // console.log("_transferFrom addr:",address(asset));
-        asset.transferOwnership(to);
         // Ownable.transferOwnership(to);
         ERC721.transferFrom(from, to, tokenId);
     }

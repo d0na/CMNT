@@ -27,10 +27,18 @@ describe("JacketMutableAsset", function () {
     // JacketNMT
     const JacketNMT = await ethers.getContractFactory("JacketNMT");
     const jacketNMT = await JacketNMT.deploy();
+    // HolderSmartPolicy
+    const HolderSmartPolicy = await ethers.getContractFactory(
+      "HolderSmartPolicy"
+    );
+    const holderSmartPolicy = await HolderSmartPolicy.deploy();
+    // CreatorSmartPolicy
+    const CreatorSmartPolicy = await ethers.getContractFactory("CreatorSmartPolicy");
+    const creatorSmartPolicy = await CreatorSmartPolicy.deploy();
     //JacketMutableAsset mint
-    const mintTx = await jacketNMT.mint(buyer.address);
+    const mintTx = await jacketNMT.mint(buyer.address, creatorSmartPolicy.address);
     const mintResponse = await mintTx.wait();
-    const jacketTokenId = mintResponse.events[1].args["tokenId"];
+    const jacketTokenId = mintResponse.events[0].args["tokenId"];
     const jacketAddress = await jacketNMT.getJacketAddress(jacketTokenId);
     //JacketMutableAsset
     const JacketMutableAsset = await ethers.getContractFactory(
@@ -38,12 +46,7 @@ describe("JacketMutableAsset", function () {
     );
     const jacketMutableAsset = JacketMutableAsset.attach(jacketAddress);
 
-    // HolderSmartPolicy
-    const HolderSmartPolicy = await ethers.getContractFactory(
-      "HolderSmartPolicy"
-    );
-    const holderSmartPolicy = await HolderSmartPolicy.deploy();
-
+    
     return {
       jacketNMT,
       jacketAddress,
@@ -100,7 +103,7 @@ describe("JacketMutableAsset", function () {
       const { jacketMutableAsset, buyer, holderSmartPolicy } =
         await loadFixture(deployJacketNMT);
       expect(await jacketMutableAsset.holderSmartPolicy()).to.be.equal(
-        "0x4ABEaCA4b05d8fA4CED09D26aD28Ea298E8afaC8"
+        "0x2b961E3959b79326A8e7F64Ef0d2d825707669b5"
       );
       await expect(
         jacketMutableAsset
@@ -108,7 +111,7 @@ describe("JacketMutableAsset", function () {
           .setHolderSmartPolicy(holderSmartPolicy.address)
       );
       expect(await jacketMutableAsset.holderSmartPolicy()).to.be.equal(
-        "0x0B306BF915C4d645ff596e518fAf3F9669b97016"
+        "0x68B1D87F95878fE05B998F19b66F4baba5De1aed"
       );
     });
 
