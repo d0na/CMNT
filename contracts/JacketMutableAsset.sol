@@ -5,7 +5,6 @@ pragma solidity ^0.8.18;
 import "hardhat/console.sol";
 import "./base/MutableAsset.sol";
 import "./JacketNMT.sol";
-import "@openzeppelin/contracts/utils/Strings.sol";
 import "./base/SmartPolicy.sol";
 
 /**
@@ -23,9 +22,7 @@ contract JacketMutableAsset is MutableAsset {
     ) MutableAsset(_nmt, _creatorSmartPolicy, _holderSmartPolicy) {
         jacketNmt = JacketNMT(_nmt);
     }
-
-    using Strings for string;
-
+    
     //Jacket descriptor
     struct JacketDescriptor {
         uint256 color;

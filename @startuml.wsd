@@ -9,15 +9,62 @@ allowmixing
 ' -- classes --
 
 
+class JacketMutableAsset {
+    ' -- inheritance --
+	{abstract}MutableAsset
+
+    ' -- usingFor --
+
+    ' -- vars --
+	+[[JacketDescriptor]] jacketDescriptor
+	#[[JacketNMT]] jacketNmt
+
+    ' -- methods --
+	+**__constructor__**()
+	+🔍getJacketDescriptor()
+	+**__constructor__**()
+	+setColor()
+	+setColorNotEvaluated()
+	+getHolder()
+	+🔍getNMT()
+
+}
+' -- inheritance / usingFor --
+JacketMutableAsset --[#DarkGoldenRod]|> MutableAsset
+
+
+
+class MutableAsset {
+    ' -- inheritance --
+
+    ' -- usingFor --
+
+    ' -- vars --
+	+[[string]] tokenURI
+	+[[address]] nmt
+	+[[address]] holderSmartPolicy
+	+[[address]] creatorSmartPolicy
+
+    ' -- methods --
+	+**__constructor__**()
+	+setTokenURI()
+	+setHolderSmartPolicy()
+	+getHolder()
+	+transferOwnership()
+
+}
+
+
 class JacketNMT {
     ' -- inheritance --
-	{abstract}MutableNFT
+	{abstract}NMT
 
     ' -- usingFor --
 
     ' -- vars --
 
     ' -- methods --
+	+**__constructor__**()
 	+**__constructor__**()
 	#_mint()
 	+🔍tokenURI()
@@ -27,9 +74,7 @@ class JacketNMT {
 	+transferFrom()
 
 }
-' -- inheritance / usingFor --
-JacketNMT --[#DarkGoldenRod]|> NMT
-
+ 
 class NMT {
     ' -- inheritance --
 	{abstract}Ownable
@@ -43,122 +88,61 @@ class NMT {
 	+mint()
 	#_mint()
 	#🔍_intToAddress()
-	#🔍addressToInt()
+	#🔍_addressToInt()
 
 }
 ' -- inheritance / usingFor --
 NMT --[#DarkGoldenRod]|> Ownable
 NMT --[#DarkGoldenRod]|> ERC721
 
-class MutableAsset {
-    ' -- inheritance --
 
-    ' -- usingFor --
-
-    ' -- vars --
-	+[[string]] tokenURI
-    +[[address]] linked
-	+[[address]] nmt
-	#[[address]] ownerSmartPolicy
-	#[[address]] creatorSmartPolicy
-
-    ' -- methods --
-	+**__constructor__**()
-	+setTokenURI()
-	+setOwnerSmartPolicy()
-	+transferOwnership()
-
-}
-
-
-class JacketMutableAsset {
-    ' -- inheritance --
-	{abstract}MutableAsset
-
-
-    ' -- vars --
-	+[[JacketDescriptor]] jacketDescriptor
-
-    ' -- methods --
-	+**__constructor__**()
-	+🔍getJacketDescriptor()
-	+setColor()
-	+setSleeves()
-
-}
-' -- inheritance / usingFor --
-JacketMutableAsset --[#DarkGoldenRod]|> MutableAsset
-
-class JacketSmartPolicy {
+class DenyAllSmartPolicy {
     ' -- inheritance --
 	{abstract}SmartPolicy
 
     ' -- usingFor --
 
     ' -- vars --
-	-[[PolicyInformationPoint]] pip
-	#{static}[[address]] _pip
-	#{static}[[bytes4]] ACT_SET_COLOR
-    #{static}[[bytes4]] ACT_SET_SLEEVES
 
     ' -- methods --
-	+**__constructor__**()
-	+🔍getSetColorParam()
-    +🔍getSetSleevesParam()
 	+🔍evaluate()
+	+**__constructor__**()
 
 }
 ' -- inheritance / usingFor --
-JacketSmartPolicy --[#DarkGoldenRod]|> SmartPolicy
+DenyAllSmartPolicy --[#DarkGoldenRod]|> SmartPolicy
 
-class SmartPolicy {
+class HolderSmartPolicy {
     ' -- inheritance --
+	{abstract}SmartPolicy
 
     ' -- usingFor --
 
     ' -- vars --
 
     ' -- methods --
-	+🔍decodeData()
-	+🔍decodeSignature()
-	#🔍equal()
-
-}
-
-class OwnerSmartPolicy {
-    ' -- inheritance --
-	{abstract}JacketSmartPolicy
-
-    ' -- usingFor --
-
-    ' -- vars --
-
-    ' -- methods --
-	-🔍_isAuthorizedTailor()
-	-🔍_isAllowedColor()
 	+🔍evaluate()
 	+**__constructor__**()
 
 }
 ' -- inheritance / usingFor --
-OwnerSmartPolicy --[#DarkGoldenRod]|> JacketSmartPolicy
+HolderSmartPolicy --[#DarkGoldenRod]|> SmartPolicy
 
 class CreatorSmartPolicy {
     ' -- inheritance --
-	{abstract}JacketSmartPolicy
+	{abstract}SmartPolicy
 
     ' -- usingFor --
 
     ' -- vars --
 
     ' -- methods --
-	-🔍_isAuthorizedTailor()
-	-🔍_isAllowedColor()
 	+🔍evaluate()
 	+**__constructor__**()
 
 }
 ' -- inheritance / usingFor --
-CreatorSmartPolicy --[#DarkGoldenRod]|> JacketSmartPolicy
+CreatorSmartPolicy --[#DarkGoldenRod]|> SmartPolicy
+
 
 @enduml
