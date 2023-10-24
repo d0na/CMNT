@@ -204,7 +204,7 @@ describe("JacketNMT", function () {
     // 4. A JacektMutableAsset instance is created from its minted address
     const jacketMutableAsset = JacketMutableAsset.attach(Minted.address);
     // 5. it's verified that the Asset has the same address that it is stored on the NTM
-    expect(await jacketMutableAsset.getNMT()).to.be.equal(jacketNMT.address);
+    expect(await jacketMutableAsset.nmt()).to.be.equal(jacketNMT.address);
     // 6. it's verified that the Asset has the same owner that it is stored on the NTM
     expect(await jacketMutableAsset.callStatic.getHolder()).to.be.equal(
       Minted.owner

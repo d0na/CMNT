@@ -3,6 +3,7 @@ pragma solidity ^0.8.18;
 
 import "hardhat/console.sol";
 import "./SmartPolicy.sol";
+import "./NMT.sol";
 
 abstract contract MutableAsset {
     address public nmt;
@@ -10,6 +11,7 @@ abstract contract MutableAsset {
     string public tokenURI;
     address public holderSmartPolicy;
     address public creatorSmartPolicy;
+    NMT private nmtContract;
 
     // CurrentOwner in byte32, TODO: to change asap
     // bytes32 currentOwnerb32 = bytes32(uint256(uint160(address(currentOwner))));
@@ -33,6 +35,7 @@ abstract contract MutableAsset {
         nmt = _nmt;
         holderSmartPolicy = _holderSmartPolicy;
         creatorSmartPolicy = _creatorSmartPolicy;
+        nmtContract = NMT(_nmt);
     }
 
     event OwnershipTransferred(
@@ -42,6 +45,12 @@ abstract contract MutableAsset {
 
     function setTokenURI(string memory _tokenUri) internal virtual {
         tokenURI = _tokenUri;
+    }
+
+    // function getAssetDescriptor() public virtual override {}
+    function getHolder() public view returns (address) {
+        address owner = nmtContract.ownerOf(uint160(address(this)));
+        return owner;
     }
 
     function setLinked(
@@ -69,8 +78,6 @@ abstract contract MutableAsset {
     ) public virtual onlyOwner {
         holderSmartPolicy = _holderSmartPolicy;
     }
-
-    function getHolder() public virtual returns (address);
 
     /**
      * MODIFIERS
@@ -107,6 +114,8 @@ abstract contract MutableAsset {
         );
         _;
     }
+
+
 
     /**
      * @dev Revert the execution if the call is not from the owner

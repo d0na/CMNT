@@ -40,6 +40,8 @@ contract JacketNMT is NMT {
             address(creatorSmartPolicy),
             // address(new HolderSmartPolicy())
             // As Default it is given a deny all smart policy
+
+            // todo external
             address(new DenyAllSmartPolicy())
         );
 

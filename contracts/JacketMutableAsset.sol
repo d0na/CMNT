@@ -20,7 +20,6 @@ contract JacketMutableAsset is MutableAsset {
         address _creatorSmartPolicy,
         address _holderSmartPolicy
     ) MutableAsset(_nmt, _creatorSmartPolicy, _holderSmartPolicy) {
-        jacketNmt = JacketNMT(_nmt);
     }
 
     //Jacket descriptor
@@ -31,7 +30,6 @@ contract JacketMutableAsset is MutableAsset {
 
     // Current state representing jacket descriptor with its attributes
     JacketDescriptor public jacketDescriptor;
-    JacketNMT jacketNmt;
 
     /** Retrieves all the attributes of the descriptor Jacket
      *
@@ -82,15 +80,5 @@ contract JacketMutableAsset is MutableAsset {
         jacketDescriptor.color = _color;
         setTokenURI(_tokenURI);
         emit StateChanged(jacketDescriptor);
-    }
-
-    // function getAssetDescriptor() public virtual override {}
-    function getHolder() public virtual override returns (address) {
-        address owner = jacketNmt.ownerOf(uint160(address(this)));
-        return owner;
-    }
-
-    function getNMT() public view returns (address) {
-        return address(jacketNmt);
     }
 }

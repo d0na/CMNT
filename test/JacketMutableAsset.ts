@@ -81,9 +81,9 @@ describe("JacketMutableAsset", function () {
 
   it("Should setColor to 1 without policy evaluation", async function () {
     const { jacketMutableAsset, buyer } = await deployJacketNMT();
-    const setColorNotEvaluated = await jacketMutableAsset.setColorNotEvaluated(
+    const setColorNotEvaluated = await jacketMutableAsset._setColor(
       1
-    );
+    ,'green');
     await expect(setColorNotEvaluated)
       .to.emit(jacketMutableAsset, "StateChanged")
       // from, to, tokenId
@@ -95,7 +95,7 @@ describe("JacketMutableAsset", function () {
       const { jacketMutableAsset, buyer, holderSmartPolicy } =
         await loadFixture(deployJacketNMT);
       await expect(
-        jacketMutableAsset.connect(buyer).setColor(1)
+        jacketMutableAsset.connect(buyer).setColor(1,"green")
       ).to.be.rejectedWith("Operation DENIED by HOLDER policy");
     });
 
@@ -123,7 +123,7 @@ describe("JacketMutableAsset", function () {
           .connect(buyer)
           .setHolderSmartPolicy(holderSmartPolicy.address)
       );
-      await expect(jacketMutableAsset.connect(buyer).setColor(1))
+      await expect(jacketMutableAsset.connect(buyer).setColor(1,"green"))
         .to.emit(jacketMutableAsset, "StateChanged")
         .withArgs([1, false]);
     });
@@ -131,14 +131,14 @@ describe("JacketMutableAsset", function () {
     it("Should change the color Jacket to 2 and fail due to CREATOR Policy", async function () {
       const { jacketMutableAsset, buyer } = await loadFixture(deployJacketNMT);
       await expect(
-        jacketMutableAsset.connect(buyer).setColor(2)
+        jacketMutableAsset.connect(buyer).setColor(2,"red")
       ).to.be.rejectedWith("Operation DENIED by CREATOR policy");
     });
 
     it("Should change the color Jacket to 5 and fail due to HOLDER Policy", async function () {
       const { jacketMutableAsset, buyer } = await loadFixture(deployJacketNMT);
       await expect(
-        jacketMutableAsset.connect(buyer).setColor(5)
+        jacketMutableAsset.connect(buyer).setColor(5,"yellow")
       ).to.be.rejectedWith("Operation DENIED by HOLDER policy");
     });
   });
@@ -152,7 +152,7 @@ describe("JacketMutableAsset", function () {
           .connect(buyer)
           .setHolderSmartPolicy(holderSmartPolicy.address)
       );
-      await expect(jacketMutableAsset.connect(tailor1).setColor(3))
+      await expect(jacketMutableAsset.connect(tailor1).setColor(3,"blu"))
         .to.emit(jacketMutableAsset, "StateChanged")
         .withArgs([3, false]);
     });
@@ -162,7 +162,7 @@ describe("JacketMutableAsset", function () {
         deployJacketNMT
       );
       await expect(
-        jacketMutableAsset.connect(tailor1).setColor(2)
+        jacketMutableAsset.connect(tailor1).setColor(2,"red")
       ).to.be.rejectedWith("Operation DENIED by CREATOR policy");
     });
   });
@@ -173,7 +173,7 @@ describe("JacketMutableAsset", function () {
         deployJacketNMT
       );
       await expect(
-        jacketMutableAsset.connect(tailor2).setColor(1)
+        jacketMutableAsset.connect(tailor2).setColor(1,"green")
       ).to.be.rejectedWith("Operation DENIED by CREATOR policy");
     });
   });
@@ -183,7 +183,7 @@ describe("JacketMutableAsset", function () {
         deployJacketNMT
       );
       await expect(
-        jacketMutableAsset.connect(creator).setColor(1)
+        jacketMutableAsset.connect(creator).setColor(1,"green")
       ).to.be.rejectedWith("Operation DENIED by HOLDER policy");
     });
   });
