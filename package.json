@@ -6,7 +6,9 @@
   "scripts": {
     "test": "npx hardhat test",
     "test:nmt": "npx hardhat test --grep JacketNMT",
-    "test:asset": "npx hardhat test --grep JacketMutableAsset",
+    "test:asset": "npx hardhat test test/JacketMutableAsset.ts",
+    "test:success": "npx hardhat test test/JacketMutableAssetSuccess.ts",
+    "test:failure": "npx hardhat test test/JacketMutableAssetFailure.ts",
     "deploy": "npx hardhat deploy",
     "compile": "npx hardhat compile",
     "run": "npx hardhat run"

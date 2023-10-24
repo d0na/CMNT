@@ -4,7 +4,7 @@ import { ethers } from "hardhat";
 
 const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 
-describe("JacketMutableAsset", function () {
+describe("JacketMutableAssetFail", function () {
   // We define a fixture to reuse the same setup in every test.
   // We use loadFixture to run this setu-p once, snapshot that state,
   // and reset Hardhat Network to that snapshot in every test.
@@ -64,58 +64,58 @@ describe("JacketMutableAsset", function () {
     };
   }
 
-  it("Should retrieve the NMT parent address", async function () {
-    const { jacketNMT, jacketMutableAsset } = await deployJacketNMT();
-    const nmt = await jacketMutableAsset.nmt();
-    expect(nmt).to.be.equal(jacketNMT.address);
-  });
-  it("Should retrieve the owner of the mutable asset by getHolder method", async function () {
-    const { jacketMutableAsset, buyer } = await deployJacketNMT();
-    const jowner = await jacketMutableAsset.callStatic.getHolder();
-    expect(jowner).to.be.equal(buyer.address);
+  describe("The owner (buyer)", function () {
+    it("should fail changing the color Jacket to 1 due to the DENY aLL Policy", async function () {
+      const { jacketMutableAsset, buyer } = await loadFixture(deployJacketNMT);
+      await expect(
+        jacketMutableAsset.connect(buyer).setColor(1, "green")
+      ).to.be.rejectedWith("Operation DENIED by HOLDER policy");
+    });
+
+    it("Should change the color Jacket to 2 and fail due to CREATOR Policy", async function () {
+      const { jacketMutableAsset, buyer } = await loadFixture(deployJacketNMT);
+      await expect(
+        jacketMutableAsset.connect(buyer).setColor(2, "red")
+      ).to.be.rejectedWith("Operation DENIED by CREATOR policy");
+    });
+
+    it("Should change the color Jacket to 5 and fail due to HOLDER Policy", async function () {
+      const { jacketMutableAsset, buyer } = await loadFixture(deployJacketNMT);
+      await expect(
+        jacketMutableAsset.connect(buyer).setColor(5, "yellow")
+      ).to.be.rejectedWith("Operation DENIED by HOLDER policy");
+    });
   });
 
-  it("Should retrieve jacketDescriptor with color:0 and sleeves:false", async function () {
-    const { jacketMutableAsset, buyer } = await deployJacketNMT();
-    const jacketDescriptor =
-      await jacketMutableAsset.callStatic.getJacketDescriptor();
-    expect(jacketDescriptor.length).to.be.equal(2);
-    expect(jacketDescriptor["color"]).to.be.equal(0); //not color defined
-    expect(jacketDescriptor["sleeves"]).to.be.equal(false); //not color defined
-  });
-
-  it("Should setColor to 1 without policy evaluation", async function () {
-    const { jacketMutableAsset, buyer } = await deployJacketNMT();
-    const setColorNotEvaluated = await jacketMutableAsset._setColor(1, "green");
-    await expect(setColorNotEvaluated)
-      .to.emit(jacketMutableAsset, "StateChanged")
-      // from, to, tokenId
-      .withArgs([1, false]);
-  });
-
-  describe("Changing HOLDER smart policy", function () {
-    it("Should be forbidden to the non-owner", async function () {
-      const { jacketMutableAsset, creator, jacketAddress } = await loadFixture(
+  describe("The tailor (tailor1)", function () {
+    it("Should change the color Jacket to 2 and fail due to CREATOR Policy", async function () {
+      const { jacketMutableAsset, tailor1 } = await loadFixture(
         deployJacketNMT
       );
       await expect(
-        jacketMutableAsset.connect(creator).setHolderSmartPolicy(jacketAddress)
-      ).to.be.rejectedWith("Caller is not the holder");
+        jacketMutableAsset.connect(tailor1).setColor(2, "red")
+      ).to.be.rejectedWith("Operation DENIED by CREATOR policy");
     });
-    it("should set new Holder Smart Policy", async function () {
-      const { jacketMutableAsset, buyer, holderSmartPolicy } =
-        await loadFixture(deployJacketNMT);
-      expect(await jacketMutableAsset.holderSmartPolicy()).to.be.equal(
-        "0xa85233C63b9Ee964Add6F2cffe00Fd84eb32338f"
+  });
+
+  describe("The tailor (tailor2) not in the allowed creator list", function () {
+    it("Should not change the color Jacket to 1 failing due to CREATOR Policy", async function () {
+      const { jacketMutableAsset, tailor2 } = await loadFixture(
+        deployJacketNMT
       );
       await expect(
-        jacketMutableAsset
-          .connect(buyer)
-          .setHolderSmartPolicy(holderSmartPolicy.address)
+        jacketMutableAsset.connect(tailor2).setColor(1, "green")
+      ).to.be.rejectedWith("Operation DENIED by CREATOR policy");
+    });
+  });
+  describe("The creator (creator) not allowed by the HOLDER policy", function () {
+    it("Should not change the color Jacket to 1 failing due to HOLDER Policy", async function () {
+      const { jacketMutableAsset, creator } = await loadFixture(
+        deployJacketNMT
       );
-      expect(await jacketMutableAsset.holderSmartPolicy()).to.be.equal(
-        "0x4ed7c70F96B99c776995fB64377f0d4aB3B0e1C1"
-      );
+      await expect(
+        jacketMutableAsset.connect(creator).setColor(1, "green")
+      ).to.be.rejectedWith("Operation DENIED by HOLDER policy");
     });
   });
 });
