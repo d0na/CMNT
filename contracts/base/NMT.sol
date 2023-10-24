@@ -11,11 +11,12 @@ abstract contract NMT is Ownable, ERC721 {
      */
     function mint(
         address to,
-        address creatorSmartPolicy
+        address creatorSmartPolicy,
+        address holderSmartPolicy
     ) public onlyOwner returns (address, uint) {
         // console.log("Miner", to);
         require(to == address(to), "Invalid address");
-        return _mint(to, creatorSmartPolicy);
+        return _mint(to, creatorSmartPolicy, holderSmartPolicy);
     }
 
     /**
@@ -25,7 +26,8 @@ abstract contract NMT is Ownable, ERC721 {
      */
     function _mint(
         address to,
-        address creatorSmartPolicy
+        address creatorSmartPolicy,
+        address holderSmartPolicy
     ) internal virtual returns (address, uint);
 
     function _intToAddress(uint index) internal pure returns (address) {

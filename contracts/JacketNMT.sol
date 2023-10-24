@@ -32,17 +32,14 @@ contract JacketNMT is NMT {
      */
     function _mint(
         address to,
-        address creatorSmartPolicy
+        address creatorSmartPolicy,
+        address holderSmartPolicy
     ) internal override returns (address, uint) {
         // Asset creation by specifying the creator's address and smart Policies (creator and owner)
         JacketMutableAsset jacket = new JacketMutableAsset(
             address(this),
             address(creatorSmartPolicy),
-            // address(new HolderSmartPolicy())
-            // As Default it is given a deny all smart policy
-
-            // todo external
-            address(new DenyAllSmartPolicy())
+            address(holderSmartPolicy)
         );
 
         //transferOwnership(to);
