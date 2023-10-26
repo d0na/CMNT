@@ -6,12 +6,13 @@ import "./SmartPolicy.sol";
 import "./NMT.sol";
 
 abstract contract MutableAsset {
-    address public nmt;
+    address public immutable nmt;
+    NMT public immutable nmtContract;
+
     address public linked;
     string public tokenURI;
     address public holderSmartPolicy;
     address public creatorSmartPolicy;
-    NMT private nmtContract;
 
     // CurrentOwner in byte32, TODO: to change asap
     // bytes32 currentOwnerb32 = bytes32(uint256(uint160(address(currentOwner))));
@@ -114,8 +115,6 @@ abstract contract MutableAsset {
         );
         _;
     }
-
-
 
     /**
      * @dev Revert the execution if the call is not from the owner

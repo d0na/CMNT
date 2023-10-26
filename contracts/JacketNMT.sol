@@ -73,18 +73,18 @@ contract JacketNMT is NMT {
         return _intToAddress(_tokenId);
     }
 
-    function _transferFrom(address from, address to, uint256 tokenId) internal {
-        // Ownable.transferOwnership(to);
-        ERC721.transferFrom(from, to, tokenId);
-    }
+    // function _transferFrom(address from, address to, uint256 tokenId) internal {
+    //     // Ownable.transferOwnership(to);
+    //     ERC721.transferFrom(from, to, tokenId);
+    // }
 
-    //-----Override delle funzioni previste dallo standard per il trasferimento dei token-----
-    function transferFrom(
-        address from,
-        address to,
-        uint256 tokenId
-    ) public virtual override {
-        // console.log("transferFrom");
-        safeTransferFrom(from, to, tokenId);
-    }
+    // //-----Override delle funzioni previste dallo standard per il trasferimento dei token-----
+    // function transferFrom(
+    //     address from,
+    //     address to,
+    //     uint256 tokenId
+    // ) public virtual override {
+    //     // console.log("transferFrom");
+    //     safeTransferFrom(from, to, tokenId);
+    // }
 }
