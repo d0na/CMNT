@@ -284,7 +284,7 @@ describe("JacketNMT", function () {
   //     ).to.be.equal(Minted.owner);
   //   });
 
-  it("Should be minted and transfer twice the NFT ownership and checked the rigth owner through the ownerOf(tokenId) method", async function () {
+  it("Should be minted and transfer twice the NFT ownership and check the rigth owner through the ownerOf(tokenId) method", async function () {
     const {
       jacketNMT,
       owner,
