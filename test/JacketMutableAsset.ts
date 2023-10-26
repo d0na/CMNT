@@ -64,18 +64,18 @@ describe("JacketMutableAsset", function () {
     };
   }
 
-  it("Should retrieve the NMT parent address", async function () {
+  it("Should retrieve the NMT (class) smart contract address", async function () {
     const { jacketNMT, jacketMutableAsset } = await deployJacketNMT();
     const nmt = await jacketMutableAsset.nmt();
     expect(nmt).to.be.equal(jacketNMT.address);
   });
-  it("Should retrieve the owner of the mutable asset by getHolder method", async function () {
+  it("Should retrieve the owner of the mutable asset", async function () {
     const { jacketMutableAsset, buyer } = await deployJacketNMT();
     const jowner = await jacketMutableAsset.callStatic.getHolder();
     expect(jowner).to.be.equal(buyer.address);
   });
 
-  it("Should retrieve jacketDescriptor with color:0 and sleeves:false", async function () {
+  it("Should retrieve the jacket descriptor with default values", async function () {
     const { jacketMutableAsset, buyer } = await deployJacketNMT();
     const jacketDescriptor =
       await jacketMutableAsset.callStatic.getJacketDescriptor();
@@ -84,15 +84,18 @@ describe("JacketMutableAsset", function () {
     expect(jacketDescriptor["sleeves"]).to.be.equal(false); //not color defined
   });
 
-  it("Should setColor to 1 without policy evaluation", async function () {
+  it("Should setColor without policy evaluation", async function () {
     const { jacketMutableAsset, buyer } = await deployJacketNMT();
-    const setColorNotEvaluated = await jacketMutableAsset._setColor(1, "green");
-    await expect(setColorNotEvaluated)
+    const _setColor = await jacketMutableAsset._setColor(1, "green");
+    await expect(_setColor)
       .to.emit(jacketMutableAsset, "StateChanged")
       // from, to, tokenId
       .withArgs([1, false]);
   });
 
+  xit("Should change CREATOR policy");
+  xit("Should be linked to some other NMT");
+  
   describe("Changing HOLDER smart policy", function () {
     it("Should be forbidden to the non-owner", async function () {
       const { jacketMutableAsset, creator, jacketAddress } = await loadFixture(
@@ -102,7 +105,7 @@ describe("JacketMutableAsset", function () {
         jacketMutableAsset.connect(creator).setHolderSmartPolicy(jacketAddress)
       ).to.be.rejectedWith("Caller is not the holder");
     });
-    it("should set new Holder Smart Policy", async function () {
+    it("should be changed by the current holder", async function () {
       const { jacketMutableAsset, buyer, holderSmartPolicy } =
         await loadFixture(deployJacketNMT);
       expect(await jacketMutableAsset.holderSmartPolicy()).to.be.equal(
