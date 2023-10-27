@@ -61,6 +61,7 @@ describe("JacketMutableAsset", function () {
       tailor2,
       holderSmartPolicy,
       denyAllSmartPolicy,
+      creatorSmartPolicy,
     };
   }
 
@@ -69,23 +70,39 @@ describe("JacketMutableAsset", function () {
     const nmt = await jacketMutableAsset.nmt();
     expect(nmt).to.be.equal(jacketNMT.address);
   });
+
+  it("Should retrieve the holderSmartPolicy address", async function () {
+    const { jacketNMT, jacketMutableAsset, denyAllSmartPolicy } =
+      await deployJacketNMT();
+    const holderSmartPolicyAddress =
+      await jacketMutableAsset.holderSmartPolicy();
+    expect(holderSmartPolicyAddress).to.be.equal(denyAllSmartPolicy.address);
+  });
+
+  it("Should retrieve the creatorSmartPolicy address", async function () {
+    const { jacketNMT, jacketMutableAsset, creatorSmartPolicy } =
+      await deployJacketNMT();
+    const creatorSmartPolicyAddress =
+      await jacketMutableAsset.creatorSmartPolicy();
+    expect(creatorSmartPolicyAddress).to.be.equal(creatorSmartPolicy.address);
+  });
+
   it("Should retrieve the owner of the mutable asset", async function () {
     const { jacketMutableAsset, buyer } = await deployJacketNMT();
-    const jowner = await jacketMutableAsset.callStatic.getHolder();
+    const jowner = await jacketMutableAsset.getHolder();
     expect(jowner).to.be.equal(buyer.address);
   });
 
   it("Should retrieve the jacket descriptor with default values", async function () {
-    const { jacketMutableAsset, buyer } = await deployJacketNMT();
-    const jacketDescriptor =
-      await jacketMutableAsset.callStatic.getJacketDescriptor();
+    const { jacketMutableAsset } = await deployJacketNMT();
+    const jacketDescriptor = await jacketMutableAsset.getJacketDescriptor();
     expect(jacketDescriptor.length).to.be.equal(2);
     expect(jacketDescriptor["color"]).to.be.equal(0); //not color defined
     expect(jacketDescriptor["sleeves"]).to.be.equal(false); //not color defined
   });
 
   it("Should setColor without policy evaluation", async function () {
-    const { jacketMutableAsset, buyer } = await deployJacketNMT();
+    const { jacketMutableAsset } = await deployJacketNMT();
     const _setColor = await jacketMutableAsset._setColor(1, "green");
     await expect(_setColor)
       .to.emit(jacketMutableAsset, "StateChanged")
@@ -93,32 +110,54 @@ describe("JacketMutableAsset", function () {
       .withArgs([1, false]);
   });
 
-  xit("Should change CREATOR policy");
   xit("Should be linked to some other NMT");
-  
-  describe("Changing HOLDER smart policy", function () {
-    it("Should be forbidden to the non-owner", async function () {
-      const { jacketMutableAsset, creator, jacketAddress } = await loadFixture(
-        deployJacketNMT
-      );
-      await expect(
-        jacketMutableAsset.connect(creator).setHolderSmartPolicy(jacketAddress)
-      ).to.be.rejectedWith("Caller is not the holder");
-    });
-    it("should be changed by the current holder", async function () {
-      const { jacketMutableAsset, buyer, holderSmartPolicy } =
+
+  describe("Changing smart policies", function () {
+    it("Should be forbidden to change holder smart policy to the non-owner", async function () {
+      const { jacketMutableAsset, creator, holderSmartPolicy } =
         await loadFixture(deployJacketNMT);
-      expect(await jacketMutableAsset.holderSmartPolicy()).to.be.equal(
-        "0xa85233C63b9Ee964Add6F2cffe00Fd84eb32338f"
-      );
       await expect(
         jacketMutableAsset
-          .connect(buyer)
+          .connect(creator)
           .setHolderSmartPolicy(holderSmartPolicy.address)
-      );
+      ).to.be.rejectedWith("Caller is not the holder");
+    });
+
+    it("Should be allowed to change the holder's smart policy to holder", async function () {
+      const { jacketMutableAsset, holderSmartPolicy, buyer } =
+        await loadFixture(deployJacketNMT);
+      await jacketMutableAsset
+        .connect(buyer)
+        .setHolderSmartPolicy(holderSmartPolicy.address);
       expect(await jacketMutableAsset.holderSmartPolicy()).to.be.equal(
-        "0x4ed7c70F96B99c776995fB64377f0d4aB3B0e1C1"
+        holderSmartPolicy.address
       );
     });
+
+    it("Should be forbidden to change the creator smart policy ", async function () {
+      const { jacketMutableAsset, creator, creatorSmartPolicy } =
+        await loadFixture(deployJacketNMT);
+      await expect(
+        jacketMutableAsset
+          .connect(creator)
+          .setCreatorSmartPolicy(creatorSmartPolicy.address)
+      ).to.be.rejectedWith("Operation DENIED by CREATOR policy");
+    });
+
+    // it("Should be allowed to change the holder's smart policy to holder", async function () {
+    //   const { jacketMutableAsset, buyer, holderSmartPolicy } =
+    //     await loadFixture(deployJacketNMT);
+    //   expect(await jacketMutableAsset.()).to.be.equal(
+    //     "0xa82fF9aFd8f496c3d6ac40E2a0F282E47488CFc9"
+    //   );
+    //   await expect(
+    //     jacketMutableAsset
+    //       .connect(buyer)
+    //       .setHolderSmartPolicy(holderSmartPolicy.address)
+    //   );
+    //   expect(await jacketMutableAsset.holderSmartPolicy()).to.be.equal(
+    //     "0x84eA74d481Ee0A5332c457a4d796187F6Ba67fEB"
+    //   );
+    // });
   });
 });

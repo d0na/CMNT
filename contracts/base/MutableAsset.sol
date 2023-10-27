@@ -50,8 +50,7 @@ abstract contract MutableAsset {
 
     // function getAssetDescriptor() public virtual override {}
     function getHolder() public view returns (address) {
-        address owner = nmtContract.ownerOf(uint160(address(this)));
-        return owner;
+        return nmtContract.ownerOf(uint160(address(this)));
     }
 
     function setLinked(
@@ -78,6 +77,32 @@ abstract contract MutableAsset {
         address _holderSmartPolicy
     ) public virtual onlyOwner {
         holderSmartPolicy = _holderSmartPolicy;
+    }
+
+    /** Set a new Mutable Asset Owner Smart policy  */
+    function setCreatorSmartPolicy(
+        address _creatorSmartPolicy
+    )
+        public
+        virtual
+        evaluatedByCreator(
+            msg.sender,
+            abi.encodeWithSignature(
+                "setCosetCreatorSmartPolicy(address)",
+                _creatorSmartPolicy
+            ),
+            address(this)
+        )
+        evaluatedByHolder(
+            msg.sender,
+            abi.encodeWithSignature(
+                "setCosetCreatorSmartPolicy(address)",
+                _creatorSmartPolicy
+            ),
+            address(this)
+        )
+    {
+        creatorSmartPolicy = _creatorSmartPolicy;
     }
 
     /**

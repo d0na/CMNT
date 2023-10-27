@@ -50,11 +50,6 @@ contract JacketMutableAsset is MutableAsset {
      * USERS ACTIONS with attached policy
      * */
 
-    // function setRemoveSleeves(bool _removeSleeves) public {
-    //     jacketDescriptor.removeSleeves = _removeSleeves;
-    //     emit StateChanged(jacketDescriptor);
-    // }
-
     fallback() external {}
 
     function setColor(
