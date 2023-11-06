@@ -6,14 +6,19 @@ import "./base/SmartPolicy.sol";
 import "./PolicyInformationPoint.sol";
 
 contract DenyAllSmartPolicy is SmartPolicy {
-    
+    constructor() {}
+
     function evaluate(
         address _subject,
         bytes memory _action,
         address _resource
-    ) public view virtual override returns (bool) {    
-        // console.log("denyall",address(this)); 
-        return false;
+    ) public virtual override returns (bool) {
+        console.log("denyall");
+        if (_subject == _subject && _resource == _resource) {
+            return false;
+        } else {
+            return false;
+        }
     }
 
     fallback() external {

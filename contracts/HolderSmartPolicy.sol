@@ -25,7 +25,7 @@ contract HolderSmartPolicy is SmartPolicy {
     address constant _pip = 0x57A8aAfc40EDCa45F13B4a74009CBAD162e82e23;
 
     bytes4 internal constant ACT_SET_COLOR =
-        bytes4(keccak256("setColor(uint256)"));
+        bytes4(keccak256("setColor(uint256,string)"));
 
     constructor() {
         pip = PolicyInformationPoint(_pip);

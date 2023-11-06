@@ -38,5 +38,5 @@ abstract contract SmartPolicy {
         address _subject,
         bytes memory _action,
         address _resource
-    ) public view virtual returns (bool);
+    ) public virtual returns (bool);
 }
