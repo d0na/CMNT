@@ -19,7 +19,7 @@ class NMT {
     ' -- vars --
 
     ' -- methods --
-	+mint()
+	+mint() onlyOwner
 	#_mint()
 
 }
@@ -36,7 +36,8 @@ class MutableAsset {
     ' -- usingFor --
 
     ' -- vars --
-	+[[address]] nmt
+	+{static}[[address]] nmt
+	+{static}[[NMT]] nmtContract
 	+[[address]] linked
 	+[[string]] tokenURI
 	+[[address]] holderSmartPolicy
@@ -45,9 +46,10 @@ class MutableAsset {
     ' -- methods --
 	+**__constructor__**()
 	#setTokenURI()
-	+setLinked()
-	+setHolderSmartPolicy()
-	+getHolder()
+	+setLinked() evaluatedByCreator,evaluatedByHolder
+	+setHolderSmartPolicy() onlyOwner
+	+setCreatorSmartPolicy() evaluatedByCreator,evaluatedByHolder
+	+🔍getHolder()
 
 }
 
@@ -59,15 +61,14 @@ class JacketMutableAsset {
 
     ' -- vars --
 	+[[JacketDescriptor]] jacketDescriptor
-	#[[JacketNMT]] jacketNmt
 
     ' -- methods --
 	+**__constructor__**()
+	+setColor() evaluatedByCreator,evaluatedByHolder
+	+setButton() evaluatedByCreator,evaluatedByHolder
+	#_setColor()
+	#_setButton()
 	+🔍getJacketDescriptor()
-	+setColor()
-	+setColorNotEvaluated()
-	+getHolder()
-	+🔍getNMT()
 
 }
 ' -- inheritance / usingFor --
@@ -85,7 +86,6 @@ class JacketNMT {
 	+**__constructor__**()
 	#_mint()
 	+🔍getJacketAddress()
-	+transferFrom()
 
 }
 ' -- inheritance / usingFor --
@@ -148,9 +148,8 @@ class SmartPolicy {
     ' -- vars --
 
     ' -- methods --
-	+🔍decodeData()
-	+🔍decodeSignature()
-	#🔍equal()
+	#🔍decodeData()
+	#🔍decodeSignature()
 	+🔍evaluate()
 
 }
