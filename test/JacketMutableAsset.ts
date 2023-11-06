@@ -9,7 +9,6 @@ describe("JacketMutableAsset", function () {
   // We define a fixture to reuse the same setup in every test.
   // We use loadFixture to run this setu-p once, snapshot that state,
   // and reset Hardhat Network to that snapshot in every test.
-  
 
   it("Should retrieve the NMT (class) smart contract address", async function () {
     const { jacketNMT, jacketMutableAsset } = await deployJacketAsset();
@@ -57,6 +56,31 @@ describe("JacketMutableAsset", function () {
   });
 
   xit("Should be linked to some other NMT");
+
+  describe("Smart Policies stuff", function () {
+    it("Should evaluate successfully an action equal to setColor(1,url)", async function () {
+      const { creatorSmartPolicy, creator, jacketMutableAsset } =
+        await loadFixture(deployJacketAsset);
+       expect(
+        await creatorSmartPolicy.evaluate(
+          creator.address,
+          "0xa44b6b74000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000005677265656e000000000000000000000000000000000000000000000000000000",
+          jacketMutableAsset.address
+        )
+      ).to.be.equal(true);
+    });
+    it("Should evaluate successfully an action equal to setColor(1,url) with the DANY ALL policy", async function () {
+      const { denyAllSmartPolicy, creator, jacketMutableAsset } =
+        await loadFixture(deployJacketAsset);
+       expect(
+        await denyAllSmartPolicy.evaluate(
+          creator.address,
+          "0xa44b6b74000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000005677265656e000000000000000000000000000000000000000000000000000000",
+          jacketMutableAsset.address
+        )
+      ).to.be.equal(false);
+    });
+  });
 
   describe("Changing smart policies", function () {
     it("Should be forbidden to change holder smart policy to the non-owner", async function () {
