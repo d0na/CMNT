@@ -13,7 +13,7 @@ import "../../base/SmartPolicy.sol";
  * @notice This Smart Contract contains all the Jacket properties and features which allows
  * it to mutate
  */
-contract JacketMutableAsset2 is MutableAsset {
+contract JacketMutableAsset7 is MutableAsset {
     /** */
     constructor(
         address _nmt,
