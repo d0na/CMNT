@@ -104,7 +104,7 @@ export async function deployJacketAssetWithHolderPolicy() {
 }
 
 
-export async function deployJacketAssetWithAllSmartPolices() {
+export async function deployJacketAssetWithManyAttributes() {
   // Contracts are deployed using the first signer/account by default
   const [creator, buyer, tailor1, tailor2] = await ethers.getSigners();
   // creator    - 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
@@ -196,5 +196,100 @@ export async function deployJacketAssetWithAllSmartPolices() {
     jacketMutableAsset8,
     jacketMutableAsset9,
     jacketMutableAsset10
+  };
+}
+
+export async function deployJacketAssetWithManyParams() {
+  // Contracts are deployed using the first signer/account by default
+  const [creator, buyer, tailor1, tailor2] = await ethers.getSigners();
+  // creator    - 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+  // buyer - 0x70997970C51812dc3A010C7d01b50e0d17dc79C8
+  // tailor1 - 0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC
+  // tailor2 - 0x90F79bf6EB2c4f870365E785982E1f101E93b906
+
+  // JacketNMT
+  const JacketNMT = await ethers.getContractFactory("JacketNMT");
+  const jacketNMT = await JacketNMT.deploy();
+  // HolderSmartPolicy
+  const HolderSmartPolicy = await ethers.getContractFactory(
+    "HolderSmartPolicy"
+  );
+  const holderSmartPolicy = await HolderSmartPolicy.deploy();
+  // CreatorSmartPolicy
+  const CreatorSmartPolicy = await ethers.getContractFactory(
+    "CreatorSmartPolicy"
+  );
+  const creatorSmartPolicy = await CreatorSmartPolicy.deploy();
+
+  //JacketMutableAsset
+  const JacketMutableAsset = await ethers.getContractFactory(
+    "JacketMutableAsset"
+  );
+  const jacketMutableAsset = await JacketMutableAsset.deploy(
+    jacketNMT.address,
+    creatorSmartPolicy.address,
+    holderSmartPolicy.address
+  );
+
+  const JacketMutableAsset1a = await ethers.getContractFactory("JacketMutableAsset1a");
+  const jacketMutableAsset1a = await JacketMutableAsset1a.deploy(jacketNMT.address,
+    creatorSmartPolicy.address,
+    holderSmartPolicy.address);
+  const JacketMutableAsset2a = await ethers.getContractFactory("JacketMutableAsset2a");
+  const jacketMutableAsset2a = await JacketMutableAsset2a.deploy(jacketNMT.address,
+    creatorSmartPolicy.address,
+    holderSmartPolicy.address);
+  const JacketMutableAsset3a = await ethers.getContractFactory("JacketMutableAsset3a");
+  const jacketMutableAsset3a = await JacketMutableAsset3a.deploy(jacketNMT.address,
+    creatorSmartPolicy.address,
+    holderSmartPolicy.address);
+  const JacketMutableAsset4a = await ethers.getContractFactory("JacketMutableAsset4a");
+  const jacketMutableAsset4a = await JacketMutableAsset4a.deploy(jacketNMT.address,
+    creatorSmartPolicy.address,
+    holderSmartPolicy.address);
+  const JacketMutableAsset5a = await ethers.getContractFactory("JacketMutableAsset5a");
+  const jacketMutableAsset5a = await JacketMutableAsset5a.deploy(jacketNMT.address,
+    creatorSmartPolicy.address,
+    holderSmartPolicy.address);
+  const JacketMutableAsset6a = await ethers.getContractFactory("JacketMutableAsset6a");
+  const jacketMutableAsset6a = await JacketMutableAsset6a.deploy(jacketNMT.address,
+    creatorSmartPolicy.address,
+    holderSmartPolicy.address);
+  const JacketMutableAsset7a = await ethers.getContractFactory("JacketMutableAsset7a");
+  const jacketMutableAsset7a = await JacketMutableAsset7a.deploy(jacketNMT.address,
+    creatorSmartPolicy.address,
+    holderSmartPolicy.address);
+  const JacketMutableAsset8a = await ethers.getContractFactory("JacketMutableAsset8a");
+  const jacketMutableAsset8a = await JacketMutableAsset8a.deploy(jacketNMT.address,
+    creatorSmartPolicy.address,
+    holderSmartPolicy.address);
+  const JacketMutableAsset9a = await ethers.getContractFactory("JacketMutableAsset9a");
+  const jacketMutableAsset9a = await JacketMutableAsset9a.deploy(jacketNMT.address,
+    creatorSmartPolicy.address,
+    holderSmartPolicy.address);
+  const JacketMutableAsset10a = await ethers.getContractFactory("JacketMutableAsset10a");
+  const jacketMutableAsset10a = await JacketMutableAsset10a.deploy(jacketNMT.address,
+    creatorSmartPolicy.address,
+    holderSmartPolicy.address);
+
+  return {
+    jacketNMT,
+    jacketMutableAsset,
+    creator,
+    buyer,
+    tailor1,
+    tailor2,
+    holderSmartPolicy,
+    creatorSmartPolicy,
+    jacketMutableAsset1a,
+    jacketMutableAsset2a,
+    jacketMutableAsset3a,
+    jacketMutableAsset4a,
+    jacketMutableAsset5a,
+    jacketMutableAsset6a,
+    jacketMutableAsset7a,
+    jacketMutableAsset8a,
+    jacketMutableAsset9a,
+    jacketMutableAsset10a
   };
 }
