@@ -93,7 +93,7 @@ contract JacketMutableAsset1a is MutableAsset {
         evaluatedByCreator(
             msg.sender,
             abi.encodeWithSignature(
-                "setMethod(uint256, string)",
+                "setMethod(uint256,string)",
                 _param1,
                 _tokenURI
             ),
@@ -102,7 +102,7 @@ contract JacketMutableAsset1a is MutableAsset {
         evaluatedByHolder(
             msg.sender,
             abi.encodeWithSignature(
-                "setMethod1(uint256, string)",
+                "setMethod(uint256,string)",
                 _param1,
                 _tokenURI
             ),

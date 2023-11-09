@@ -94,5 +94,96 @@ contract JacketMutableAsset10a is MutableAsset {
         emit StateChanged(jacketDescriptor);
     }
 
-function setMethod(uint256 _param1,uint256 _param2,uint256 _param3,uint256 _param4,uint256 _param5,uint256 _param6,uint256 _param7,uint256 _param8,uint256 _param9,uint256 _param10, string memory _tokenURI) public evaluatedByCreator(msg.sender,abi.encodeWithSignature("setMethod(uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256, string)", _param1,_param2,_param3,_param4,_param5,_param6,_param7,_param8,_param9,_param10, _tokenURI),address(this)) evaluatedByHolder(msg.sender,abi.encodeWithSignature("setMethod10(uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256, string)",_param1,_param2,_param3,_param4,_param5,_param6,_param7,_param8,_param9,_param10, _tokenURI),address(this)){ _setMethod(_param1,_param2,_param3,_param4,_param5,_param6,_param7,_param8,_param9,_param10, _tokenURI);}function _setMethod(uint256 _param1,uint256 _param2,uint256 _param3,uint256 _param4,uint256 _param5,uint256 _param6,uint256 _param7,uint256 _param8,uint256 _param9,uint256 _param10, string memory _tokenURI) public { jacketDescriptor.method1=_param1;jacketDescriptor.method2=_param2;jacketDescriptor.method3=_param3;jacketDescriptor.method4=_param4;jacketDescriptor.method5=_param5;jacketDescriptor.method6=_param6;jacketDescriptor.method7=_param7;jacketDescriptor.method8=_param8;jacketDescriptor.method9=_param9;jacketDescriptor.method10=_param10; setTokenURI(_tokenURI);emit StateChanged(jacketDescriptor);}
+    function setMethod(
+        uint256 _param1,
+        uint256 _param2,
+        uint256 _param3,
+        uint256 _param4,
+        uint256 _param5,
+        uint256 _param6,
+        uint256 _param7,
+        uint256 _param8,
+        uint256 _param9,
+        uint256 _param10,
+        string memory _tokenURI
+    )
+        public
+        evaluatedByCreator(
+            msg.sender,
+            abi.encodeWithSignature(
+                "setMethod(uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,string)",
+                _param1,
+                _param2,
+                _param3,
+                _param4,
+                _param5,
+                _param6,
+                _param7,
+                _param8,
+                _param9,
+                _param10,
+                _tokenURI
+            ),
+            address(this)
+        )
+        evaluatedByHolder(
+            msg.sender,
+            abi.encodeWithSignature(
+                "setMethod(uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,string)",
+                _param1,
+                _param2,
+                _param3,
+                _param4,
+                _param5,
+                _param6,
+                _param7,
+                _param8,
+                _param9,
+                _param10,
+                _tokenURI
+            ),
+            address(this)
+        )
+    {
+        _setMethod(
+            _param1,
+            _param2,
+            _param3,
+            _param4,
+            _param5,
+            _param6,
+            _param7,
+            _param8,
+            _param9,
+            _param10,
+            _tokenURI
+        );
+    }
+
+    function _setMethod(
+        uint256 _param1,
+        uint256 _param2,
+        uint256 _param3,
+        uint256 _param4,
+        uint256 _param5,
+        uint256 _param6,
+        uint256 _param7,
+        uint256 _param8,
+        uint256 _param9,
+        uint256 _param10,
+        string memory _tokenURI
+    ) public {
+        jacketDescriptor.method1 = _param1;
+        jacketDescriptor.method2 = _param2;
+        jacketDescriptor.method3 = _param3;
+        jacketDescriptor.method4 = _param4;
+        jacketDescriptor.method5 = _param5;
+        jacketDescriptor.method6 = _param6;
+        jacketDescriptor.method7 = _param7;
+        jacketDescriptor.method8 = _param8;
+        jacketDescriptor.method9 = _param9;
+        jacketDescriptor.method10 = _param10;
+        setTokenURI(_tokenURI);
+        emit StateChanged(jacketDescriptor);
+    }
 }
