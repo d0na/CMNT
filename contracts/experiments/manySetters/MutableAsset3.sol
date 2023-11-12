@@ -13,19 +13,21 @@ import "../../base/SmartPolicy.sol";
  * @notice This Smart Contract contains all the Jacket properties and features which allows
  * it to mutate
  */
-contract JacketMutableAsset1a is MutableAsset {
+contract MutableAsset3 is MutableAsset {
     /** */
     constructor(
         address _nmt,
         address _creatorSmartPolicy,
         address _holderSmartPolicy
-    ) MutableAsset(_nmt, _creatorSmartPolicy, _holderSmartPolicy) {}
+    ) MutableAsset(_nmt,_creatorSmartPolicy,_holderSmartPolicy) {}
 
     //Jacket descriptor
     struct JacketDescriptor {
         uint256 color;
         bool sleeves;
         uint256 method1;
+        uint256 method2;
+        uint256 method3;
     }
 
     // Current state representing jacket descriptor with its attributes
@@ -51,16 +53,16 @@ contract JacketMutableAsset1a is MutableAsset {
 
     fallback() external {}
 
-    function setColor(
-        uint256 _color,
+    function setMethod1(
+        uint256 _param,
         string memory _tokenURI
     )
         public
         evaluatedByCreator(
             msg.sender,
             abi.encodeWithSignature(
-                "setColor(uint256,string)",
-                _color,
+                "setMethod1(uint256,string)",
+                _param,
                 _tokenURI
             ),
             address(this)
@@ -68,33 +70,28 @@ contract JacketMutableAsset1a is MutableAsset {
         evaluatedByHolder(
             msg.sender,
             abi.encodeWithSignature(
-                "setColor(uint256,string)",
-                _color,
+                "setMethod1(uint256,string)",
+                _param,
                 _tokenURI
             ),
             address(this)
         )
     {
-        _setColor(_color, _tokenURI);
-    }
-
-    // Public only for evaluating costs
-    function _setColor(uint256 _color, string memory _tokenURI) public {
-        jacketDescriptor.color = _color;
+        jacketDescriptor.method1 = _param;
         setTokenURI(_tokenURI);
         emit StateChanged(jacketDescriptor);
     }
 
-    function setMethod(
-        uint256 _param1,
+    function setMethod2(
+        uint256 _param,
         string memory _tokenURI
     )
         public
         evaluatedByCreator(
             msg.sender,
             abi.encodeWithSignature(
-                "setMethod(uint256,string)",
-                _param1,
+                "setMethod2(uint256,string)",
+                _param,
                 _tokenURI
             ),
             address(this)
@@ -102,21 +99,44 @@ contract JacketMutableAsset1a is MutableAsset {
         evaluatedByHolder(
             msg.sender,
             abi.encodeWithSignature(
-                "setMethod(uint256,string)",
-                _param1,
+                "setMethod2(uint256,string)",
+                _param,
                 _tokenURI
             ),
             address(this)
         )
     {
-        _setMethod(_param1, _tokenURI);
-    }
-
-    function _setMethod(uint256 _param1, string memory _tokenURI) public {
-        jacketDescriptor.method1 = _param1;
+        jacketDescriptor.method2 = _param;
         setTokenURI(_tokenURI);
         emit StateChanged(jacketDescriptor);
     }
 
-    
+    function setMethod3(
+        uint256 _param,
+        string memory _tokenURI
+    )
+        public
+        evaluatedByCreator(
+            msg.sender,
+            abi.encodeWithSignature(
+                "setMethod3(uint256,string)",
+                _param,
+                _tokenURI
+            ),
+            address(this)
+        )
+        evaluatedByHolder(
+            msg.sender,
+            abi.encodeWithSignature(
+                "setMethod3(uint256,string)",
+                _param,
+                _tokenURI
+            ),
+            address(this)
+        )
+    {
+        jacketDescriptor.method3 = _param;
+        setTokenURI(_tokenURI);
+        emit StateChanged(jacketDescriptor);
+    }
 }
