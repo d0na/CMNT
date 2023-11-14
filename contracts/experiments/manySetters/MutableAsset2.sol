@@ -70,7 +70,6 @@ contract MutableAsset2 is MutableAsset {
         )
     {
         jacketDescriptor.method1 = _param;
-
         emit StateChanged(jacketDescriptor);
     }
 
@@ -94,7 +93,6 @@ contract MutableAsset2 is MutableAsset {
         )
     {
         jacketDescriptor.method2 = _param;
-
         emit StateChanged(jacketDescriptor);
     }
 }
