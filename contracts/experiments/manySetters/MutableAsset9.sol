@@ -57,293 +57,220 @@ contract MutableAsset9 is MutableAsset {
 
     fallback() external {}
 
-    function setColor(
-        uint256 _color,
-        string memory _tokenURI
-    )
-        public
-        evaluatedByCreator(
-            msg.sender,
-            abi.encodeWithSignature(
-                "setColor(uint256,string)",
-                _color,
-                _tokenURI
-            ),
-            address(this)
-        )
-        evaluatedByHolder(
-            msg.sender,
-            abi.encodeWithSignature(
-                "setColor(uint256,string)",
-                _color,
-                _tokenURI
-            ),
-            address(this)
-        )
-    {
-        jacketDescriptor.color = _color;
-        setTokenURI(_tokenURI);
-        emit StateChanged(jacketDescriptor);
-    }
-
+    
     function setMethod1(
-        uint256 _param,
-        string memory _tokenURI
+        uint256 _param
     )
         public
         evaluatedByCreator(
             msg.sender,
             abi.encodeWithSignature(
-                "setMethod1(uint256,string)",
-                _param,
-                _tokenURI
-            ),
+                "setMethod1(uint256)",
+                _param),
             address(this)
         )
         evaluatedByHolder(
             msg.sender,
             abi.encodeWithSignature(
-                "setMethod1(uint256,string)",
-                _param,
-                _tokenURI
-            ),
+                "setMethod1(uint256)",
+                _param),
             address(this)
         )
     {
         jacketDescriptor.method1 = _param;
-        setTokenURI(_tokenURI);
+
         emit StateChanged(jacketDescriptor);
     }
 
     function setMethod2(
-        uint256 _param,
-        string memory _tokenURI
+        uint256 _param
     )
         public
         evaluatedByCreator(
             msg.sender,
             abi.encodeWithSignature(
-                "setMethod2(uint256,string)",
-                _param,
-                _tokenURI
-            ),
+                "setMethod2(uint256)",
+                _param),
             address(this)
         )
         evaluatedByHolder(
             msg.sender,
             abi.encodeWithSignature(
-                "setMethod2(uint256,string)",
-                _param,
-                _tokenURI
-            ),
+                "setMethod2(uint256)",
+                _param),
             address(this)
         )
     {
         jacketDescriptor.method2 = _param;
-        setTokenURI(_tokenURI);
+
         emit StateChanged(jacketDescriptor);
     }
 
     function setMethod3(
-        uint256 _param,
-        string memory _tokenURI
+        uint256 _param
     )
         public
         evaluatedByCreator(
             msg.sender,
-            abi.encodeWitSignature(
-                "setMethod3(uint256,string)",
-                _param,
-                _tokenURI
-            ),
+            abi.encodeWithSignature(
+                "setMethod3(uint256)",
+                _param),
             address(this)
         )
         evaluatedByHolder(
             msg.sender,
             abi.encodeWithSignature(
-                "setMethod3(uint256,string)",
-                _param,
-                _tokenURI
-            ),
+                "setMethod3(uint256)",
+                _param),
             address(this)
         )
     {
         jacketDescriptor.method3 = _param;
-        setTokenURI(_tokenURI);
+
         emit StateChanged(jacketDescriptor);
     }
 
     function setMethod4(
-        uint256 _param,
-        string memory _tokenURI
+        uint256 _param
     )
         public
         evaluatedByCreator(
             msg.sender,
             abi.encodeWithSignature(
-                "setMethod4(uint256,string)",
-                _param,
-                _tokenURI
-            ),
+                "setMethod4(uint256)",
+                _param),
             address(this)
         )
         evaluatedByHolder(
             msg.sender,
             abi.encodeWithSignature(
-                "setMethod4(uint256,string)",
-                _param,
-                _tokenURI
-            ),
+                "setMethod4(uint256)",
+                _param),
             address(this)
         )
     {
         jacketDescriptor.method4 = _param;
-        setTokenURI(_tokenURI);
+
         emit StateChanged(jacketDescriptor);
     }
 
     function setMethod5(
-        uint256 _param,
-        string memory _tokenURI
+        uint256 _param
     )
         public
         evaluatedByCreator(
             msg.sender,
             abi.encodeWithSignature(
-                "setMethod5(uint256,string)",
-                _param,
-                _tokenURI
-            ),
+                "setMethod5(uint256)",
+                _param),
             address(this)
         )
         evaluatedByHolder(
             msg.sender,
             abi.encodeWithSignature(
-                "setMethod5(uint256,string)",
-                _param,
-                _tokenURI
-            ),
+                "setMethod5(uint256)",
+                _param),
             address(this)
         )
     {
         jacketDescriptor.method5 = _param;
-        setTokenURI(_tokenURI);
+
         emit StateChanged(jacketDescriptor);
     }
 
     function setMethod6(
-        uint256 _param,
-        string memory _tokenURI
+        uint256 _param
     )
         public
         evaluatedByCreator(
             msg.sender,
             abi.encodeWithSignature(
-                "setMethod6(uint256,string)",
-                _param,
-                _tokenURI
-            ),
+                "setMethod6(uint256)",
+                _param),
             address(this)
         )
         evaluatedByHolder(
             msg.sender,
             abi.encodeWithSignature(
-                "setMethod6(uint256,string)",
-                _param,
-                _tokenURI
-            ),
+                "setMethod6(uint256)",
+                _param),
             address(this)
         )
     {
         jacketDescriptor.method6 = _param;
-        setTokenURI(_tokenURI);
+
         emit StateChanged(jacketDescriptor);
     }
 
     function setMethod7(
-        uint256 _param,
-        string memory _tokenURI
+        uint256 _param
     )
         public
         evaluatedByCreator(
             msg.sender,
             abi.encodeWithSignature(
-                "setMethod7(uint256,string)",
-                _param,
-                _tokenURI
-            ),
+                "setMethod7(uint256)",
+                _param),
             address(this)
         )
         evaluatedByHolder(
             msg.sender,
             abi.encodeWithSignature(
-                "setMethod7(uint256,string)",
-                _param,
-                _tokenURI
-            ),
+                "setMethod7(uint256)",
+                _param),
             address(this)
         )
     {
         jacketDescriptor.method7 = _param;
-        setTokenURI(_tokenURI);
+
         emit StateChanged(jacketDescriptor);
     }
 
     function setMethod8(
-        uint256 _param,
-        string memory _tokenURI
+        uint256 _param
     )
         public
         evaluatedByCreator(
             msg.sender,
             abi.encodeWithSignature(
-                "setMethod8(uint256,string)",
-                _param,
-                _tokenURI
-            ),
+                "setMethod8(uint256)",
+                _param),
             address(this)
         )
         evaluatedByHolder(
             msg.sender,
             abi.encodeWithSignature(
-                "setMethod8(uint256,string)",
-                _param,
-                _tokenURI
-            ),
+                "setMethod8(uint256)",
+                _param),
             address(this)
         )
     {
         jacketDescriptor.method8 = _param;
-        setTokenURI(_tokenURI);
+
         emit StateChanged(jacketDescriptor);
     }
 
     function setMethod9(
-        uint256 _param,
-        string memory _tokenURI
+        uint256 _param
     )
         public
         evaluatedByCreator(
             msg.sender,
             abi.encodeWithSignature(
-                "setMethod9(uint256,string)",
-                _param,
-                _tokenURI
-            ),
+                "setMethod9(uint256)",
+                _param),
             address(this)
         )
         evaluatedByHolder(
             msg.sender,
             abi.encodeWithSignature(
-                "setMethod9(uint256,string)",
-                _param,
-                _tokenURI
-            ),
+                "setMethod9(uint256)",
+                _param),
             address(this)
         )
     {
         jacketDescriptor.method9 = _param;
-        setTokenURI(_tokenURI);
+
         emit StateChanged(jacketDescriptor);
     }
 }

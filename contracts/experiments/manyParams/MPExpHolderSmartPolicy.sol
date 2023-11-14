@@ -2,10 +2,10 @@
 pragma solidity ^0.8.18;
 
 import "hardhat/console.sol";
-import "./base/SmartPolicy.sol";
-import "./PolicyInformationPoint.sol";
+import "../../base/SmartPolicy.sol";
+import "../../PolicyInformationPoint.sol";
 
-contract HolderSmartPolicy is SmartPolicy {
+contract MPExpHolderSmartPolicy is SmartPolicy {
     /*
             
         Subject : who required the resource
@@ -24,8 +24,47 @@ contract HolderSmartPolicy is SmartPolicy {
     PolicyInformationPoint private pip;
     address constant _pip = 0x57A8aAfc40EDCa45F13B4a74009CBAD162e82e23;
 
-    bytes4 internal constant ACT_SET_COLOR =
-        bytes4(keccak256("setColor(uint256,string)"));
+    bytes4 internal constant ACT_SET_METHOD_10_PARAMS =
+        bytes4(
+            keccak256(
+                "setMethod(uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256)"
+            )
+        );
+    bytes4 internal constant ACT_SET_METHOD_9_PARAMS =
+        bytes4(
+            keccak256(
+                "setMethod(uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256)"
+            )
+        );
+    bytes4 internal constant ACT_SET_METHOD_8_PARAMS =
+        bytes4(
+            keccak256(
+                "setMethod(uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256)"
+            )
+        );
+    bytes4 internal constant ACT_SET_METHOD_7_PARAMS =
+        bytes4(
+            keccak256(
+                "setMethod(uint256,uint256,uint256,uint256,uint256,uint256,uint256)"
+            )
+        );
+    bytes4 internal constant ACT_SET_METHOD_6_PARAMS =
+        bytes4(
+            keccak256(
+                "setMethod(uint256,uint256,uint256,uint256,uint256,uint256)"
+            )
+        );
+    bytes4 internal constant ACT_SET_METHOD_5_PARAMS =
+        bytes4(keccak256("setMethod(uint256,uint256,uint256,uint256,uint256)"));
+    bytes4 internal constant ACT_SET_METHOD_4_PARAMS =
+        bytes4(keccak256("setMethod(uint256,uint256,uint256,uint256)"));
+    bytes4 internal constant ACT_SET_METHOD_3_PARAMS =
+        bytes4(keccak256("setMethod(uint256,uint256,uint256)"));
+    bytes4 internal constant ACT_SET_METHOD_2_PARAMS =
+        bytes4(keccak256("setMethod(uint256,uint256)"));
+
+    bytes4 internal constant ACT_SET_METHOD_1_PARAMS =
+        bytes4(keccak256("setMethod(uint256)"));
 
     constructor() {
         pip = PolicyInformationPoint(_pip);
@@ -88,15 +127,36 @@ contract HolderSmartPolicy is SmartPolicy {
     ) public view virtual override returns (bool) {
         bytes4 _signature = this.decodeSignature(_action);
         // console.log("holderSmart",address(this));
-        // Set Color
-        if (_signature == ACT_SET_COLOR) {
+        if (_signature == ACT_SET_METHOD_10_PARAMS) {
             // retrieves specific params
-            uint256 _color = this.getSetColorParam(_action);
-            // perform conditions evaluation (AND | OR)
-            return
-                _isAllowedColor(_color) &&
-                _isAuthorizedTailor(_subject) &&
-                _subject == _subject;
+            return true;
+        } else if (_signature == ACT_SET_METHOD_9_PARAMS) {
+            // retrieves specific params
+            return true;
+        } else if (_signature == ACT_SET_METHOD_8_PARAMS) {
+            // retrieves specific params
+            return true;
+        } else if (_signature == ACT_SET_METHOD_7_PARAMS) {
+            // retrieves specific params
+            return true;
+        } else if (_signature == ACT_SET_METHOD_6_PARAMS) {
+            // retrieves specific params
+            return true;
+        } else if (_signature == ACT_SET_METHOD_5_PARAMS) {
+            // retrieves specific params
+            return true;
+        } else if (_signature == ACT_SET_METHOD_4_PARAMS) {
+            // retrieves specific params
+            return true;
+        } else if (_signature == ACT_SET_METHOD_3_PARAMS) {
+            // retrieves specific params
+            return true;
+        } else if (_signature == ACT_SET_METHOD_2_PARAMS) {
+            // retrieves specific params
+            return true;
+        } else if (_signature == ACT_SET_METHOD_1_PARAMS) {
+            // retrieves specific params
+            return true;
         } else {
             return false;
         }

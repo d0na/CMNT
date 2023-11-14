@@ -50,37 +50,21 @@ contract MutableAsset1a is MutableAsset {
     fallback() external {}
 
     function setMethod(
-        uint256 _param1,
-        string memory _tokenURI
+        uint256 _param1
     )
         public
         evaluatedByCreator(
             msg.sender,
-            abi.encodeWithSignature(
-                "setMethod(uint256,string)",
-                _param1,
-                _tokenURI
-            ),
+            abi.encodeWithSignature("setMethod(uint256)", _param1),
             address(this)
         )
         evaluatedByHolder(
             msg.sender,
-            abi.encodeWithSignature(
-                "setMethod(uint256,string)",
-                _param1,
-                _tokenURI
-            ),
+            abi.encodeWithSignature("setMethod(uint256)", _param1),
             address(this)
         )
     {
-        _setMethod(_param1, _tokenURI);
-    }
-
-    function _setMethod(uint256 _param1, string memory _tokenURI) public {
         jacketDescriptor.method1 = _param1;
-        setTokenURI(_tokenURI);
         emit StateChanged(jacketDescriptor);
     }
-
-    
 }

@@ -60,48 +60,37 @@ contract MutableAsset6a is MutableAsset {
         uint256 _param3,
         uint256 _param4,
         uint256 _param5,
-        uint256 _param6,
-        string memory _tokenURI
+        uint256 _param6
     )
         public
         evaluatedByCreator(
             msg.sender,
             abi.encodeWithSignature(
-                "setMethod(uint256,uint256,uint256,uint256,uint256,uint256, string)",
+                "setMethod(uint256,uint256,uint256,uint256,uint256,uint256)",
                 _param1,
                 _param2,
                 _param3,
                 _param4,
                 _param5,
-                _param6,
-                _tokenURI
+                _param6
             ),
             address(this)
         )
         evaluatedByHolder(
             msg.sender,
             abi.encodeWithSignature(
-                "setMethod6(uint256,uint256,uint256,uint256,uint256,uint256, string)",
+                "setMethod(uint256,uint256,uint256,uint256,uint256,uint256)",
                 _param1,
                 _param2,
                 _param3,
                 _param4,
                 _param5,
-                _param6,
-                _tokenURI
+                _param6
             ),
             address(this)
         )
     {
-        _setMethod(
-            _param1,
-            _param2,
-            _param3,
-            _param4,
-            _param5,
-            _param6,
-            _tokenURI
-        );
+        _setMethod(_param1, _param2, _param3, _param4, _param5, _param6);
     }
 
     function _setMethod(
@@ -110,8 +99,7 @@ contract MutableAsset6a is MutableAsset {
         uint256 _param3,
         uint256 _param4,
         uint256 _param5,
-        uint256 _param6,
-        string memory _tokenURI
+        uint256 _param6
     ) public {
         jacketDescriptor.method1 = _param1;
         jacketDescriptor.method2 = _param2;
@@ -119,7 +107,6 @@ contract MutableAsset6a is MutableAsset {
         jacketDescriptor.method4 = _param4;
         jacketDescriptor.method5 = _param5;
         jacketDescriptor.method6 = _param6;
-        setTokenURI(_tokenURI);
         emit StateChanged(jacketDescriptor);
     }
 }

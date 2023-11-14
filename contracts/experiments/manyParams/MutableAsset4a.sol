@@ -56,50 +56,43 @@ contract MutableAsset4a is MutableAsset {
         uint256 _param1,
         uint256 _param2,
         uint256 _param3,
-        uint256 _param4,
-        string memory _tokenURI
+        uint256 _param4
     )
         public
         evaluatedByCreator(
             msg.sender,
             abi.encodeWithSignature(
-                "setMethod(uint256,uint256,uint256,uint256, string)",
+                "setMethod(uint256,uint256,uint256,uint256)",
                 _param1,
                 _param2,
                 _param3,
-                _param4,
-                _tokenURI
-            ),
+                _param4),
             address(this)
         )
         evaluatedByHolder(
             msg.sender,
             abi.encodeWithSignature(
-                "setMethod4(uint256,uint256,uint256,uint256, string)",
+                "setMethod(uint256,uint256,uint256,uint256)",
                 _param1,
                 _param2,
                 _param3,
-                _param4,
-                _tokenURI
-            ),
+                _param4),
             address(this)
         )
     {
-        _setMethod(_param1, _param2, _param3, _param4, _tokenURI);
+        _setMethod(_param1, _param2, _param3, _param4);
     }
 
     function _setMethod(
         uint256 _param1,
         uint256 _param2,
         uint256 _param3,
-        uint256 _param4,
-        string memory _tokenURI
+        uint256 _param4
     ) public {
         jacketDescriptor.method1 = _param1;
         jacketDescriptor.method2 = _param2;
         jacketDescriptor.method3 = _param3;
         jacketDescriptor.method4 = _param4;
-        setTokenURI(_tokenURI);
         emit StateChanged(jacketDescriptor);
     }
 }

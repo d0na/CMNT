@@ -64,14 +64,13 @@ contract MutableAsset8a is MutableAsset {
         uint256 _param5,
         uint256 _param6,
         uint256 _param7,
-        uint256 _param8,
-        string memory _tokenURI
+        uint256 _param8
     )
         public
         evaluatedByCreator(
             msg.sender,
             abi.encodeWithSignature(
-                "setMethod(uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,string)",
+                "setMethod(uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256)",
                 _param1,
                 _param2,
                 _param3,
@@ -79,15 +78,13 @@ contract MutableAsset8a is MutableAsset {
                 _param5,
                 _param6,
                 _param7,
-                _param8,
-                _tokenURI
-            ),
+                _param8),
             address(this)
         )
         evaluatedByHolder(
             msg.sender,
             abi.encodeWithSignature(
-                "setMethod(uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,string)",
+                "setMethod(uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256)",
                 _param1,
                 _param2,
                 _param3,
@@ -95,9 +92,7 @@ contract MutableAsset8a is MutableAsset {
                 _param5,
                 _param6,
                 _param7,
-                _param8,
-                _tokenURI
-            ),
+                _param8),
             address(this)
         )
     {
@@ -109,8 +104,7 @@ contract MutableAsset8a is MutableAsset {
             _param5,
             _param6,
             _param7,
-            _param8,
-            _tokenURI
+            _param8
         );
     }
 
@@ -122,8 +116,7 @@ contract MutableAsset8a is MutableAsset {
         uint256 _param5,
         uint256 _param6,
         uint256 _param7,
-        uint256 _param8,
-        string memory _tokenURI
+        uint256 _param8
     ) public {
         jacketDescriptor.method1 = _param1;
         jacketDescriptor.method2 = _param2;
@@ -133,7 +126,6 @@ contract MutableAsset8a is MutableAsset {
         jacketDescriptor.method6 = _param6;
         jacketDescriptor.method7 = _param7;
         jacketDescriptor.method8 = _param8;
-        setTokenURI(_tokenURI);
         emit StateChanged(jacketDescriptor);
     }
 }

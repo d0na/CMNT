@@ -54,46 +54,39 @@ contract MutableAsset3a is MutableAsset {
     function setMethod(
         uint256 _param1,
         uint256 _param2,
-        uint256 _param3,
-        string memory _tokenURI
+        uint256 _param3
     )
         public
         evaluatedByCreator(
             msg.sender,
             abi.encodeWithSignature(
-                "setMethod(uint256,uint256,uint256, string)",
+                "setMethod(uint256,uint256,uint256)",
                 _param1,
                 _param2,
-                _param3,
-                _tokenURI
-            ),
+                _param3),
             address(this)
         )
         evaluatedByHolder(
             msg.sender,
             abi.encodeWithSignature(
-                "setMethod3(uint256,uint256,uint256, string)",
+                "setMethod(uint256,uint256,uint256)",
                 _param1,
                 _param2,
-                _param3,
-                _tokenURI
-            ),
+                _param3),
             address(this)
         )
     {
-        _setMethod(_param1, _param2, _param3, _tokenURI);
+        _setMethod(_param1, _param2, _param3);
     }
 
     function _setMethod(
         uint256 _param1,
         uint256 _param2,
-        uint256 _param3,
-        string memory _tokenURI
+        uint256 _param3
     ) public {
         jacketDescriptor.method1 = _param1;
         jacketDescriptor.method2 = _param2;
         jacketDescriptor.method3 = _param3;
-        setTokenURI(_tokenURI);
         emit StateChanged(jacketDescriptor);
     }
 }
