@@ -14,12 +14,14 @@ import "./HolderSmartPolicy.sol";
  * @author Francesco Donini <francesco.donini@phd.unipi.it>
  * @notice Mutable NFT contracat which maintain the association with the Jacket Asset
  */
-contract JacketNMT is NMT {
-    constructor()
+ contract JacketNMT is NMT {
+
+    constructor(address to)
         ERC721(
             "Mutable Jacket for a PUB Decentraland UniPi Project",
             "PUBMNTJACKET"
         )
+        Ownable(to)
     {}
 
     fallback() external {
@@ -59,7 +61,7 @@ contract JacketNMT is NMT {
         uint256 tokenId
     ) public view override returns (string memory) {
         // console.log("tokenId",tokenId);
-        _requireMinted(tokenId);
+        // _requireMinted(tokenId);
 
         // Retrieving the contract address of the asset
         address asset_contract = _intToAddress(tokenId);

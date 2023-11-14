@@ -23,8 +23,6 @@ contract MutableAsset3 is MutableAsset {
 
     //Jacket descriptor
     struct JacketDescriptor {
-        uint256 color;
-        bool sleeves;
         uint256 method1;
         uint256 method2;
         uint256 method3;

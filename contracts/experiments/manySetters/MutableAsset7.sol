@@ -62,14 +62,14 @@ contract MutableAsset7 is MutableAsset {
         evaluatedByCreator(
             msg.sender,
             abi.encodeWithSignature(
-                "setMethod1(uint256,string)",
+                "setMethod1(uint256)",
                 _param),
             address(this)
         )
         evaluatedByHolder(
             msg.sender,
             abi.encodeWithSignature(
-                "setMethod1(uint256,string)",
+                "setMethod1(uint256)",
                 _param),
             address(this)
         )
@@ -86,14 +86,14 @@ contract MutableAsset7 is MutableAsset {
         evaluatedByCreator(
             msg.sender,
             abi.encodeWithSignature(
-                "setMethod2(uint256,string)",
+                "setMethod2(uint256)",
                 _param),
             address(this)
         )
         evaluatedByHolder(
             msg.sender,
             abi.encodeWithSignature(
-                "setMethod2(uint256,string)",
+                "setMethod2(uint256)",
                 _param),
             address(this)
         )
@@ -110,14 +110,14 @@ contract MutableAsset7 is MutableAsset {
         evaluatedByCreator(
             msg.sender,
             abi.encodeWithSignature(
-                "setMethod3(uint256,string)",
+                "setMethod3(uint256)",
                 _param),
             address(this)
         )
         evaluatedByHolder(
             msg.sender,
             abi.encodeWithSignature(
-                "setMethod3(uint256,string)",
+                "setMethod3(uint256)",
                 _param),
             address(this)
         )
@@ -134,14 +134,14 @@ contract MutableAsset7 is MutableAsset {
         evaluatedByCreator(
             msg.sender,
             abi.encodeWithSignature(
-                "setMethod4(uint256,string)",
+                "setMethod4(uint256)",
                 _param),
             address(this)
         )
         evaluatedByHolder(
             msg.sender,
             abi.encodeWithSignature(
-                "setMethod4(uint256,string)",
+                "setMethod4(uint256)",
                 _param),
             address(this)
         )
@@ -158,14 +158,14 @@ contract MutableAsset7 is MutableAsset {
         evaluatedByCreator(
             msg.sender,
             abi.encodeWithSignature(
-                "setMethod5(uint256,string)",
+                "setMethod5(uint256)",
                 _param),
             address(this)
         )
         evaluatedByHolder(
             msg.sender,
             abi.encodeWithSignature(
-                "setMethod5(uint256,string)",
+                "setMethod5(uint256)",
                 _param),
             address(this)
         )
@@ -182,14 +182,14 @@ contract MutableAsset7 is MutableAsset {
         evaluatedByCreator(
             msg.sender,
             abi.encodeWithSignature(
-                "setMethod6(uint256,string)",
+                "setMethod6(uint256)",
                 _param),
             address(this)
         )
         evaluatedByHolder(
             msg.sender,
             abi.encodeWithSignature(
-                "setMethod6(uint256,string)",
+                "setMethod6(uint256)",
                 _param),
             address(this)
         )
@@ -206,14 +206,14 @@ contract MutableAsset7 is MutableAsset {
         evaluatedByCreator(
             msg.sender,
             abi.encodeWithSignature(
-                "setMethod7(uint256,string)",
+                "setMethod7(uint256)",
                 _param),
             address(this)
         )
         evaluatedByHolder(
             msg.sender,
             abi.encodeWithSignature(
-                "setMethod7(uint256,string)",
+                "setMethod7(uint256)",
                 _param),
             address(this)
         )

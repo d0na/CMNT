@@ -33,7 +33,7 @@ describe("JacketNMT", function () {
     // console.log(account1.address)
     // console.log(account2.address)
     const JacketNMT = await ethers.getContractFactory("JacketNMT");
-    const jacketNMT = await JacketNMT.deploy();
+    const jacketNMT = await JacketNMT.deploy(owner.address);
 
     const CreatorSmartPolicy = await ethers.getContractFactory(
       "CreatorSmartPolicy"

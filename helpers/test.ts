@@ -69,7 +69,7 @@ export async function deployJacketAssetWithHolderPolicy() {
 
   // JacketNMT
   const JacketNMT = await ethers.getContractFactory("JacketNMT");
-  const jacketNMT = await JacketNMT.deploy();
+  const jacketNMT = await JacketNMT.deploy(creator.address);
   // HolderSmartPolicy
   const HolderSmartPolicy = await ethers.getContractFactory(
     "HolderSmartPolicy"
@@ -114,7 +114,7 @@ export async function deployMutableAssetWithManySetters() {
 
   // JacketNMT
   const JacketNMT = await ethers.getContractFactory("JacketNMT");
-  const jacketNMT = await JacketNMT.deploy();
+  const jacketNMT = await JacketNMT.deploy(creator.address);
   // HolderSmartPolicy
   const MSExpHolderSmartPolicy = await ethers.getContractFactory(
     "MSExpHolderSmartPolicy"
@@ -125,16 +125,6 @@ export async function deployMutableAssetWithManySetters() {
     "MSExpCreatorSmartPolicy"
   );
   const creatorSmartPolicy = await MSExpCreatorSmartPolicy.deploy();
-
-  //JacketMutableAsset
-  const JacketMutableAsset = await ethers.getContractFactory(
-    "JacketMutableAsset"
-  );
-  const jacketMutableAsset = await JacketMutableAsset.deploy(
-    jacketNMT.address,
-    creatorSmartPolicy.address,
-    holderSmartPolicy.address
-  );
 
   const MutableAsset1 = await ethers.getContractFactory("MutableAsset1");
   const mutableAsset1 = await MutableAsset1.deploy(jacketNMT.address,
@@ -179,7 +169,6 @@ export async function deployMutableAssetWithManySetters() {
 
   return {
     jacketNMT,
-    jacketMutableAsset,
     creator,
     buyer,
     tailor1,
@@ -209,7 +198,7 @@ export async function deployMutableAssetWithManyParams() {
 
   // JacketNMT
   const JacketNMT = await ethers.getContractFactory("JacketNMT");
-  const jacketNMT = await JacketNMT.deploy();
+  const jacketNMT = await JacketNMT.deploy(creator.address);
   // HolderSmartPolicy
   const MPExpHolderSmartPolicy = await ethers.getContractFactory(
     "MPExpHolderSmartPolicy"
