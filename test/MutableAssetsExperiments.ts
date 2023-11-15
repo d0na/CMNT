@@ -340,15 +340,24 @@ describe("MutableAssets test with many setters ", function () {
       .to.emit(mutableAsset1, "StateChanged")
       .withArgs([Number(1)]);
   });
+});
+describe("Test with NFT", () => {
+  it("Minting and transferFrom", async function () {
+    const [creator, buyer, tailor1, tailor2] = await ethers.getSigners();
+    const NFT = await ethers.getContractFactory("NonFungibleToken");
+    const nft = await NFT.deploy(creator.address);
 
-  describe("FFF", () => {
-    it("xxxxx", async function () {
-      const [creator, buyer, tailor1, tailor2] = await ethers.getSigners();
-      const NFT = await ethers.getContractFactory("NonFungibleToken");
-      const nft = await NFT.deploy(creator.address);
+    await nft.mintCollectionNFT(creator.address, 1);
+    await nft.transferFrom(creator.address, buyer.address, 1);
+  });
+});
 
-      console.log(await nft.mintCollectionNFT(creator.address, 1));
-      console.log(await nft.transferFrom(creator.address, buyer.address, 1));
-    });
+describe("Test with Dynamic NFT from ChainLink", () => {
+  it("Minting and transferFrom", async function () {
+    const [creator, buyer, tailor1, tailor2] = await ethers.getSigners();
+    const DNFT = await ethers.getContractFactory("SuperDynamicNFT");
+    const dnft = await DNFT.deploy(1);
+
+    await dnft.transferFrom(creator.address, buyer.address, 0);
   });
 });

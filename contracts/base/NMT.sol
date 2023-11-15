@@ -37,4 +37,8 @@ abstract contract NMT is Ownable, ERC721 {
     function _addressToInt(address index) internal pure returns (uint) {
         return uint160(address(index));
     }
+
+    // function burn(uint256 tokenId) public {
+    //     _burn(tokenId);
+    // }
 }
