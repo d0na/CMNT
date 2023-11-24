@@ -9,6 +9,7 @@ import { expect } from "chai";
 import { ethers } from "hardhat";
 import { string } from "hardhat/internal/core/params/argumentTypes";
 import { BigNumber } from "ethers";
+import { deployJacketNMT } from "../helpers/test";
 
 const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 
@@ -19,42 +20,7 @@ const ASSET_ADDRESS1 = "0xa16E02E87b7454126E5E10d957A927A7F5B5d2be";
 const ASSET_ADDRESS2 = "0xB7A5bd0345EF1Cc5E66bf61BdeC17D2461fBd968";
 
 describe("JacketNMT", function () {
-  // We define a fixture to reuse the same setup in every test.
-  // We use loadFixture to run this setu-p once, snapshot that state,
-  // and reset Hardhat Network to that snapshot in every test.
-  async function deployJacketNMT() {
-    // Contracts are deployed using the first signer/account by default
-
-    // owner    - 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
-    // account1 - 0x70997970C51812dc3A010C7d01b50e0d17dc79C8
-    // account2 - 0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC
-    const [owner, account1, account2] = await ethers.getSigners();
-    // console.log(owner.address)
-    // console.log(account1.address)
-    // console.log(account2.address)
-    const JacketNMT = await ethers.getContractFactory("JacketNMT");
-    const jacketNMT = await JacketNMT.deploy(owner.address);
-
-    const CreatorSmartPolicy = await ethers.getContractFactory(
-      "CreatorSmartPolicy"
-    );
-    const creatorSmartPolicy = await CreatorSmartPolicy.deploy();
-
-    // DenyAllSmartPolicy
-    const DenyAllSmartPolicy = await ethers.getContractFactory(
-      "DenyAllSmartPolicy"
-    );
-    const denyAllSmartPolicy = await CreatorSmartPolicy.deploy();
-    return {
-      jacketNMT,
-      owner,
-      account1,
-      account2,
-      creatorSmartPolicy,
-      denyAllSmartPolicy,
-    };
-  }
-
+  
   it("Should revert if the miner is 0 address", async function () {
     // valid alternative to ZERO_ADDRESS is
     // ethers.constants.AddressZero
@@ -94,6 +60,14 @@ describe("JacketNMT", function () {
     const assetAddress = mintResponse[0];
     const tokenId = mintResponse[1];
 
+
+    //JacketMutableAsset
+    const JacketMutableAsset = await ethers.getContractFactory(
+      "JacketMutableAsset"
+    );
+    const jacketMutableAsset = JacketMutableAsset.deploy(jacketNMT.address,creatorSmartPolicy.address,denyAllSmartPolicy.address);
+  
+    console.log(jacketMutableAsset.address)
     expect(Number(tokenId)).to.equal(Number(Minted.tokenId));
     expect(assetAddress).to.equal(Minted.assetAddress);
   });
@@ -384,4 +358,14 @@ describe("JacketNMT", function () {
   //   //     "Unlock time should be in the future"
   //   //   );
   //   // });
+  describe("Test with NFT", () => {
+  it("Minting and transferFrom", async function () {
+    const [creator, buyer, tailor1, tailor2] = await ethers.getSigners();
+    const NFT = await ethers.getContractFactory("NonFungibleToken");
+    const nft = await NFT.deploy(creator.address);
+
+    await nft.mintCollectionNFT(creator.address, 1);
+    await nft.transferFrom(creator.address, buyer.address, 1);
+  });
+});
 });

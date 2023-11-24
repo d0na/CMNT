@@ -69,7 +69,7 @@ describe("JacketMutableAsset", function () {
         )
       ).to.be.equal(true);
     });
-    it("Should evaluate successfully an action equal to setColor(1,url) with the DANY ALL policy", async function () {
+    it("Should evaluate successfully an action equal to setColor(1,url) with the DENY ALL policy", async function () {
       const { denyAllSmartPolicy, creator, jacketMutableAsset } =
         await loadFixture(deployJacketAsset);
        expect(

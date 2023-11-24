@@ -2,6 +2,39 @@ import { loadFixture } from "@nomicfoundation/hardhat-network-helpers";
 import { expect } from "chai";
 import { ethers } from "hardhat";
 
+export async function deployJacketNMT() {
+    // Contracts are deployed using the first signer/account by default
+
+    // owner    - 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+    // account1 - 0x70997970C51812dc3A010C7d01b50e0d17dc79C8
+    // account2 - 0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC
+    const [owner, account1, account2] = await ethers.getSigners();
+    // console.log(owner.address)
+    // console.log(account1.address)
+    // console.log(account2.address)
+    const JacketNMT = await ethers.getContractFactory("JacketNMT");
+    const jacketNMT = await JacketNMT.deploy(owner.address);
+
+    const CreatorSmartPolicy = await ethers.getContractFactory(
+      "CreatorSmartPolicy"
+    );
+    const creatorSmartPolicy = await CreatorSmartPolicy.deploy();
+
+    // DenyAllSmartPolicy
+    const DenyAllSmartPolicy = await ethers.getContractFactory(
+      "DenyAllSmartPolicy"
+    );
+    const denyAllSmartPolicy = await CreatorSmartPolicy.deploy();
+    return {
+      jacketNMT,
+      owner,
+      account1,
+      account2,
+      creatorSmartPolicy,
+      denyAllSmartPolicy,
+    };
+  }
+
 export async function deployJacketAsset() {
   // Contracts are deployed using the first signer/account by default
   const [creator, buyer, tailor1, tailor2] = await ethers.getSigners();
@@ -12,7 +45,7 @@ export async function deployJacketAsset() {
 
   // JacketNMT
   const JacketNMT = await ethers.getContractFactory("JacketNMT");
-  const jacketNMT = await JacketNMT.deploy();
+  const jacketNMT = await JacketNMT.deploy(creator.address);
   // HolderSmartPolicy
   const HolderSmartPolicy = await ethers.getContractFactory(
     "HolderSmartPolicy"
