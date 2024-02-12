@@ -4,8 +4,12 @@ coverage
 coverage.json
 typechain
 typechain-types
-
+gas*
 # Hardhat files
 cache
 artifacts
+types
+build
+.DS_Store
+
 

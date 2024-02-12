@@ -4,7 +4,14 @@
   "description": "Composable Mutable MNT",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "npx hardhat test",
+    "test:nmt": "npx hardhat test --grep JacketNMT",
+    "test:asset": "npx hardhat test test/JacketMutableAsset.ts",
+    "test:success": "npx hardhat test test/JacketMutableAssetSuccess.ts",
+    "test:failure": "npx hardhat test test/JacketMutableAssetFailure.ts",
+    "deploy": "npx hardhat deploy",
+    "compile": "npx hardhat compile",
+    "run": "npx hardhat run"
   },
   "repository": {
     "type": "git",
@@ -17,6 +24,7 @@
   },
   "homepage": "https://github.com/d0na/CMNT#readme",
   "devDependencies": {
+    "@chainlink/contracts": "^0.8.0",
     "@ethersproject/abi": "^5.7.0",
     "@ethersproject/providers": "^5.7.2",
     "@nomicfoundation/hardhat-chai-matchers": "^1.0.6",
@@ -43,7 +51,7 @@
     "typescript": "^5.0.4"
   },
   "dependencies": {
-    "@openzeppelin/contracts": "^4.9.0",
+    "@openzeppelin/contracts": "^5.0.0",
     "openzeppelin-solidity": "^4.8.1"
   }
 }
