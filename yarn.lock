@@ -86,7 +86,13 @@
     bufio "^1.0.7"
     chai "^4.3.4"
 
-"@ethereumjs/common@^2.5.0", "@ethereumjs/common@2.5.0":
+"@ethereumjs/common@^2.5.0", "@ethereumjs/common@^2.6.4":
+  version "2.6.5"
+  dependencies:
+    crc-32 "^1.2.0"
+    ethereumjs-util "^7.1.5"
+
+"@ethereumjs/common@2.5.0":
   version "2.5.0"
   resolved "http://npm.tools.nic.it/@ethereumjs/common/-/common-2.5.0.tgz"
   integrity sha512-DEHjW6e38o+JmB/NO3GZBpW4lpaiBpkFgXF6jLcJ6gETBYpEyaA5nTimsWBUJR3Vmtm/didUEbNjajskugZORg==
@@ -99,7 +105,13 @@
   resolved "http://npm.tools.nic.it/@ethereumjs/rlp/-/rlp-4.0.1.tgz"
   integrity sha512-tqsQiBQDQdmPWE1xkkBq4rlSW5QZpLOUJ5RJh2/9fug+q9tnUhuZoVLk7s0scUIKTOzEtR72DFBXI4WiZcMpvw==
 
-"@ethereumjs/tx@^3.3.2", "@ethereumjs/tx@3.3.2":
+"@ethereumjs/tx@^3.3.2":
+  version "3.5.2"
+  dependencies:
+    "@ethereumjs/common" "^2.6.4"
+    ethereumjs-util "^7.1.5"
+
+"@ethereumjs/tx@3.3.2":
   version "3.3.2"
   resolved "http://npm.tools.nic.it/@ethereumjs/tx/-/tx-3.3.2.tgz"
   integrity sha512-6AaJhwg4ucmwTvw/1qLaZUX5miWrwZ4nLOUsKyb/HtzS3BMw/CasKhdi1ims9mBKeK9sOJCH4qGKOBGyJCeeog==
@@ -533,7 +545,13 @@
   resolved "http://npm.tools.nic.it/@noble/hashes/-/hashes-1.2.0.tgz"
   integrity sha512-FZfhjEDbT5GRswV3C6uvLPHMiVD6lQBmpoX5+eSiPaMTXte/IKqI5dykDxzZB/WBeK/CDuQRBWarPdi3FNY2zQ==
 
-"@noble/hashes@~1.3.0", "@noble/hashes@~1.3.1", "@noble/hashes@1.3.1":
+"@noble/hashes@~1.3.0":
+  version "1.3.2"
+
+"@noble/hashes@~1.3.1":
+  version "1.3.2"
+
+"@noble/hashes@1.3.1":
   version "1.3.1"
   resolved "http://npm.tools.nic.it/@noble/hashes/-/hashes-1.3.1.tgz"
   integrity sha512-EbqwksQwz9xDRGfDST86whPBgM65E0OH/pCgqW0GBVzO22bNE+NuIbeTb714+IfSjU3aRk47EUvXIb5bTsenKA==
@@ -721,10 +739,8 @@
   resolved "http://npm.tools.nic.it/@nomicfoundation/hardhat-toolbox/-/hardhat-toolbox-1.0.2.tgz"
   integrity sha512-8CEgWSKUK2aMit+76Sez8n7UB0Ze1lwT+LcWxj4EFP30lQWOwOws048t6MTPfThH0BlSWjC6hJRr0LncIkc1Sw==
 
-"@nomicfoundation/solidity-analyzer-darwin-arm64@0.1.1":
+"@nomicfoundation/solidity-analyzer-darwin-x64@0.1.1":
   version "0.1.1"
-  resolved "http://npm.tools.nic.it/@nomicfoundation/solidity-analyzer-darwin-arm64/-/solidity-analyzer-darwin-arm64-0.1.1.tgz"
-  integrity sha512-KcTodaQw8ivDZyF+D76FokN/HdpgGpfjc/gFCImdLUyqB6eSWVaZPazMbeAjmfhx3R0zm/NYVzxwAokFKgrc0w==
 
 "@nomicfoundation/solidity-analyzer@^0.1.0":
   version "0.1.1"
@@ -904,12 +920,7 @@
   resolved "http://npm.tools.nic.it/@sindresorhus/is/-/is-0.14.0.tgz"
   integrity sha512-9NET910DNaIPngYnLLPeg+Ogzqsi9uM4mSboU5y6p8S5DzMTVEsJZrawi+BoDNUVBa2DhJqQYUFvMDfgU062LQ==
 
-"@sindresorhus/is@^4.0.0":
-  version "4.6.0"
-  resolved "http://npm.tools.nic.it/@sindresorhus/is/-/is-4.6.0.tgz"
-  integrity sha512-t09vSN3MdfsyCHoFcTRCH/iUtG7OJ0CsjzB8cjAmKc/va/kIgeDI/TxsigdncE/4be734m0cvIYwNaV4i2XqAw==
-
-"@sindresorhus/is@^4.6.0":
+"@sindresorhus/is@^4.0.0", "@sindresorhus/is@^4.6.0":
   version "4.6.0"
   resolved "http://npm.tools.nic.it/@sindresorhus/is/-/is-4.6.0.tgz"
   integrity sha512-t09vSN3MdfsyCHoFcTRCH/iUtG7OJ0CsjzB8cjAmKc/va/kIgeDI/TxsigdncE/4be734m0cvIYwNaV4i2XqAw==
@@ -1008,14 +1019,7 @@
   dependencies:
     fs-extra "^9.1.0"
 
-"@types/bn.js@^4.11.3":
-  version "4.11.6"
-  resolved "http://npm.tools.nic.it/@types/bn.js/-/bn.js-4.11.6.tgz"
-  integrity sha512-pqr857jrp2kPuO9uRjZ3PwnJTjoQy+fcdxvBTvHm6dkmEL9q+hDD/2j/0ELOBPtPnS8LjCX0gI9nbl8lVkadpg==
-  dependencies:
-    "@types/node" "*"
-
-"@types/bn.js@^4.11.5":
+"@types/bn.js@^4.11.3", "@types/bn.js@^4.11.5":
   version "4.11.6"
   resolved "http://npm.tools.nic.it/@types/bn.js/-/bn.js-4.11.6.tgz"
   integrity sha512-pqr857jrp2kPuO9uRjZ3PwnJTjoQy+fcdxvBTvHm6dkmEL9q+hDD/2j/0ELOBPtPnS8LjCX0gI9nbl8lVkadpg==
@@ -1166,7 +1170,10 @@
   resolved "http://npm.tools.nic.it/@yarnpkg/lockfile/-/lockfile-1.1.0.tgz"
   integrity sha512-GpSwvyXOcOOlV70vbnzjj4fW5xW/FdUF6nQEt1ENy7m4ZCczi1+/buVUPAqmGfqznsORNFzUMjctTIp8a9tuCQ==
 
-abbrev@1, abbrev@1.0.x:
+abbrev@1:
+  version "1.1.1"
+
+abbrev@1.0.x:
   version "1.0.9"
   resolved "http://npm.tools.nic.it/abbrev/-/abbrev-1.0.9.tgz"
   integrity sha1-kbR5JYinc4wl813W9jdSovh3YTU=
@@ -1196,7 +1203,7 @@ abstract-leveldown@^2.4.1:
   dependencies:
     xtend "~4.0.0"
 
-abstract-leveldown@^5.0.0:
+abstract-leveldown@^5.0.0, abstract-leveldown@~5.0.0:
   version "5.0.0"
   resolved "http://npm.tools.nic.it/abstract-leveldown/-/abstract-leveldown-5.0.0.tgz"
   integrity sha512-5mU5P1gXtsMIXg65/rsYGsi93+MlogXZ9FA8JnwKurHQg64bfXwGYVdVdijNTVNOlAsuIiOwHdvFFD5JqCJQ7A==
@@ -1214,13 +1221,6 @@ abstract-leveldown@~2.7.1:
   version "2.7.2"
   resolved "http://npm.tools.nic.it/abstract-leveldown/-/abstract-leveldown-2.7.2.tgz"
   integrity sha512-+OVvxH2rHVEhWLdbudP6p0+dNMXu8JA1CbhP19T8paTYAcX7oJ4OVjT+ZUVpv7mITxXHqDMej+GdqXBmXkw09w==
-  dependencies:
-    xtend "~4.0.0"
-
-abstract-leveldown@~5.0.0:
-  version "5.0.0"
-  resolved "http://npm.tools.nic.it/abstract-leveldown/-/abstract-leveldown-5.0.0.tgz"
-  integrity sha512-5mU5P1gXtsMIXg65/rsYGsi93+MlogXZ9FA8JnwKurHQg64bfXwGYVdVdijNTVNOlAsuIiOwHdvFFD5JqCJQ7A==
   dependencies:
     xtend "~4.0.0"
 
@@ -1353,14 +1353,7 @@ ansi-styles@^3.2.1:
   dependencies:
     color-convert "^1.9.0"
 
-ansi-styles@^4.0.0:
-  version "4.3.0"
-  resolved "http://npm.tools.nic.it/ansi-styles/-/ansi-styles-4.3.0.tgz"
-  integrity sha512-zbB9rCJAT1rbjiVDb2hqKFHNYLxgtk8NURxZ3IZwD3F6NtxbXZQCnnSi1Lkx+IDohdPlFp222wVALIheZJQSEg==
-  dependencies:
-    color-convert "^2.0.1"
-
-ansi-styles@^4.1.0:
+ansi-styles@^4.0.0, ansi-styles@^4.1.0:
   version "4.3.0"
   resolved "http://npm.tools.nic.it/ansi-styles/-/ansi-styles-4.3.0.tgz"
   integrity sha512-zbB9rCJAT1rbjiVDb2hqKFHNYLxgtk8NURxZ3IZwD3F6NtxbXZQCnnSi1Lkx+IDohdPlFp222wVALIheZJQSEg==
@@ -1538,17 +1531,22 @@ async@^1.4.2:
   resolved "http://npm.tools.nic.it/async/-/async-1.5.2.tgz"
   integrity sha1-7GphrlZIDAw8skHJVhjiCJL5Zyo=
 
-async@^2.0.1, async@^2.1.2, async@^2.4.0, async@^2.5.0, async@^2.6.1, async@2.6.2:
-  version "2.6.2"
-  resolved "http://npm.tools.nic.it/async/-/async-2.6.2.tgz"
-  integrity sha512-H1qVYh1MYhEEFLsP97cVKqCGo7KfCyTt6uEWqsTBr9SO84oK9Uwbyd/yCW+6rKJLHksBNUVWZDAjfS+Ccx0Bbg==
+async@^2.0.1, async@^2.1.2, async@^2.4.0, async@^2.5.0, async@^2.6.1:
+  version "2.6.4"
   dependencies:
-    lodash "^4.17.11"
+    lodash "^4.17.14"
 
 async@1.x:
   version "1.5.2"
   resolved "http://npm.tools.nic.it/async/-/async-1.5.2.tgz"
   integrity sha1-7GphrlZIDAw8skHJVhjiCJL5Zyo=
+
+async@2.6.2:
+  version "2.6.2"
+  resolved "http://npm.tools.nic.it/async/-/async-2.6.2.tgz"
+  integrity sha512-H1qVYh1MYhEEFLsP97cVKqCGo7KfCyTt6uEWqsTBr9SO84oK9Uwbyd/yCW+6rKJLHksBNUVWZDAjfS+Ccx0Bbg==
+  dependencies:
+    lodash "^4.17.11"
 
 asynckit@^0.4.0:
   version "0.4.0"
@@ -2193,27 +2191,22 @@ bluebird@^3.5.0:
   resolved "http://npm.tools.nic.it/bluebird/-/bluebird-3.7.2.tgz"
   integrity sha512-XpNj6GDQzdfW+r2Wnn7xiSAd7TM3jzkxGXBGTtWKuSXv1xUV+azxAm8jdWZN06QTQk+2N2XB9jRDkvbmQmcRtg==
 
-bn.js@^4.0.0:
+bn.js@^4.0.0, bn.js@^4.1.0, bn.js@^4.10.0, bn.js@^4.11.0, bn.js@^4.11.6, bn.js@^4.11.8, bn.js@^4.11.9, bn.js@^4.8.0:
   version "4.12.0"
   resolved "http://npm.tools.nic.it/bn.js/-/bn.js-4.12.0.tgz"
   integrity sha512-c98Bf3tPniI+scsdk237ku1Dc3ujXQTSgyiPUDEOe7tRkhrqridvh8klBv0HCEso1OLOYcHuCv/cS6DNxKH+ZA==
 
-bn.js@^4.1.0:
-  version "4.12.0"
-  resolved "http://npm.tools.nic.it/bn.js/-/bn.js-4.12.0.tgz"
-  integrity sha512-c98Bf3tPniI+scsdk237ku1Dc3ujXQTSgyiPUDEOe7tRkhrqridvh8klBv0HCEso1OLOYcHuCv/cS6DNxKH+ZA==
+bn.js@^5.0.0:
+  version "5.2.1"
+  resolved "http://npm.tools.nic.it/bn.js/-/bn.js-5.2.1.tgz"
+  integrity sha512-eXRvHzWyYPBuB4NBy0cmYQjGitUrtqwbvlzP3G6VFnNRbsZQIxQ10PbKKHt8gZ/HW/D/747aDl+QkDqg3KQLMQ==
 
-bn.js@^4.10.0, bn.js@^4.11.0, bn.js@^4.11.8, bn.js@^4.8.0:
-  version "4.12.0"
-  resolved "http://npm.tools.nic.it/bn.js/-/bn.js-4.12.0.tgz"
-  integrity sha512-c98Bf3tPniI+scsdk237ku1Dc3ujXQTSgyiPUDEOe7tRkhrqridvh8klBv0HCEso1OLOYcHuCv/cS6DNxKH+ZA==
+bn.js@^5.1.2, bn.js@^5.1.3, bn.js@^5.2.1:
+  version "5.2.1"
+  resolved "http://npm.tools.nic.it/bn.js/-/bn.js-5.2.1.tgz"
+  integrity sha512-eXRvHzWyYPBuB4NBy0cmYQjGitUrtqwbvlzP3G6VFnNRbsZQIxQ10PbKKHt8gZ/HW/D/747aDl+QkDqg3KQLMQ==
 
-bn.js@^4.11.6, bn.js@^4.11.9:
-  version "4.12.0"
-  resolved "http://npm.tools.nic.it/bn.js/-/bn.js-4.12.0.tgz"
-  integrity sha512-c98Bf3tPniI+scsdk237ku1Dc3ujXQTSgyiPUDEOe7tRkhrqridvh8klBv0HCEso1OLOYcHuCv/cS6DNxKH+ZA==
-
-bn.js@^5.0.0, bn.js@^5.1.2, bn.js@^5.1.3, bn.js@^5.2.0, bn.js@^5.2.1:
+bn.js@^5.2.0:
   version "5.2.1"
   resolved "http://npm.tools.nic.it/bn.js/-/bn.js-5.2.1.tgz"
   integrity sha512-eXRvHzWyYPBuB4NBy0cmYQjGitUrtqwbvlzP3G6VFnNRbsZQIxQ10PbKKHt8gZ/HW/D/747aDl+QkDqg3KQLMQ==
@@ -2893,7 +2886,10 @@ core-js@^2.4.0, core-js@^2.5.0:
   resolved "http://npm.tools.nic.it/core-js/-/core-js-2.6.12.tgz"
   integrity sha512-Kb2wC0fvsWfQrgk8HU5lW6U/Lcs8+9aaYcy4ZFc6DDlo4nZ7n70dEgE5rtR0oG6ufKDUnrwfWL1mXR5ljDatrQ==
 
-core-util-is@~1.0.0, core-util-is@1.0.2:
+core-util-is@~1.0.0:
+  version "1.0.3"
+
+core-util-is@1.0.2:
   version "1.0.2"
   resolved "http://npm.tools.nic.it/core-util-is/-/core-util-is-1.0.2.tgz"
   integrity sha1-tf1UIgqivFq1eqtxQMlAdUUDwac=
@@ -3122,12 +3118,7 @@ defer-to-connect@^1.0.1:
   resolved "http://npm.tools.nic.it/defer-to-connect/-/defer-to-connect-1.1.3.tgz"
   integrity sha512-0ISdNousHvZT2EiFlZeZAHBUvSxmKswVCEf8hW7KWgG4a8MVEu/3Vb6uWYozkjylyCxe0JBIiRB1jV45S70WVQ==
 
-defer-to-connect@^2.0.0:
-  version "2.0.1"
-  resolved "http://npm.tools.nic.it/defer-to-connect/-/defer-to-connect-2.0.1.tgz"
-  integrity sha512-4tvttepXG1VaYGrRibk5EwJd1t4udunSOVMdLSAL6mId1ix438oPwPZMALY41FCijukO1L0twNcGsdzS7dHgDg==
-
-defer-to-connect@^2.0.1:
+defer-to-connect@^2.0.0, defer-to-connect@^2.0.1:
   version "2.0.1"
   resolved "http://npm.tools.nic.it/defer-to-connect/-/defer-to-connect-2.0.1.tgz"
   integrity sha512-4tvttepXG1VaYGrRibk5EwJd1t4udunSOVMdLSAL6mId1ix438oPwPZMALY41FCijukO1L0twNcGsdzS7dHgDg==
@@ -3734,8 +3725,7 @@ ethereum-cryptography@^2.1.2:
 
 ethereumjs-abi@^0.6.8, ethereumjs-abi@0.6.8, "ethereumjs-abi@git+https://github.com/ethereumjs/ethereumjs-abi.git":
   version "0.6.8"
-  resolved "git+ssh://git@github.com/ethereumjs/ethereumjs-abi.git"
-  integrity sha512-BbiC0tFbBcO4JgBdqr/cHzKX+SDmm64gkslLHW+gOzL4iVi7NTpEQYq2FSBykx+/Naao3LnpHh+H+zYJSTO3yg==
+  resolved "git+ssh://git@github.com/ethereumjs/ethereumjs-abi.git#ee3994657fa7a427238e6ba92a84d0b529bbcde0"
   dependencies:
     bn.js "^4.11.8"
     ethereumjs-util "^6.0.0"
@@ -3799,18 +3789,7 @@ ethereumjs-block@^1.6.0:
     ethereumjs-util "^5.0.0"
     merkle-patricia-tree "^2.1.2"
 
-ethereumjs-block@^2.2.2, ethereumjs-block@~2.2.2, ethereumjs-block@2.2.2:
-  version "2.2.2"
-  resolved "http://npm.tools.nic.it/ethereumjs-block/-/ethereumjs-block-2.2.2.tgz"
-  integrity sha512-2p49ifhek3h2zeg/+da6XpdFR3GlqY3BIEiqxGF8j9aSRIgkb7M1Ky+yULBKJOu8PAZxfhsYA+HxUk2aCQp3vg==
-  dependencies:
-    async "^2.0.1"
-    ethereumjs-common "^1.5.0"
-    ethereumjs-tx "^2.1.1"
-    ethereumjs-util "^5.0.0"
-    merkle-patricia-tree "^2.1.2"
-
-ethereumjs-block@~2.2.0:
+ethereumjs-block@^2.2.2, ethereumjs-block@~2.2.0, ethereumjs-block@~2.2.2, ethereumjs-block@2.2.2:
   version "2.2.2"
   resolved "http://npm.tools.nic.it/ethereumjs-block/-/ethereumjs-block-2.2.2.tgz"
   integrity sha512-2p49ifhek3h2zeg/+da6XpdFR3GlqY3BIEiqxGF8j9aSRIgkb7M1Ky+yULBKJOu8PAZxfhsYA+HxUk2aCQp3vg==
@@ -3837,7 +3816,10 @@ ethereumjs-blockchain@^4.0.3:
     rlp "^2.2.2"
     semaphore "^1.1.0"
 
-ethereumjs-common@^1.1.0, ethereumjs-common@^1.3.2, ethereumjs-common@^1.5.0, ethereumjs-common@1.5.0:
+ethereumjs-common@^1.1.0, ethereumjs-common@^1.3.2, ethereumjs-common@^1.5.0:
+  version "1.5.2"
+
+ethereumjs-common@1.5.0:
   version "1.5.0"
   resolved "http://npm.tools.nic.it/ethereumjs-common/-/ethereumjs-common-1.5.0.tgz"
   integrity sha512-SZOjgK1356hIY7MRj3/ma5qtfr/4B5BL+G4rP/XSMYr2z1H5el4RX5GReYCKmQmYI/nSBmRnwrZ17IfHuG0viQ==
@@ -3850,7 +3832,15 @@ ethereumjs-tx@^1.1.1, ethereumjs-tx@^1.2.0, ethereumjs-tx@^1.2.2, ethereumjs-tx@
     ethereum-common "^0.0.18"
     ethereumjs-util "^5.0.0"
 
-ethereumjs-tx@^2.1.1, ethereumjs-tx@^2.1.2, ethereumjs-tx@2.1.2:
+ethereumjs-tx@^2.1.1:
+  version "2.1.2"
+  resolved "http://npm.tools.nic.it/ethereumjs-tx/-/ethereumjs-tx-2.1.2.tgz"
+  integrity sha512-zZEK1onCeiORb0wyCXUvg94Ve5It/K6GD1K+26KfFKodiBiS6d9lfCXlUKGBBdQ+bv7Day+JK0tj1K+BeNFRAw==
+  dependencies:
+    ethereumjs-common "^1.5.0"
+    ethereumjs-util "^6.0.0"
+
+ethereumjs-tx@^2.1.2, ethereumjs-tx@2.1.2:
   version "2.1.2"
   resolved "http://npm.tools.nic.it/ethereumjs-tx/-/ethereumjs-tx-2.1.2.tgz"
   integrity sha512-zZEK1onCeiORb0wyCXUvg94Ve5It/K6GD1K+26KfFKodiBiS6d9lfCXlUKGBBdQ+bv7Day+JK0tj1K+BeNFRAw==
@@ -3895,7 +3885,7 @@ ethereumjs-util@^5.2.0:
     rlp "^2.0.0"
     safe-buffer "^5.1.1"
 
-ethereumjs-util@^6.0.0:
+ethereumjs-util@^6.0.0, ethereumjs-util@^6.2.0, ethereumjs-util@6.2.1:
   version "6.2.1"
   resolved "http://npm.tools.nic.it/ethereumjs-util/-/ethereumjs-util-6.2.1.tgz"
   integrity sha512-W2Ktez4L01Vexijrm5EB6w7dg4n/TgpoYU4avuT5T3Vmnw/eCRtiBrJfQYS/DCSvDIOLn2k57GcHdeBcgVxAqw==
@@ -3921,19 +3911,6 @@ ethereumjs-util@^6.1.0:
     ethjs-util "0.1.6"
     rlp "^2.2.3"
 
-ethereumjs-util@^6.2.0:
-  version "6.2.1"
-  resolved "http://npm.tools.nic.it/ethereumjs-util/-/ethereumjs-util-6.2.1.tgz"
-  integrity sha512-W2Ktez4L01Vexijrm5EB6w7dg4n/TgpoYU4avuT5T3Vmnw/eCRtiBrJfQYS/DCSvDIOLn2k57GcHdeBcgVxAqw==
-  dependencies:
-    "@types/bn.js" "^4.11.3"
-    bn.js "^4.11.0"
-    create-hash "^1.1.2"
-    elliptic "^6.5.2"
-    ethereum-cryptography "^0.1.3"
-    ethjs-util "0.1.6"
-    rlp "^2.2.3"
-
 ethereumjs-util@^6.2.1:
   version "6.2.1"
   resolved "http://npm.tools.nic.it/ethereumjs-util/-/ethereumjs-util-6.2.1.tgz"
@@ -3947,7 +3924,7 @@ ethereumjs-util@^6.2.1:
     ethjs-util "0.1.6"
     rlp "^2.2.3"
 
-ethereumjs-util@^7.0.10, ethereumjs-util@^7.0.2, ethereumjs-util@^7.1.0, ethereumjs-util@^7.1.1, ethereumjs-util@^7.1.2, ethereumjs-util@^7.1.4, ethereumjs-util@^7.1.5:
+ethereumjs-util@^7.0.10, ethereumjs-util@^7.1.0:
   version "7.1.5"
   resolved "http://npm.tools.nic.it/ethereumjs-util/-/ethereumjs-util-7.1.5.tgz"
   integrity sha512-SDl5kKrQAudFBUe5OJM9Ac6WmMyYmXX/6sTmLZ3ffG2eY6ZIGBes3pEDxNN6V72WyOw4CPD5RomKdsa8DAAwLg==
@@ -3958,54 +3935,40 @@ ethereumjs-util@^7.0.10, ethereumjs-util@^7.0.2, ethereumjs-util@^7.1.0, ethereu
     ethereum-cryptography "^0.1.3"
     rlp "^2.2.4"
 
-ethereumjs-util@6.2.1:
-  version "6.2.1"
-  resolved "http://npm.tools.nic.it/ethereumjs-util/-/ethereumjs-util-6.2.1.tgz"
-  integrity sha512-W2Ktez4L01Vexijrm5EB6w7dg4n/TgpoYU4avuT5T3Vmnw/eCRtiBrJfQYS/DCSvDIOLn2k57GcHdeBcgVxAqw==
+ethereumjs-util@^7.0.2:
+  version "7.1.5"
+  resolved "http://npm.tools.nic.it/ethereumjs-util/-/ethereumjs-util-7.1.5.tgz"
+  integrity sha512-SDl5kKrQAudFBUe5OJM9Ac6WmMyYmXX/6sTmLZ3ffG2eY6ZIGBes3pEDxNN6V72WyOw4CPD5RomKdsa8DAAwLg==
   dependencies:
-    "@types/bn.js" "^4.11.3"
-    bn.js "^4.11.0"
+    "@types/bn.js" "^5.1.0"
+    bn.js "^5.1.2"
     create-hash "^1.1.2"
-    elliptic "^6.5.2"
     ethereum-cryptography "^0.1.3"
-    ethjs-util "0.1.6"
-    rlp "^2.2.3"
+    rlp "^2.2.4"
 
-ethereumjs-vm@^2.1.0:
-  version "2.6.0"
-  resolved "http://npm.tools.nic.it/ethereumjs-vm/-/ethereumjs-vm-2.6.0.tgz"
-  integrity sha512-r/XIUik/ynGbxS3y+mvGnbOKnuLo40V5Mj1J25+HEO63aWYREIqvWeRO/hnROlMBE5WoniQmPmhiaN0ctiHaXw==
+ethereumjs-util@^7.1.1, ethereumjs-util@^7.1.2, ethereumjs-util@^7.1.5:
+  version "7.1.5"
+  resolved "http://npm.tools.nic.it/ethereumjs-util/-/ethereumjs-util-7.1.5.tgz"
+  integrity sha512-SDl5kKrQAudFBUe5OJM9Ac6WmMyYmXX/6sTmLZ3ffG2eY6ZIGBes3pEDxNN6V72WyOw4CPD5RomKdsa8DAAwLg==
   dependencies:
-    async "^2.1.2"
-    async-eventemitter "^0.2.2"
-    ethereumjs-account "^2.0.3"
-    ethereumjs-block "~2.2.0"
-    ethereumjs-common "^1.1.0"
-    ethereumjs-util "^6.0.0"
-    fake-merkle-patricia-tree "^1.0.1"
-    functional-red-black-tree "^1.0.1"
-    merkle-patricia-tree "^2.3.2"
-    rustbn.js "~0.2.0"
-    safe-buffer "^5.1.1"
+    "@types/bn.js" "^5.1.0"
+    bn.js "^5.1.2"
+    create-hash "^1.1.2"
+    ethereum-cryptography "^0.1.3"
+    rlp "^2.2.4"
 
-ethereumjs-vm@^2.3.4:
-  version "2.6.0"
-  resolved "http://npm.tools.nic.it/ethereumjs-vm/-/ethereumjs-vm-2.6.0.tgz"
-  integrity sha512-r/XIUik/ynGbxS3y+mvGnbOKnuLo40V5Mj1J25+HEO63aWYREIqvWeRO/hnROlMBE5WoniQmPmhiaN0ctiHaXw==
+ethereumjs-util@^7.1.4:
+  version "7.1.5"
+  resolved "http://npm.tools.nic.it/ethereumjs-util/-/ethereumjs-util-7.1.5.tgz"
+  integrity sha512-SDl5kKrQAudFBUe5OJM9Ac6WmMyYmXX/6sTmLZ3ffG2eY6ZIGBes3pEDxNN6V72WyOw4CPD5RomKdsa8DAAwLg==
   dependencies:
-    async "^2.1.2"
-    async-eventemitter "^0.2.2"
-    ethereumjs-account "^2.0.3"
-    ethereumjs-block "~2.2.0"
-    ethereumjs-common "^1.1.0"
-    ethereumjs-util "^6.0.0"
-    fake-merkle-patricia-tree "^1.0.1"
-    functional-red-black-tree "^1.0.1"
-    merkle-patricia-tree "^2.3.2"
-    rustbn.js "~0.2.0"
-    safe-buffer "^5.1.1"
+    "@types/bn.js" "^5.1.0"
+    bn.js "^5.1.2"
+    create-hash "^1.1.2"
+    ethereum-cryptography "^0.1.3"
+    rlp "^2.2.4"
 
-ethereumjs-vm@^2.6.0:
+ethereumjs-vm@^2.1.0, ethereumjs-vm@^2.3.4, ethereumjs-vm@^2.6.0:
   version "2.6.0"
   resolved "http://npm.tools.nic.it/ethereumjs-vm/-/ethereumjs-vm-2.6.0.tgz"
   integrity sha512-r/XIUik/ynGbxS3y+mvGnbOKnuLo40V5Mj1J25+HEO63aWYREIqvWeRO/hnROlMBE5WoniQmPmhiaN0ctiHaXw==
@@ -4207,7 +4170,15 @@ extend-shallow@^2.0.1:
   dependencies:
     is-extendable "^0.1.0"
 
-extend-shallow@^3.0.0, extend-shallow@^3.0.2:
+extend-shallow@^3.0.0:
+  version "3.0.2"
+  resolved "http://npm.tools.nic.it/extend-shallow/-/extend-shallow-3.0.2.tgz"
+  integrity sha1-Jqcarwc7OfshJxcnRhMcJwQCjbg=
+  dependencies:
+    assign-symbols "^1.0.0"
+    is-extendable "^1.0.1"
+
+extend-shallow@^3.0.2:
   version "3.0.2"
   resolved "http://npm.tools.nic.it/extend-shallow/-/extend-shallow-3.0.2.tgz"
   integrity sha1-Jqcarwc7OfshJxcnRhMcJwQCjbg=
@@ -4234,7 +4205,10 @@ extglob@^2.0.4:
     snapdragon "^0.8.1"
     to-regex "^3.0.1"
 
-extsprintf@^1.2.0, extsprintf@1.3.0:
+extsprintf@^1.2.0:
+  version "1.4.1"
+
+extsprintf@1.3.0:
   version "1.3.0"
   resolved "http://npm.tools.nic.it/extsprintf/-/extsprintf-1.3.0.tgz"
   integrity sha1-lpGEQOMEGnpBT4xS48V06zw+HgU=
@@ -4415,7 +4389,10 @@ forwarded@0.2.0:
   resolved "http://npm.tools.nic.it/forwarded/-/forwarded-0.2.0.tgz"
   integrity sha512-buRG0fpBtRHSTCOASe6hD258tEubFoRLb4ZNA6NxMVHNw2gOcwHo9wyablzMzOA5z9xA9L1KNjk/Nt6MT9aYow==
 
-fp-ts@^1.0.0, fp-ts@1.19.3:
+fp-ts@^1.0.0:
+  version "1.19.5"
+
+fp-ts@1.19.3:
   version "1.19.3"
   resolved "http://npm.tools.nic.it/fp-ts/-/fp-ts-1.19.3.tgz"
   integrity sha512-H5KQDspykdHuztLTg+ajGN0Z2qUjcEf3Ybxc6hLt0k7/zPkn29XnKnxlBPyW2XIddWrGaJBzBl4VLYOtk39yZg==
@@ -4663,19 +4640,7 @@ glob@^5.0.15:
     once "^1.3.0"
     path-is-absolute "^1.0.0"
 
-glob@^7.0.0, glob@^7.1.3, glob@7.2.0:
-  version "7.2.0"
-  resolved "http://npm.tools.nic.it/glob/-/glob-7.2.0.tgz"
-  integrity sha512-lmLf6gtyrPq8tTjSmrO94wBeQbFR3HbLHbuyD69wuyQkImp2hWqMGB47OX65FBkPffO641IP9jWa1z4ivqG26Q==
-  dependencies:
-    fs.realpath "^1.0.0"
-    inflight "^1.0.4"
-    inherits "2"
-    minimatch "^3.0.4"
-    once "^1.3.0"
-    path-is-absolute "^1.0.0"
-
-glob@~7.2.3:
+glob@^7.0.0, glob@^7.1.3, glob@~7.2.3:
   version "7.2.3"
   resolved "http://npm.tools.nic.it/glob/-/glob-7.2.3.tgz"
   integrity sha512-nFR0zLpU2YCaRxwoCJvL6UvCH2JFyFVIvwTLsIf21AuHlMskA1hhTdk+LlYJtOlYt9v6dvszD2BGRqBL+iQK9Q==
@@ -4691,6 +4656,18 @@ glob@7.1.7:
   version "7.1.7"
   resolved "http://npm.tools.nic.it/glob/-/glob-7.1.7.tgz"
   integrity sha512-OvD9ENzPLbegENnYP5UUfJIirTg4+XwMWGaQfQTY0JenxNvvIKP3U3/tAQSPIu/lHxXYSZmpXlUHeqAIdKzBLQ==
+  dependencies:
+    fs.realpath "^1.0.0"
+    inflight "^1.0.4"
+    inherits "2"
+    minimatch "^3.0.4"
+    once "^1.3.0"
+    path-is-absolute "^1.0.0"
+
+glob@7.2.0:
+  version "7.2.0"
+  resolved "http://npm.tools.nic.it/glob/-/glob-7.2.0.tgz"
+  integrity sha512-lmLf6gtyrPq8tTjSmrO94wBeQbFR3HbLHbuyD69wuyQkImp2hWqMGB47OX65FBkPffO641IP9jWa1z4ivqG26Q==
   dependencies:
     fs.realpath "^1.0.0"
     inflight "^1.0.4"
@@ -5150,7 +5127,10 @@ ignore@^5.1.1:
   resolved "http://npm.tools.nic.it/ignore/-/ignore-5.2.4.tgz"
   integrity sha512-MAb38BcSbH0eHNBxn7ql2NH/kX33OkB3lZ1BNdh7ENeRChHTYsTvWrMubiIAMNS2llXEEgZ1MUOBtXChP3kaFQ==
 
-immediate@^3.2.3, immediate@~3.2.3:
+immediate@^3.2.3:
+  version "3.3.0"
+
+immediate@~3.2.3:
   version "3.2.3"
   resolved "http://npm.tools.nic.it/immediate/-/immediate-3.2.3.tgz"
   integrity sha1-0UD6j2FGWb1lQSMwl92qwlzdmRw=
@@ -5322,11 +5302,6 @@ is-descriptor@^1.0.0, is-descriptor@^1.0.2:
     is-data-descriptor "^1.0.1"
 
 is-extendable@^0.1.0, is-extendable@^0.1.1:
-  version "0.1.1"
-  resolved "http://npm.tools.nic.it/is-extendable/-/is-extendable-0.1.1.tgz"
-  integrity sha1-YrEQ4omkcUGOPsNqYX1HLjAd/Ik=
-
-is-extendable@^0.1.1:
   version "0.1.1"
   resolved "http://npm.tools.nic.it/is-extendable/-/is-extendable-0.1.1.tgz"
   integrity sha1-YrEQ4omkcUGOPsNqYX1HLjAd/Ik=
@@ -5548,7 +5523,10 @@ js-sha3@0.5.7:
   resolved "http://npm.tools.nic.it/js-sha3/-/js-sha3-0.5.7.tgz"
   integrity sha512-GII20kjaPX0zJ8wzkTbNDYMY7msuZcTWk8S5UOh6806Jq/wz1J8/bnr8uGU0DAUmYDjj2Mr4X1cW8v/GLYnR+g==
 
-"js-tokens@^3.0.0 || ^4.0.0", js-tokens@^3.0.2:
+"js-tokens@^3.0.0 || ^4.0.0":
+  version "4.0.0"
+
+js-tokens@^3.0.2:
   version "3.0.2"
   resolved "http://npm.tools.nic.it/js-tokens/-/js-tokens-3.0.2.tgz"
   integrity sha1-mGbfOVECEw449/mWvOtlRDIJwls=
@@ -5726,21 +5704,7 @@ keyv@^4.0.0:
   dependencies:
     json-buffer "3.0.1"
 
-kind-of@^3.0.2:
-  version "3.2.2"
-  resolved "http://npm.tools.nic.it/kind-of/-/kind-of-3.2.2.tgz"
-  integrity sha1-MeohpzS6ubuw8yRm2JOupR5KPGQ=
-  dependencies:
-    is-buffer "^1.1.5"
-
-kind-of@^3.0.3:
-  version "3.2.2"
-  resolved "http://npm.tools.nic.it/kind-of/-/kind-of-3.2.2.tgz"
-  integrity sha1-MeohpzS6ubuw8yRm2JOupR5KPGQ=
-  dependencies:
-    is-buffer "^1.1.5"
-
-kind-of@^3.2.0:
+kind-of@^3.0.2, kind-of@^3.0.3, kind-of@^3.2.0:
   version "3.2.2"
   resolved "http://npm.tools.nic.it/kind-of/-/kind-of-3.2.2.tgz"
   integrity sha1-MeohpzS6ubuw8yRm2JOupR5KPGQ=
@@ -5785,10 +5749,8 @@ level-codec@~7.0.0:
   resolved "http://npm.tools.nic.it/level-codec/-/level-codec-7.0.1.tgz"
   integrity sha512-Ua/R9B9r3RasXdRmOtd+t9TCOEIIlts+TN/7XTT2unhDaL6sJn83S3rUyljbr6lVtw49N3/yA0HHjpV6Kzb2aQ==
 
-level-errors@^1.0.3, level-errors@~1.0.3:
-  version "1.0.5"
-  resolved "http://npm.tools.nic.it/level-errors/-/level-errors-1.0.5.tgz"
-  integrity sha512-/cLUpQduF6bNrWuAC4pwtUKA5t669pCsCi2XbmojG2tFeOr9j6ShtdDCtFFQO1DRt+EVZhx9gPzP9G2bUaG4ig==
+level-errors@^1.0.3:
+  version "1.1.2"
   dependencies:
     errno "~0.1.1"
 
@@ -5796,6 +5758,13 @@ level-errors@^2.0.0, level-errors@~2.0.0:
   version "2.0.1"
   resolved "http://npm.tools.nic.it/level-errors/-/level-errors-2.0.1.tgz"
   integrity sha512-UVprBJXite4gPS+3VznfgDSU8PTRuVX0NXwoWW50KLxd2yw4Y1t2JUR5In1itQnudZqRMT9DlAM3Q//9NCjCFw==
+  dependencies:
+    errno "~0.1.1"
+
+level-errors@~1.0.3:
+  version "1.0.5"
+  resolved "http://npm.tools.nic.it/level-errors/-/level-errors-1.0.5.tgz"
+  integrity sha512-/cLUpQduF6bNrWuAC4pwtUKA5t669pCsCi2XbmojG2tFeOr9j6ShtdDCtFFQO1DRt+EVZhx9gPzP9G2bUaG4ig==
   dependencies:
     errno "~0.1.1"
 
@@ -6043,15 +6012,15 @@ lru-cache@^6.0.0:
   dependencies:
     yallist "^4.0.0"
 
-ltgt@^2.1.2, ltgt@~2.1.1:
-  version "2.1.3"
-  resolved "http://npm.tools.nic.it/ltgt/-/ltgt-2.1.3.tgz"
-  integrity sha1-EIUaBtmWS5cReEQcI8nlJpjuzjQ=
-
-ltgt@~2.2.0:
+ltgt@^2.1.2, ltgt@~2.2.0:
   version "2.2.1"
   resolved "http://npm.tools.nic.it/ltgt/-/ltgt-2.2.1.tgz"
   integrity sha1-81ypHEk/e3PaDgdJUwTxezH4fuU=
+
+ltgt@~2.1.1:
+  version "2.1.3"
+  resolved "http://npm.tools.nic.it/ltgt/-/ltgt-2.1.3.tgz"
+  integrity sha1-EIUaBtmWS5cReEQcI8nlJpjuzjQ=
 
 make-error@^1.1.1:
   version "1.3.6"
@@ -6307,7 +6276,10 @@ mkdirp-promise@^5.0.1:
   dependencies:
     mkdirp "*"
 
-mkdirp@*, mkdirp@^0.5.1, mkdirp@^0.5.5, mkdirp@0.5.x:
+mkdirp@*:
+  version "3.0.1"
+
+mkdirp@^0.5.1, mkdirp@^0.5.5, mkdirp@0.5.x:
   version "0.5.6"
   resolved "http://npm.tools.nic.it/mkdirp/-/mkdirp-0.5.6.tgz"
   integrity sha512-FP+p8RB8OWpF3YZBCrP5gtADmtXApB5AMLn+vdyA+PyxCjrCs00mjyUozssO33cwDeT3wNGdLxJ5M//YqtHAJw==
@@ -6375,20 +6347,20 @@ module-error@^1.0.1, module-error@^1.0.2:
   resolved "http://npm.tools.nic.it/module-error/-/module-error-1.0.2.tgz"
   integrity sha512-0yuvsqSCv8LbaOKhnsQ/T5JhyFlCYLPXK3U2sgV10zoKQwzs/MyfuQUOZQ1V/6OCOJsK/TRgNVrPuPDqtdMFtA==
 
-ms@^2.1.1, ms@2.1.2:
-  version "2.1.2"
-  resolved "http://npm.tools.nic.it/ms/-/ms-2.1.2.tgz"
-  integrity sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==
+ms@^2.1.1, ms@2.1.3:
+  version "2.1.3"
+  resolved "http://npm.tools.nic.it/ms/-/ms-2.1.3.tgz"
+  integrity sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==
 
 ms@2.0.0:
   version "2.0.0"
   resolved "http://npm.tools.nic.it/ms/-/ms-2.0.0.tgz"
   integrity sha1-VgiurfwAvmwpAd9fmGF4jeDVl8g=
 
-ms@2.1.3:
-  version "2.1.3"
-  resolved "http://npm.tools.nic.it/ms/-/ms-2.1.3.tgz"
-  integrity sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==
+ms@2.1.2:
+  version "2.1.2"
+  resolved "http://npm.tools.nic.it/ms/-/ms-2.1.2.tgz"
+  integrity sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==
 
 multibase@^0.7.0:
   version "0.7.0"
@@ -7129,33 +7101,7 @@ readable-stream@^1.0.33:
     isarray "0.0.1"
     string_decoder "~0.10.x"
 
-readable-stream@^2.0.0, readable-stream@^2.2.9:
-  version "2.3.8"
-  resolved "http://npm.tools.nic.it/readable-stream/-/readable-stream-2.3.8.tgz"
-  integrity sha512-8p0AUk4XODgIewSi0l8Epjs+EVnWiK7NoDIEGU0HhE7+ZyY8D1IMY7odu5lRrFXGg71L15KG8QrPmum45RTtdA==
-  dependencies:
-    core-util-is "~1.0.0"
-    inherits "~2.0.3"
-    isarray "~1.0.0"
-    process-nextick-args "~2.0.0"
-    safe-buffer "~5.1.1"
-    string_decoder "~1.1.1"
-    util-deprecate "~1.0.1"
-
-readable-stream@^2.0.5:
-  version "2.3.8"
-  resolved "http://npm.tools.nic.it/readable-stream/-/readable-stream-2.3.8.tgz"
-  integrity sha512-8p0AUk4XODgIewSi0l8Epjs+EVnWiK7NoDIEGU0HhE7+ZyY8D1IMY7odu5lRrFXGg71L15KG8QrPmum45RTtdA==
-  dependencies:
-    core-util-is "~1.0.0"
-    inherits "~2.0.3"
-    isarray "~1.0.0"
-    process-nextick-args "~2.0.0"
-    safe-buffer "~5.1.1"
-    string_decoder "~1.1.1"
-    util-deprecate "~1.0.1"
-
-readable-stream@^2.2.2:
+readable-stream@^2.0.0, readable-stream@^2.0.5, readable-stream@^2.2.2, readable-stream@^2.2.9, readable-stream@^2.3.6, readable-stream@~2.3.6:
   version "2.3.8"
   resolved "http://npm.tools.nic.it/readable-stream/-/readable-stream-2.3.8.tgz"
   integrity sha512-8p0AUk4XODgIewSi0l8Epjs+EVnWiK7NoDIEGU0HhE7+ZyY8D1IMY7odu5lRrFXGg71L15KG8QrPmum45RTtdA==
@@ -7181,20 +7127,25 @@ readable-stream@^2.2.8:
     string_decoder "~1.1.1"
     util-deprecate "~1.0.1"
 
-readable-stream@^2.3.6:
-  version "2.3.8"
-  resolved "http://npm.tools.nic.it/readable-stream/-/readable-stream-2.3.8.tgz"
-  integrity sha512-8p0AUk4XODgIewSi0l8Epjs+EVnWiK7NoDIEGU0HhE7+ZyY8D1IMY7odu5lRrFXGg71L15KG8QrPmum45RTtdA==
+readable-stream@^3.0.6:
+  version "3.6.2"
+  resolved "http://npm.tools.nic.it/readable-stream/-/readable-stream-3.6.2.tgz"
+  integrity sha512-9u/sniCrY3D5WdsERHzHE4G2YCXqoG5FTHUiCC4SIbr6XcLZBY05ya9EKjYek9O5xOAwjGq+1JdGBAS7Q9ScoA==
   dependencies:
-    core-util-is "~1.0.0"
-    inherits "~2.0.3"
-    isarray "~1.0.0"
-    process-nextick-args "~2.0.0"
-    safe-buffer "~5.1.1"
-    string_decoder "~1.1.1"
-    util-deprecate "~1.0.1"
+    inherits "^2.0.3"
+    string_decoder "^1.1.1"
+    util-deprecate "^1.0.1"
 
-readable-stream@^3.0.6, readable-stream@^3.6.0, readable-stream@^3.6.2:
+readable-stream@^3.6.0:
+  version "3.6.2"
+  resolved "http://npm.tools.nic.it/readable-stream/-/readable-stream-3.6.2.tgz"
+  integrity sha512-9u/sniCrY3D5WdsERHzHE4G2YCXqoG5FTHUiCC4SIbr6XcLZBY05ya9EKjYek9O5xOAwjGq+1JdGBAS7Q9ScoA==
+  dependencies:
+    inherits "^2.0.3"
+    string_decoder "^1.1.1"
+    util-deprecate "^1.0.1"
+
+readable-stream@^3.6.2:
   version "3.6.2"
   resolved "http://npm.tools.nic.it/readable-stream/-/readable-stream-3.6.2.tgz"
   integrity sha512-9u/sniCrY3D5WdsERHzHE4G2YCXqoG5FTHUiCC4SIbr6XcLZBY05ya9EKjYek9O5xOAwjGq+1JdGBAS7Q9ScoA==
@@ -7212,19 +7163,6 @@ readable-stream@~1.0.15:
     inherits "~2.0.1"
     isarray "0.0.1"
     string_decoder "~0.10.x"
-
-readable-stream@~2.3.6:
-  version "2.3.8"
-  resolved "http://npm.tools.nic.it/readable-stream/-/readable-stream-2.3.8.tgz"
-  integrity sha512-8p0AUk4XODgIewSi0l8Epjs+EVnWiK7NoDIEGU0HhE7+ZyY8D1IMY7odu5lRrFXGg71L15KG8QrPmum45RTtdA==
-  dependencies:
-    core-util-is "~1.0.0"
-    inherits "~2.0.3"
-    isarray "~1.0.0"
-    process-nextick-args "~2.0.0"
-    safe-buffer "~5.1.1"
-    string_decoder "~1.1.1"
-    util-deprecate "~1.0.1"
 
 readdirp@~3.6.0:
   version "3.6.0"
@@ -7391,14 +7329,7 @@ resolve-url@^0.2.1:
   resolved "http://npm.tools.nic.it/resolve-url/-/resolve-url-0.2.1.tgz"
   integrity sha1-LGN/53yJOv0qZj/iGqkIAGjiBSo=
 
-resolve@^1.1.6, resolve@1.17.0:
-  version "1.17.0"
-  resolved "http://npm.tools.nic.it/resolve/-/resolve-1.17.0.tgz"
-  integrity sha512-ic+7JYiV8Vi2yzQGFWOkiZD5Z9z7O2Zhm9XMaTxdJExKasieFCr+yXZ/WmXsckHiKl12ar0y6XiXDx3m4RHn1w==
-  dependencies:
-    path-parse "^1.0.6"
-
-resolve@~1.22.6:
+resolve@^1.1.6, resolve@~1.22.6:
   version "1.22.8"
   resolved "http://npm.tools.nic.it/resolve/-/resolve-1.22.8.tgz"
   integrity sha512-oKWePCxqpd6FlLvGV1VU0x7bkPmmCNolxzjMf4NczoDnQcIWrAF+cPtZn5i6n+RfD2d9i0tzpKnG6Yk168yIyw==
@@ -7411,6 +7342,13 @@ resolve@1.1.x:
   version "1.1.7"
   resolved "http://npm.tools.nic.it/resolve/-/resolve-1.1.7.tgz"
   integrity sha1-IDEU2CrSxe2ejgQRs5ModeiJ6Xs=
+
+resolve@1.17.0:
+  version "1.17.0"
+  resolved "http://npm.tools.nic.it/resolve/-/resolve-1.17.0.tgz"
+  integrity sha512-ic+7JYiV8Vi2yzQGFWOkiZD5Z9z7O2Zhm9XMaTxdJExKasieFCr+yXZ/WmXsckHiKl12ar0y6XiXDx3m4RHn1w==
+  dependencies:
+    path-parse "^1.0.6"
 
 responselike@^1.0.2:
   version "1.0.2"
@@ -7581,17 +7519,7 @@ semaphore@^1.0.3, semaphore@^1.1.0, semaphore@>=1.0.1:
   resolved "http://npm.tools.nic.it/semaphore/-/semaphore-1.1.0.tgz"
   integrity sha512-O4OZEaNtkMd/K0i6js9SL+gqy0ZCBMgUvlSqHKi4IBdjhe7wB8pwztUk1BbZ1fmrvpwFrPbHzqd2w5pTcJH6LA==
 
-semver@^5.3.0:
-  version "5.7.2"
-  resolved "http://npm.tools.nic.it/semver/-/semver-5.7.2.tgz"
-  integrity sha512-cBznnQ9KjJqU67B52RMC65CMarK2600WFnbkcaiwWq3xy/5haFJlshgnpjovMVJ+Hff49d8GEn0b87C5pDQ10g==
-
-semver@^5.5.0:
-  version "5.7.2"
-  resolved "http://npm.tools.nic.it/semver/-/semver-5.7.2.tgz"
-  integrity sha512-cBznnQ9KjJqU67B52RMC65CMarK2600WFnbkcaiwWq3xy/5haFJlshgnpjovMVJ+Hff49d8GEn0b87C5pDQ10g==
-
-semver@^5.6.0:
+semver@^5.3.0, semver@^5.5.0, semver@^5.6.0:
   version "5.7.2"
   resolved "http://npm.tools.nic.it/semver/-/semver-5.7.2.tgz"
   integrity sha512-cBznnQ9KjJqU67B52RMC65CMarK2600WFnbkcaiwWq3xy/5haFJlshgnpjovMVJ+Hff49d8GEn0b87C5pDQ10g==
@@ -8027,25 +7955,7 @@ string-width@^2.1.1:
     is-fullwidth-code-point "^2.0.0"
     strip-ansi "^4.0.0"
 
-string-width@^4.1.0:
-  version "4.2.3"
-  resolved "http://npm.tools.nic.it/string-width/-/string-width-4.2.3.tgz"
-  integrity sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==
-  dependencies:
-    emoji-regex "^8.0.0"
-    is-fullwidth-code-point "^3.0.0"
-    strip-ansi "^6.0.1"
-
-string-width@^4.2.0:
-  version "4.2.3"
-  resolved "http://npm.tools.nic.it/string-width/-/string-width-4.2.3.tgz"
-  integrity sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==
-  dependencies:
-    emoji-regex "^8.0.0"
-    is-fullwidth-code-point "^3.0.0"
-    strip-ansi "^6.0.1"
-
-string-width@^4.2.3:
+string-width@^4.1.0, string-width@^4.2.0, string-width@^4.2.3:
   version "4.2.3"
   resolved "http://npm.tools.nic.it/string-width/-/string-width-4.2.3.tgz"
   integrity sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==
@@ -8271,14 +8181,7 @@ timed-out@^4.0.1:
   resolved "http://npm.tools.nic.it/timed-out/-/timed-out-4.0.1.tgz"
   integrity sha1-8y6srFoXW+ol1/q1Zas+2HQe9W8=
 
-tmp@^0.0.33:
-  version "0.0.33"
-  resolved "http://npm.tools.nic.it/tmp/-/tmp-0.0.33.tgz"
-  integrity sha512-jRCJlojKnZ3addtTOjdIqoRuPEKBvNXcGYqzO6zWZX8KfKEpnGY5jfggJQ3EjKuu8D4bJRr0y+cYJFmYbImXGw==
-  dependencies:
-    os-tmpdir "~1.0.2"
-
-tmp@0.0.33:
+tmp@^0.0.33, tmp@0.0.33:
   version "0.0.33"
   resolved "http://npm.tools.nic.it/tmp/-/tmp-0.0.33.tgz"
   integrity sha512-jRCJlojKnZ3addtTOjdIqoRuPEKBvNXcGYqzO6zWZX8KfKEpnGY5jfggJQ3EjKuu8D4bJRr0y+cYJFmYbImXGw==
@@ -8418,20 +8321,20 @@ tweetnacl-util@^0.15.0, tweetnacl-util@^0.15.1:
   resolved "http://npm.tools.nic.it/tweetnacl-util/-/tweetnacl-util-0.15.1.tgz"
   integrity sha512-RKJBIj8lySrShN4w6i/BonWp2Z/uxwC3h4y7xsRrpP59ZboCd0GpEVsOnMDYLMmKBpYhb5TgHzZXy7wTfYFBRw==
 
-tweetnacl@^0.14.3:
+tweetnacl@^0.14.3, tweetnacl@~0.14.0:
   version "0.14.5"
   resolved "http://npm.tools.nic.it/tweetnacl/-/tweetnacl-0.14.5.tgz"
   integrity sha1-WuaBd/GS1EViadEIr6k/+HQ/T2Q=
 
-tweetnacl@^1.0.0, tweetnacl@^1.0.3:
+tweetnacl@^1.0.0:
   version "1.0.3"
   resolved "http://npm.tools.nic.it/tweetnacl/-/tweetnacl-1.0.3.tgz"
   integrity sha512-6rt+RN7aOi1nGMyC4Xa5DdYiukl2UWCbcJft7YhxReBGQD7OAM8Pbxw6YMo4r2diNEA8FEmu32YOn9rhaiE5yw==
 
-tweetnacl@~0.14.0:
-  version "0.14.5"
-  resolved "http://npm.tools.nic.it/tweetnacl/-/tweetnacl-0.14.5.tgz"
-  integrity sha1-WuaBd/GS1EViadEIr6k/+HQ/T2Q=
+tweetnacl@^1.0.3:
+  version "1.0.3"
+  resolved "http://npm.tools.nic.it/tweetnacl/-/tweetnacl-1.0.3.tgz"
+  integrity sha512-6rt+RN7aOi1nGMyC4Xa5DdYiukl2UWCbcJft7YhxReBGQD7OAM8Pbxw6YMo4r2diNEA8FEmu32YOn9rhaiE5yw==
 
 type-check@~0.3.2:
   version "0.3.2"
@@ -9512,7 +9415,17 @@ webidl-conversions@^3.0.0:
   resolved "http://npm.tools.nic.it/webidl-conversions/-/webidl-conversions-3.0.1.tgz"
   integrity sha1-JFNCdeKnvGvnvIZhHMFq4KVlSHE=
 
-websocket@^1.0.31, websocket@^1.0.32, websocket@1.0.32:
+websocket@^1.0.31, websocket@^1.0.32:
+  version "1.0.34"
+  dependencies:
+    bufferutil "^4.0.1"
+    debug "^2.2.0"
+    es5-ext "^0.10.50"
+    typedarray-to-buffer "^3.1.5"
+    utf-8-validate "^5.0.2"
+    yaeti "^0.0.6"
+
+websocket@1.0.32:
   version "1.0.32"
   resolved "http://npm.tools.nic.it/websocket/-/websocket-1.0.32.tgz"
   integrity sha512-i4yhcllSP4wrpoPMU2N0TQ/q0O94LRG/eUQjEAamRltjQ1oT1PFFKOG4i877OlJgCG8rw6LrrowJp+TYCEWF7Q==
@@ -9619,7 +9532,10 @@ ws@^5.1.1:
   dependencies:
     async-limiter "~1.0.0"
 
-ws@^7.4.6, ws@7.4.6:
+ws@^7.4.6:
+  version "7.5.9"
+
+ws@7.4.6:
   version "7.4.6"
   resolved "http://npm.tools.nic.it/ws/-/ws-7.4.6.tgz"
   integrity sha512-YmhHDO4MzaDLB+M9ym/mDA5z0naX8j7SIlT8f8z+I0VtzsRbekxEutHSme7NPS2qE8StCYQNUnfWdXta/Yu85A==
@@ -9698,7 +9614,10 @@ yallist@^4.0.0:
   resolved "http://npm.tools.nic.it/yallist/-/yallist-4.0.0.tgz"
   integrity sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==
 
-yargs-parser@^20.2.2, yargs-parser@20.2.4:
+yargs-parser@^20.2.2:
+  version "20.2.9"
+
+yargs-parser@20.2.4:
   version "20.2.4"
   resolved "http://npm.tools.nic.it/yargs-parser/-/yargs-parser-20.2.4.tgz"
   integrity sha512-WOkpgNhPTlE73h4VFAFsOnomJVaovO8VqLDzy5saChRBFQFBoMYirowyW+Q9HB4HFF4Z7VZTiG3iSzJJA29yRA==
