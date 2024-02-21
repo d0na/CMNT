@@ -21,9 +21,8 @@ import "../base/MutableAsset.sol";
     //Wallet descriptor
     struct WalletDescriptor {
         uint256 trainCompanyRewards;
-        
         uint256 backgroundColor;
-        uint256 textrue;
+        uint256 texture;
         string logo;
         string name;
     }
