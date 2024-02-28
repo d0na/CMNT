@@ -189,7 +189,7 @@ describe("walletNMT", function () {
       denyAllSmartPolicy.address
     );
 
-    expect(await walletNMT.getJacketAddress(Minted.tokenId)).to.be.equal(
+    expect(await walletNMT.getMutableAssetAddress(Minted.tokenId)).to.be.equal(
       Minted.assetAddres
     );
   });
@@ -226,7 +226,7 @@ describe("walletNMT", function () {
       .withArgs(Minted.from, Minted.owner, Minted.tokenId);
 
     // 2. It is retrieved the jacketAddress from th NMT contract
-    expect(await walletNMT.getJacketAddress(Minted.tokenId)).to.be.equal(
+    expect(await walletNMT.getMutableAssetAddress(Minted.tokenId)).to.be.equal(
       Minted.address
     );
     // 3. It is retrieved the ownerOf(tokeind of the new minted address) from th NMT contract
