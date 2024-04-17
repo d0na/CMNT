@@ -6,7 +6,8 @@ import "hardhat/console.sol";
 import "../base/NMT.sol";
 import "./WalletMutableAsset.sol";
 
- /* @title Wallet Mutable NFT
+ /* 
+ * @title Wallet Mutable NFT
  * @author Francesco Donini <francesco.donini@phd.unipi.it>
  * @notice Mutable NFT contract which maintain the association with the Wallet Asset
  */
