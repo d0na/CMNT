@@ -4,6 +4,8 @@ pragma solidity ^0.8.18;
 import "hardhat/console.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "./SmartPolicy.sol";
+import "./MutableAsset.sol";
 
 abstract contract NMT is Ownable, ERC721 {
     /**
@@ -40,6 +42,28 @@ abstract contract NMT is Ownable, ERC721 {
 
     function getMutableAssetAddress(uint256 _tokenId) public pure returns (address) {
         return _intToAddress(_tokenId);
+    }
+
+    function safeTransferFrom(address from, address to, uint256 tokenId) public override evaluatedByCreator(to,abi.encodeWithSignature(
+                "safeTransferFrom(address,address,uint256)",
+                MutableAsset(getMutableAssetAddress(tokenId)).creatorSmartPolicy()),to,tokenId){
+    }
+
+    modifier evaluatedByCreator(
+        address _subject,
+        bytes memory _action,
+        address _resource,
+        uint256 _tokenId
+    ) {
+        require(
+            SmartPolicy(MutableAsset(getMutableAssetAddress(_tokenId)).creatorSmartPolicy()).evaluate(
+                _subject,
+                _action,
+                _resource
+            ) == true,
+            "Operation DENIED by CREATOR policy"
+        );
+        _;
     }
     // function burn(uint256 tokenId) public {
     //     _burn(tokenId);
