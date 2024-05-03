@@ -5684,8 +5684,6 @@ keccak@^3.0.0, keccak@^3.0.2:
 
 keccak@3.0.1:
   version "3.0.1"
-  resolved "http://npm.tools.nic.it/keccak/-/keccak-3.0.1.tgz"
-  integrity sha512-epq90L9jlFWCW7+pQa6JOnKn2Xgl2mtI664seYR6MHskvI9agt7AnDqmAlp9TqU4/caMYbA08Hi5DMZAl5zdkA==
   dependencies:
     node-addon-api "^2.0.0"
     node-gyp-build "^4.2.0"

@@ -7,7 +7,7 @@ import "./base/NMT.sol";
 import "./JacketMutableAsset.sol";
 import "./CreatorSmartPolicy.sol";
 import "./DenyAllSmartPolicy.sol";
-import "./HolderSmartPolicy.sol";
+import "./HolderSmartPolicy.sol";   
 
 /**
  * @title Jacket Mutable NFT
