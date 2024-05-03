@@ -38,6 +38,9 @@ abstract contract NMT is Ownable, ERC721 {
         return uint160(address(index));
     }
 
+    function getMutableAssetAddress(uint256 _tokenId) public pure returns (address) {
+        return _intToAddress(_tokenId);
+    }
     // function burn(uint256 tokenId) public {
     //     _burn(tokenId);
     // }

@@ -1,4 +1,8 @@
+
 # Non Mutable Fungible Tokens
+
+## Starting 
+1. `npm install --legacy-peer-deps`
 
 
 
@@ -9,7 +13,7 @@
 ## Useful commands 
 
 ### Testing
-Testing contracts with the local node provided by hardhat (configured in the as localhost network ). Using the local node gives the possibility to store the blockchain state (stateful).
+Testing contracts with the local node provided by hardhat (configured in ```hardat.conifg.ts``` as localhost network ). Using the local node gives the possibility to store the blockchain state (stateful).
 
 ```
 npx hardhat node
