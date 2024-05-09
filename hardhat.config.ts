@@ -28,27 +28,27 @@ module.exports = {
       url: "http://127.0.0.1:8545",
     },
     // polygon - if doesn't works use POLYGONSCAN_API_KEY
-    mumbai: {
-      url: "https://rpc-mumbai.maticvigil.com",
-      accounts: [
-        process.env.PRIVATE_KEY1,
-        process.env.PRIVATE_KEY2,
-        process.env.PRIVATE_KEY3,
-      ],
-    },
-    sepolia: {
-      url: `https://eth-sepolia-public.unifra.io`,
-      accounts: [
-        process.env.PRIVATE_KEY1,
-        process.env.PRIVATE_KEY2,
-        process.env.PRIVATE_KEY3,
-      ],
-    },
+    // mumbai: {
+    //   url: "https://rpc-mumbai.maticvigil.com",
+    //   accounts: [
+    //     process.env.PRIVATE_KEY1,
+    //     process.env.PRIVATE_KEY2,
+    //     process.env.PRIVATE_KEY3,
+    //   ],
+    // },
+    // sepolia: {
+    //   url: `https://eth-sepolia-public.unifra.io`,
+    //   accounts: [
+    //     process.env.PRIVATE_KEY1,
+    //     process.env.PRIVATE_KEY2,
+    //     process.env.PRIVATE_KEY3,
+    //   ],
+    // },
   },
-  etherscan: {
-    // apiKey: process.env.POLYGONSCAN_API_KEY,
-    apiKey: process.env.ALCHEMY_API_KEY,
-  },
+  // etherscan: {
+  //   // apiKey: process.env.POLYGONSCAN_API_KEY,
+  //   apiKey: process.env.ALCHEMY_API_KEY,
+  // },
   //https://medium.com/@abhijeet.sinha383/how-to-calculate-gas-and-costs-while-deploying-solidity-contracts-and-functions-54007d321626
   gasReporter: {
     enabled: true,
