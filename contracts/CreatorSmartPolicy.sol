@@ -100,7 +100,7 @@ contract CreatorSmartPolicy is SmartPolicy {
         address _subject,
         bytes memory _action,
         address _resource
-    ) public virtual override returns (bool) {
+    ) public virtual override view returns (bool) {
         console.log("Passed action:");
         console.logBytes(_action);
         bytes4 _signature = this.decodeSignature(_action);
