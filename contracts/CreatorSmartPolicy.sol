@@ -121,11 +121,13 @@ contract CreatorSmartPolicy is SmartPolicy {
                 _isAllowedColor(_color) &&
                 _isAuthorizedTailor(_subject) &&
                 _resource == _resource;
-        } else if (_signature == ACT_TRANSFER_FROM) {
-            return true;
-        } else {
-            return false;
         }
+
+        if (_signature == ACT_TRANSFER_FROM) {
+            return true;
+        }
+
+        return false;
     }
 
     fallback() external {

@@ -24,7 +24,6 @@ contract PrincipalSmartPolicy is SmartPolicy {
     bytes4 internal constant ACT_MINT =
         bytes4(keccak256("mint(address,address,address)"));
 
-    
     // Evalute if the action is allowed or denied
     // TODO think to add a modifier that check if the action is in some list -> onlyAllowedAction
 
@@ -38,9 +37,8 @@ contract PrincipalSmartPolicy is SmartPolicy {
         bytes4 _signature = this.decodeSignature(_action);
         if (_signature == ACT_MINT) {
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 
     fallback() external {

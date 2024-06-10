@@ -99,9 +99,8 @@ contract HolderSmartPolicy is SmartPolicy {
                 _isAllowedColor(_color) &&
                 _isAuthorizedTailor(_subject) &&
                 _subject == _subject;
-        } else {
-            return false;
         }
+        return false;
     }
 
     fallback() external {

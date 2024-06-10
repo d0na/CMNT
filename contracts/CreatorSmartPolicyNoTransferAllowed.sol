@@ -28,8 +28,8 @@ contract CreatorSmartPolicyNoTransferAllowed is SmartPolicy {
         bytes4(keccak256("setColor(uint256,string)"));
 
     bytes4 internal constant ACT_TRANSFER_FROM =
-        bytes4(keccak256("transferFrom(address,address)"));        
-    
+        bytes4(keccak256("transferFrom(address,address)"));
+
     constructor() {
         pip = PolicyInformationPoint(_pip);
         // change_pattern: 0x6368616e67655f7061747465726e
@@ -40,7 +40,7 @@ contract CreatorSmartPolicyNoTransferAllowed is SmartPolicy {
         // this.AllowedActions[
         //     "0x6368616e67655f636f6c6f72"
         // ] = "0x6368616e67655f636f6c6f72";
-}
+    }
 
     // is public because if not is not possibile do the trick this.getSetColorParam and bypass the
     // memory and calldata check
@@ -116,11 +116,11 @@ contract CreatorSmartPolicyNoTransferAllowed is SmartPolicy {
                 _isAllowedColor(_color) &&
                 _isAuthorizedTailor(_subject) &&
                 _resource == _resource;
-        }else if (_signature == ACT_TRANSFER_FROM) {
-            return false;
-        } else {
+        }
+        if (_signature == ACT_TRANSFER_FROM) {
             return false;
         }
+        return false;
     }
 
     fallback() external {
