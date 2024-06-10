@@ -1,4 +1,4 @@
- // SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.4;
 
 // Uncomment this line to use console.log
@@ -6,16 +6,17 @@ import "hardhat/console.sol";
 import "../base/NMT.sol";
 import "./EventTicketMutableAsset.sol";
 
- /* @title EventTicket Mutable NFT
+/* @title EventTicket Mutable NFT
  * @author Francesco Donini <francesco.donini@phd.unipi.it>
  * @notice Mutable NFT contract which maintain the association with the EventTicket Asset
  */
- contract EventTicketNMT is NMT {
-    constructor(address to)
-        ERC721(
-            "Mutable EventTicket UniPi Project",
-            "WALLETMNT"
-        )
+contract EventTicketNMT is NMT {
+    constructor(
+        address to,
+        address principalSmartPolicy
+    )
+        NMT(principalSmartPolicy)
+        ERC721("Mutable EventTicket UniPi Project", "WALLETMNT")
         Ownable(to)
     {}
 
@@ -37,12 +38,12 @@ import "./EventTicketMutableAsset.sol";
 
         // Retrieving the tokenID and calling the ERC721 contract minting function
         uint tokenId = uint160(address(eventTicket));
-        console.log("tokenID",tokenId);
+        console.log("tokenID", tokenId);
 
         _safeMint(to, tokenId);
         console.log("asset address:", address(eventTicket));
         console.log("asset tokenId:", tokenId);
-        console.log("res:",address(eventTicket), tokenId);
+        console.log("res:", address(eventTicket), tokenId);
         return (address(eventTicket), tokenId);
     }
 
@@ -60,7 +61,9 @@ import "./EventTicketMutableAsset.sol";
         return asset.tokenURI();
     }
 
-    function getEventTicketAddress(uint256 _tokenId) public pure returns (address) {
+    function getEventTicketAddress(
+        uint256 _tokenId
+    ) public pure returns (address) {
         return _intToAddress(_tokenId);
     }
- }
+}

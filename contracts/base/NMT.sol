@@ -8,11 +8,11 @@ import "./MutableAsset.sol";
 import "./SmartPolicy.sol";
 
 abstract contract NMT is Ownable, ERC721 {
-    // address public principalSmartPolicy;
+    address public principalSmartPolicy;
 
-    // constructor(address _principalSmartPolicy){
-    //     principalSmartPolicy = _principalSmartPolicy;
-    // }
+    constructor(address _principalSmartPolicy){
+        principalSmartPolicy = _principalSmartPolicy;
+    }
 
     /**
      * @notice mint
@@ -24,16 +24,16 @@ abstract contract NMT is Ownable, ERC721 {
     )
         public
         onlyOwner
-        // evaluatedByPrincipal(
-        //     msg.sender,
-        //     abi.encodeWithSignature(
-        //         "mint(address,address,address)",
-        //         to,
-        //         creatorSmartPolicy,
-        //         holderSmartPolicy
-        //     ),
-        //     address(this)
-        // )
+        evaluatedByPrincipal(
+            msg.sender,
+            abi.encodeWithSignature(
+                "mint(address,address,address)",
+                to,
+                creatorSmartPolicy,
+                holderSmartPolicy
+            ),
+            address(this)
+        )
         returns (address, uint)
     {
         // console.log("Miner", to);
@@ -66,22 +66,22 @@ abstract contract NMT is Ownable, ERC721 {
         return _intToAddress(_tokenId);
     }
 
-    // function setPrincipalSmartPolicy(
-    //     address smartPolicyAddress
-    // )
-    //     public
-    //     virtual
-    //     evaluatedByPrincipal(
-    //         msg.sender,
-    //         abi.encodeWithSignature(
-    //             "setPrincipal(address)",
-    //             smartPolicyAddress
-    //         ),
-    //         address(this)
-    //     )
-    // {
-    //     principalSmartPolicy = smartPolicyAddress;
-    // }
+    function setPrincipalSmartPolicy(
+        address smartPolicyAddress
+    )
+        public
+        virtual
+        evaluatedByPrincipal(
+            msg.sender,
+            abi.encodeWithSignature(
+                "setPrincipal(address)",
+                smartPolicyAddress
+            ),
+            address(this)
+        )
+    {
+        principalSmartPolicy = smartPolicyAddress;
+    }
 
     //-----Override delle funzioni previste dallo standard per il trasferimento dei token-----
     // onlyowner
@@ -99,20 +99,20 @@ abstract contract NMT is Ownable, ERC721 {
         //ERC721.transferFrom(from, to, tokenId);
     }
 
-    // /** MODIFIERs */
-    // modifier evaluatedByPrincipal(
-    //     address _subject,
-    //     bytes memory _action,
-    //     address _resource
-    // ) {
-    //     require(
-    //         SmartPolicy(principalSmartPolicy).evaluate(
-    //             _subject,
-    //             _action,
-    //             _resource
-    //         ) == true,
-    //         "Operation DENIED by PRINCIPAL policy"
-    //     );
-    //     _;
-    // }
+    /** MODIFIERs */
+    modifier evaluatedByPrincipal(
+        address _subject,
+        bytes memory _action,
+        address _resource
+    ) {
+        require(
+            SmartPolicy(principalSmartPolicy).evaluate(
+                _subject,
+                _action,
+                _resource
+            ) == true,
+            "Operation DENIED by PRINCIPAL policy"
+        );
+        _;
+    }
 }

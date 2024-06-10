@@ -16,8 +16,10 @@ import "./HolderSmartPolicy.sol";
  */
 contract JacketNMT is NMT {
     constructor(
-        address to
+        address to,
+        address principalSmartPolicy
     )
+        NMT(principalSmartPolicy)
         ERC721(
             "Mutable Jacket for a PUB Decentraland UniPi Project",
             "PUBMNTJACKET"

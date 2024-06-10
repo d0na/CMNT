@@ -21,9 +21,6 @@ contract PrincipalSmartPolicy is SmartPolicy {
             
     */
     //mapping(bytes32 => bytes32) private AllowedActions;
-    PolicyInformationPoint private pip;
-    address constant _pip = 0x57A8aAfc40EDCa45F13B4a74009CBAD162e82e23;
-
     bytes4 internal constant ACT_MINT =
         bytes4(keccak256("mint(address,address,address)"));
 
@@ -39,9 +36,8 @@ contract PrincipalSmartPolicy is SmartPolicy {
         console.log("Passed action [PRINCIPAL SP]:");
         console.logBytes(_action);
         bytes4 _signature = this.decodeSignature(_action);
-        // Set Color
         if (_signature == ACT_MINT) {
-            return false;
+            return true;
         } else {
             return false;
         }
