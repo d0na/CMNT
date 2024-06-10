@@ -12,8 +12,9 @@ contract DenyAllSmartPolicy is SmartPolicy {
         address _subject,
         bytes memory _action,
         address _resource
-    ) public virtual override returns (bool) {
-        console.log("denyall");
+    ) public view virtual override returns (bool) {
+        // console.log("Passed action [DENY_ALL SP]:");
+        // console.logBytes(_action);
         if (_subject == _subject && _resource == _resource) {
             return false;
         } else {

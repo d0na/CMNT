@@ -86,8 +86,8 @@ contract HolderSmartPolicy is SmartPolicy {
         bytes memory _action,
         address _resource
     ) public view virtual override returns (bool) {
-        console.log("Passed action [HOLDER SP]:");
-        console.logBytes(_action);
+        // console.log("Passed action [HOLDER SP]:");
+        // console.logBytes(_action);
         bytes4 _signature = this.decodeSignature(_action);
         // console.log("holderSmart",address(this));
         // Set Color

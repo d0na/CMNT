@@ -32,9 +32,9 @@ contract PrincipalSmartPolicy is SmartPolicy {
         address _subject,
         bytes memory _action,
         address _resource
-    ) public virtual override returns (bool) {
-        console.log("Passed action [PRINCIPAL SP]:");
-        console.logBytes(_action);
+    ) public view virtual override returns (bool) {
+        // console.log("Passed action [PRINCIPAL SP]:");
+        // console.logBytes(_action);
         bytes4 _signature = this.decodeSignature(_action);
         if (_signature == ACT_MINT) {
             return true;

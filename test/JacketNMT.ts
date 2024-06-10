@@ -64,8 +64,8 @@ describe("Tests related to JacketNMT", function () {
     );
     const assetAddress = mintResponse[0];
     const tokenId = mintResponse[1];
-    console.log("[TokenID]: %s",tokenId)
-    console.log("[AssetAddress]: %s",assetAddress)
+    //console.log("[TokenID]: %s",tokenId)
+    //console.log("[AssetAddress]: %s",assetAddress)
 
     expect(Number(tokenId)).to.equal(Number(Minted.tokenId));
     expect(assetAddress).to.equal(Minted.assetAddress);
@@ -122,7 +122,7 @@ describe("Tests related to JacketNMT", function () {
       denyAllSmartPolicy.address
     );
     const mint2Result = await mint2.wait();
-    console.log("[mint2]: \n - tokenId: %s",mint2Result.events[0].args.tokenId);
+    // console.log("[mint2]: \n - tokenId: %s",mint2Result.events[0].args.tokenId);
 
     await expect(mint1)
       .to.emit(jacketNMT, "Transfer")

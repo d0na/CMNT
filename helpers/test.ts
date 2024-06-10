@@ -67,16 +67,19 @@ export async function deployJacketAsset() {
   // JacketNMT
   const JacketNMT = await ethers.getContractFactory("JacketNMT");
   const jacketNMT = await JacketNMT.deploy(creator.address, principalSmartPolicy.address);
+
   // HolderSmartPolicy
   const HolderSmartPolicy = await ethers.getContractFactory(
     "HolderSmartPolicy"
   );
   const holderSmartPolicy = await HolderSmartPolicy.deploy();
+
   // CreatorSmartPolicy
   const CreatorSmartPolicy = await ethers.getContractFactory(
     "CreatorSmartPolicy"
   );
   const creatorSmartPolicy = await CreatorSmartPolicy.deploy();
+
   // DenyAllSmartPolicy
   const DenyAllSmartPolicy = await ethers.getContractFactory(
     "DenyAllSmartPolicy"
@@ -91,7 +94,8 @@ export async function deployJacketAsset() {
   );
   const mintResponse = await mintTx.wait();
   const jacketTokenId = mintResponse.events[0].args["tokenId"];
-  const jacketAddress = await jacketNMT.getJacketAddress(jacketTokenId);
+  const jacketAddress = await jacketNMT.getMutableAssetAddress(jacketTokenId);
+
   //JacketMutableAsset
   const JacketMutableAsset = await ethers.getContractFactory(
     "JacketMutableAsset"
@@ -121,9 +125,16 @@ export async function deployJacketAssetWithHolderPolicy() {
   // tailor1 - 0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC
   // tailor2 - 0x90F79bf6EB2c4f870365E785982E1f101E93b906
 
+  // Principal SmartPolicy
+  const PrincipalSmartPolicy = await ethers.getContractFactory(
+    "PrincipalSmartPolicy"
+  );
+  const principalSmartPolicy = await PrincipalSmartPolicy.deploy();
+
   // JacketNMT
   const JacketNMT = await ethers.getContractFactory("JacketNMT");
-  const jacketNMT = await JacketNMT.deploy(creator.address);
+  const jacketNMT = await JacketNMT.deploy(creator.address,principalSmartPolicy.address);
+  
   // HolderSmartPolicy
   const HolderSmartPolicy = await ethers.getContractFactory(
     "HolderSmartPolicy"

@@ -88,7 +88,7 @@ abstract contract MutableAsset {
         evaluatedByCreator(
             msg.sender,
             abi.encodeWithSignature(
-                "setCosetCreatorSmartPolicy(address)",
+                "setCreatorSmartPolicy(address)",
                 _creatorSmartPolicy
             ),
             address(this)
@@ -96,7 +96,7 @@ abstract contract MutableAsset {
         evaluatedByHolder(
             msg.sender,
             abi.encodeWithSignature(
-                "setCosetCreatorSmartPolicy(address)",
+                "setCreatorSmartPolicy(address)",
                 _creatorSmartPolicy
             ),
             address(this)

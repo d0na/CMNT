@@ -103,9 +103,9 @@ contract CreatorSmartPolicyNoTransferAllowed is SmartPolicy {
         address _subject,
         bytes memory _action,
         address _resource
-    ) public virtual override returns (bool) {
-        console.log("Passed action [CREATOR SP]:");
-        console.logBytes(_action);
+    ) public view virtual override returns (bool) {
+        // console.log("Passed action [CREATOR SP]:");
+        // console.logBytes(_action);
         bytes4 _signature = this.decodeSignature(_action);
         // Set Color
         if (_signature == ACT_SET_COLOR) {

@@ -28,8 +28,8 @@ contract CreatorSmartPolicy is SmartPolicy {
         bytes4(keccak256("setColor(uint256,string)"));
 
     bytes4 internal constant ACT_TRANSFER_FROM =
-        bytes4(keccak256("transferFrom(address,address)"));        
-    
+        bytes4(keccak256("transferFrom(address,address)"));
+
     constructor() {
         pip = PolicyInformationPoint(_pip);
         // change_pattern: 0x6368616e67655f7061747465726e
@@ -40,7 +40,7 @@ contract CreatorSmartPolicy is SmartPolicy {
         // this.AllowedActions[
         //     "0x6368616e67655f636f6c6f72"
         // ] = "0x6368616e67655f636f6c6f72";
-}
+    }
 
     // is public because if not is not possibile do the trick this.getSetColorParam and bypass the
     // memory and calldata check
@@ -103,20 +103,25 @@ contract CreatorSmartPolicy is SmartPolicy {
         address _subject,
         bytes memory _action,
         address _resource
-    ) public virtual override returns (bool) {
-        console.log("Passed action [CREATOR SP]:");
-        console.logBytes(_action);
+    ) public view virtual override returns (bool) {
+        // console.log("Passed action [CREATOR SP]:");
+        // console.logBytes(_action);
         bytes4 _signature = this.decodeSignature(_action);
         // Set Color
         if (_signature == ACT_SET_COLOR) {
+            // console.log("Action [ACT_SET_COLOR]: ok");
             // retrieves specific params
             uint256 _color = this.getSetColorParam(_action);
+            // console.log("Action [ACT_SET_COLOR] - color: %s", _color);
+            // console.log("Action [ACT_SET_COLOR] - subject: %s", _subject);
+            // console.log("Action [ACT_SET_COLOR] - resource: %s", _resource);
+
             // perform conditions evaluation (AND | OR)
             return
                 _isAllowedColor(_color) &&
                 _isAuthorizedTailor(_subject) &&
                 _resource == _resource;
-        }else if (_signature == ACT_TRANSFER_FROM) {
+        } else if (_signature == ACT_TRANSFER_FROM) {
             return true;
         } else {
             return false;
