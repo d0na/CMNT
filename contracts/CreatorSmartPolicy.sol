@@ -26,6 +26,9 @@ contract CreatorSmartPolicy is SmartPolicy {
 
     bytes4 internal constant ACT_SET_COLOR =
         bytes4(keccak256("setColor(uint256,string)"));
+
+    bytes4 internal constant ACT_TRANSFER_FROM =
+        bytes4(keccak256("transferFrom(address,address)"));        
     
     constructor() {
         pip = PolicyInformationPoint(_pip);
@@ -101,7 +104,7 @@ contract CreatorSmartPolicy is SmartPolicy {
         bytes memory _action,
         address _resource
     ) public virtual override returns (bool) {
-        console.log("Passed action:");
+        console.log("Passed action [CREATOR SP]:");
         console.logBytes(_action);
         bytes4 _signature = this.decodeSignature(_action);
         // Set Color
@@ -113,6 +116,8 @@ contract CreatorSmartPolicy is SmartPolicy {
                 _isAllowedColor(_color) &&
                 _isAuthorizedTailor(_subject) &&
                 _resource == _resource;
+        }else if (_signature == ACT_TRANSFER_FROM) {
+            return true;
         } else {
             return false;
         }

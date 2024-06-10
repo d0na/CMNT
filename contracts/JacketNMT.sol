@@ -7,16 +7,17 @@ import "./base/NMT.sol";
 import "./JacketMutableAsset.sol";
 import "./CreatorSmartPolicy.sol";
 import "./DenyAllSmartPolicy.sol";
-import "./HolderSmartPolicy.sol";   
+import "./HolderSmartPolicy.sol";
 
 /**
  * @title Jacket Mutable NFT
  * @author Francesco Donini <francesco.donini@phd.unipi.it>
  * @notice Mutable NFT contracat which maintain the association with the Jacket Asset
  */
- contract JacketNMT is NMT {
-
-    constructor(address to)
+contract JacketNMT is NMT {
+    constructor(
+        address to
+    )
         ERC721(
             "Mutable Jacket for a PUB Decentraland UniPi Project",
             "PUBMNTJACKET"
@@ -70,23 +71,4 @@ import "./HolderSmartPolicy.sol";
         JacketMutableAsset asset = JacketMutableAsset(asset_contract);
         return asset.tokenURI();
     }
-
-    function getJacketAddress(uint256 _tokenId) public pure returns (address) {
-        return _intToAddress(_tokenId);
-    }
-
-    // function _transferFrom(address from, address to, uint256 tokenId) internal {
-    //     // Ownable.transferOwnership(to);
-    //     ERC721.transferFrom(from, to, tokenId);
-    // }
-
-    // //-----Override delle funzioni previste dallo standard per il trasferimento dei token-----
-    // function transferFrom(
-    //     address from,
-    //     address to,
-    //     uint256 tokenId
-    // ) public virtual override {
-    //     // console.log("transferFrom");
-    //     safeTransferFrom(from, to, tokenId);
-    // }
 }

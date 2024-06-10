@@ -24,7 +24,14 @@ export async function deployJacketNMT() {
     const DenyAllSmartPolicy = await ethers.getContractFactory(
       "DenyAllSmartPolicy"
     );
-    const denyAllSmartPolicy = await CreatorSmartPolicy.deploy();
+    const denyAllSmartPolicy = await DenyAllSmartPolicy.deploy();
+
+    // CreatorSmartPolicyNoTransferAllowed
+    const CreatorSmartPolicyNoTransferAllowed = await ethers.getContractFactory(
+      "CreatorSmartPolicyNoTransferAllowed"
+    );
+    const creatorSmartPolicyNoTransferAllowed = await CreatorSmartPolicyNoTransferAllowed.deploy();
+    
     return {
       jacketNMT,
       owner,
@@ -32,6 +39,7 @@ export async function deployJacketNMT() {
       account2,
       creatorSmartPolicy,
       denyAllSmartPolicy,
+      creatorSmartPolicyNoTransferAllowed,
     };
   }
 

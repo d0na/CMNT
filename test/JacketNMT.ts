@@ -20,7 +20,7 @@ const ASSET_ADDRESS1 = "0xa16E02E87b7454126E5E10d957A927A7F5B5d2be";
 const ASSET_ADDRESS2 = "0xB7A5bd0345EF1Cc5E66bf61BdeC17D2461fBd968";
 
 describe("JacketNMT", function () {
-  
+
   it("Should revert if the miner is 0 address", async function () {
     // valid alternative to ZERO_ADDRESS is
     // ethers.constants.AddressZero
@@ -65,8 +65,8 @@ describe("JacketNMT", function () {
     const JacketMutableAsset = await ethers.getContractFactory(
       "JacketMutableAsset"
     );
-    const jacketMutableAsset = JacketMutableAsset.deploy(jacketNMT.address,creatorSmartPolicy.address,denyAllSmartPolicy.address);
-  
+    const jacketMutableAsset = JacketMutableAsset.deploy(jacketNMT.address, creatorSmartPolicy.address, denyAllSmartPolicy.address);
+
     console.log(jacketMutableAsset.address)
     expect(Number(tokenId)).to.equal(Number(Minted.tokenId));
     expect(assetAddress).to.equal(Minted.assetAddress);
@@ -189,7 +189,7 @@ describe("JacketNMT", function () {
       denyAllSmartPolicy.address
     );
 
-    expect(await jacketNMT.getJacketAddress(Minted.tokenId)).to.be.equal(
+    expect(await jacketNMT.getMutableAssetAddress(Minted.tokenId)).to.be.equal(
       Minted.assetAddres
     );
   });
@@ -226,7 +226,7 @@ describe("JacketNMT", function () {
       .withArgs(Minted.from, Minted.owner, Minted.tokenId);
 
     // 2. It is retrieved the jacketAddress from th NMT contract
-    expect(await jacketNMT.getJacketAddress(Minted.tokenId)).to.be.equal(
+    expect(await jacketNMT.getMutableAssetAddress(Minted.tokenId)).to.be.equal(
       Minted.address
     );
     // 3. It is retrieved the ownerOf(tokeind of the new minted address) from th NMT contract
@@ -313,6 +313,53 @@ describe("JacketNMT", function () {
     );
   });
 
+  it("Should be minted and transferred but the CreatorSmartPolicylNoTransferAllowed policy should deny", async function () {
+    const {
+      jacketNMT,
+      owner,
+      account1,
+      account2,
+      denyAllSmartPolicy,
+      creatorSmartPolicyNoTransferAllowed,
+    } = await loadFixture(deployJacketNMT);
+    const Minted = {
+      from: ZERO_ADDRESS,
+      firstOwner: owner.address,
+      secondOwner: account1.address,
+      thirdOwner: account2.address,
+      tokenId: TOKEN_ID1_STRING,
+    };
+
+    // Minting the NFT to the First Owner
+    const mintResponse = await jacketNMT.mint(
+      Minted.firstOwner,
+      creatorSmartPolicyNoTransferAllowed.address,
+      denyAllSmartPolicy.address
+    );
+    await expect(mintResponse)
+      .to.emit(jacketNMT, "Transfer")
+      // from, to, tokenId
+      .withArgs(Minted.from, Minted.firstOwner, Minted.tokenId);
+
+    expect(await jacketNMT.ownerOf(Minted.tokenId)).to.be.equal(
+      Minted.firstOwner
+    );
+
+    // Trasfering the NFT to the Second Owner
+    await expect(jacketNMT.transferFrom(
+      Minted.firstOwner,
+      Minted.secondOwner,
+      Minted.tokenId
+    )).to.be.rejectedWith(
+      "Operation DENIED by CREATOR policy"
+    );
+
+    // Check that the new owner is not changed
+    expect(await jacketNMT.ownerOf(Minted.tokenId)).to.be.equal(
+      Minted.firstOwner
+    );
+  });
+
   //   it("Should be minted and tansfer to a different user (Account1) and visible in the Transfer event", async function () {
   //     const { jacketNMT, owner, account1 } = await loadFixture(deployJacketNMT);
   //     const Minted = {
@@ -359,13 +406,13 @@ describe("JacketNMT", function () {
   //   //   );
   //   // });
   describe("Test with NFT", () => {
-  it("Minting and transferFrom", async function () {
-    const [creator, buyer, tailor1, tailor2] = await ethers.getSigners();
-    const NFT = await ethers.getContractFactory("NonFungibleToken");
-    const nft = await NFT.deploy(creator.address);
+    it("Minting and transferFrom", async function () {
+      const [creator, buyer, tailor1, tailor2] = await ethers.getSigners();
+      const NFT = await ethers.getContractFactory("NonFungibleToken");
+      const nft = await NFT.deploy(creator.address);
 
-    await nft.mintCollectionNFT(creator.address, 1);
-    await nft.transferFrom(creator.address, buyer.address, 1);
+      await nft.mintCollectionNFT(creator.address, 1);
+      await nft.transferFrom(creator.address, buyer.address, 1);
+    });
   });
-});
 });

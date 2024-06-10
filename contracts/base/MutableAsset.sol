@@ -105,6 +105,37 @@ abstract contract MutableAsset {
         creatorSmartPolicy = _creatorSmartPolicy;
     }
 
+     /** regulate the transferFrom method  */
+    function transferFrom(
+        address from,
+        address to
+    )
+        public
+        virtual
+        evaluatedByCreator(
+            msg.sender,
+            abi.encodeWithSignature(
+                "transferFrom(address,address)",
+                from,to
+            ),
+            address(this)
+        )
+
+        // consider also  the holder Smart Policy 
+        // evaluatedByHolder(
+        //     msg.sender,
+        //     abi.encodeWithSignature(
+        //         "transferFrom(address,address)",
+        //         from,to
+        //     ),
+        //     address(this)
+        //)
+        returns(bool)
+    {
+        // ERC721(nmt).transferFrom(from,to,uint160(address(address(this))));
+        return true;
+    }
+
     /**
      * MODIFIERS
      * */
