@@ -18,7 +18,7 @@ contract DenyAllSmartPolicy is SmartPolicy {
         if (_subject == _subject && _resource == _resource) {
             return false;
         }
-        return false;ß
+        return false;
     }
 
     fallback() external {
