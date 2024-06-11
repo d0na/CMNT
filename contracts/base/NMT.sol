@@ -94,7 +94,7 @@ abstract contract NMT is Ownable, ERC721 {
         MutableAsset(getMutableAssetAddress(tokenId)).transferFrom(from, to);
 
         // more expensive in terms of gas
-        _safeTransfer(from, to, tokenId);
+        super._safeTransfer(from, to, tokenId);
         // less expensive in terms of gas
         //ERC721.transferFrom(from, to, tokenId);
     }

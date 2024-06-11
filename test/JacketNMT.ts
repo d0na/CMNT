@@ -414,7 +414,7 @@ describe("Tests related to JacketNMT", function () {
   });
 
   describe("Security treats", () => {
-    it("test1", async function () {
+    it("should avoid casting of transferFrom method to NFT from NMT ", async function () {
       const {
         jacketNMT,
         owner,
@@ -468,13 +468,12 @@ describe("Tests related to JacketNMT", function () {
           "Operation DENIED by CREATOR policy"
         );
 
-
-
-        await expect(testERC271.castedTransferFrom(jacketNMT.address, Minted.firstOwner,
+      await expect(testERC271.castedTransferFrom(jacketNMT.address, Minted.firstOwner,
           Minted.secondOwner,
           Minted.tokenId)).to.be.rejectedWith(
             "Operation DENIED by CREATOR policy"
-          );  
+      );
+
       // // Trasfering the NFT to the Second Owner
       // await expect(jacketNMT.transferFrom(
       //   Minted.firstOwner,
