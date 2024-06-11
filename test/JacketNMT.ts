@@ -412,4 +412,82 @@ describe("Tests related to JacketNMT", function () {
       await nft.transferFrom(creator.address, buyer.address, 1);
     });
   });
+
+  describe("Security treats", () => {
+    it("test1", async function () {
+      const {
+        jacketNMT,
+        owner,
+        account1,
+        account2,
+        denyAllSmartPolicy,
+        creatorSmartPolicyNoTransferAllowed,
+      } = await loadFixture(deployJacketNMT);
+
+      const Minted = {
+        from: ZERO_ADDRESS,
+        firstOwner: owner.address,
+        secondOwner: account1.address,
+        thirdOwner: account2.address,
+        tokenId: TOKEN_ID1_STRING,
+      };
+
+      // Minting the NFT to the First Owner
+      const mintResponse = await jacketNMT.mint(
+        Minted.firstOwner,
+        creatorSmartPolicyNoTransferAllowed.address,
+        denyAllSmartPolicy.address
+      );
+      await expect(mintResponse)
+        .to.emit(jacketNMT, "Transfer")
+        // from, to, tokenId
+        .withArgs(Minted.from, Minted.firstOwner, Minted.tokenId);
+
+      expect(await jacketNMT.ownerOf(Minted.tokenId)).to.be.equal(
+        Minted.firstOwner
+      );
+
+
+
+      expect(await jacketNMT.ownerOf(Minted.tokenId)).to.be.equal(
+        Minted.firstOwner
+      );
+
+      const TestERC271 = await ethers.getContractFactory(
+        "TestERC271"
+      );
+      const testERC271 = await TestERC271.deploy();
+      // testERC271.securedTransferFrom(jacketNMT.address, Minted.firstOwner,
+      //   Minted.secondOwner,
+      //   Minted.tokenId)
+
+      // Trasfering the NFT to the Second Owner
+      await expect(testERC271.securedTransferFrom(jacketNMT.address, Minted.firstOwner,
+        Minted.secondOwner,
+        Minted.tokenId)).to.be.rejectedWith(
+          "Operation DENIED by CREATOR policy"
+        );
+
+
+
+        await expect(testERC271.castedTransferFrom(jacketNMT.address, Minted.firstOwner,
+          Minted.secondOwner,
+          Minted.tokenId)).to.be.rejectedWith(
+            "Operation DENIED by CREATOR policy"
+          );  
+      // // Trasfering the NFT to the Second Owner
+      // await expect(jacketNMT.transferFrom(
+      //   Minted.firstOwner,
+      //   Minted.secondOwner,
+      //   Minted.tokenId
+      // )).to.be.rejectedWith(
+      //   "Operation DENIED by CREATOR policy"
+      // );
+
+      // // Check that the new owner is not changed
+      // expect(await jacketNMT.ownerOf(Minted.tokenId)).to.be.equal(
+      //   Minted.firstOwner
+      // );
+    })
+  })
 });
