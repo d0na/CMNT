@@ -10,7 +10,7 @@ import "./SmartPolicy.sol";
 abstract contract NMT is Ownable, ERC721 {
     address public principalSmartPolicy;
 
-    constructor(address _principalSmartPolicy){
+    constructor(address _principalSmartPolicy) {
         principalSmartPolicy = _principalSmartPolicy;
     }
 

@@ -48,6 +48,42 @@ describe("Tests related to JacketNMT", function () {
     expect(await jacketNMT.owner()).to.equal(owner.address);
   });
 
+  it("Should be minted many times until be avoided", async function () {
+    // valid alternative ethers.constants.AddressZero
+    const { jacketNMT, owner, creatorSmartPolicy, denyAllSmartPolicy } =
+      await loadFixture(deployJacketNMT);
+    await jacketNMT.mint(
+      owner.address,
+      creatorSmartPolicy.address,
+      denyAllSmartPolicy.address
+    );
+    expect(await jacketNMT.owner()).to.equal(owner.address);
+    await jacketNMT.mint(
+      owner.address,
+      creatorSmartPolicy.address,
+      denyAllSmartPolicy.address
+    );
+    await jacketNMT.mint(
+      owner.address,
+      creatorSmartPolicy.address,
+      denyAllSmartPolicy.address
+    );
+    await jacketNMT.mint(
+      owner.address,
+      creatorSmartPolicy.address,
+      denyAllSmartPolicy.address
+    );
+
+    await expect(jacketNMT.mint(
+      owner.address,
+      creatorSmartPolicy.address,
+      denyAllSmartPolicy.address
+    )).to.be.rejectedWith(
+      "Operation DENIED by PRINCIPAL policy"
+    );
+  });
+
+
   it("Should be minted a new Jacket asset and returned its address and tokenId", async function () {
     const { jacketNMT, owner, creatorSmartPolicy, denyAllSmartPolicy } =
       await loadFixture(deployJacketNMT);
@@ -354,6 +390,54 @@ describe("Tests related to JacketNMT", function () {
     // Check that the new owner is not changed
     expect(await jacketNMT.ownerOf(Minted.tokenId)).to.be.equal(
       Minted.firstOwner
+    );
+  });
+
+
+  it("Should be minted and transfer Jackets untile the CreatorSmartPolicy should deny the transferred", async function () {
+    const {
+      jacketNMT,
+      owner,
+      account1,
+      account2,
+      denyAllSmartPolicy,
+      creatorSmartPolicy,
+    } = await loadFixture(deployJacketNMT);
+    const Minted = {
+      from: ZERO_ADDRESS,
+      firstOwner: owner.address,
+      secondOwner: account1.address,
+      thirdOwner: account2.address,
+      tokenId: TOKEN_ID1_STRING,
+    };
+
+    await expect(jacketNMT.mint(
+      owner.address,
+      creatorSmartPolicy.address,
+      denyAllSmartPolicy.address
+    )).to.emit(jacketNMT, "Transfer")
+    .withArgs(Minted.from, Minted.firstOwner, '1158808384137004768675244516077074077445013636396');
+
+    await expect(jacketNMT.mint(
+      owner.address,
+      creatorSmartPolicy.address,
+      denyAllSmartPolicy.address
+    )).to.emit(jacketNMT, "Transfer")
+    .withArgs(Minted.from, Minted.firstOwner, '908326538895415626116914244041615655093740059278');
+
+    await expect(jacketNMT.mint(
+      owner.address,
+      creatorSmartPolicy.address,
+      denyAllSmartPolicy.address
+    )).to.emit(jacketNMT, "Transfer")
+    .withArgs(Minted.from, Minted.firstOwner, '1093979775858064614434340416839704496575080287317');
+    
+    await expect(jacketNMT.mint(
+      owner.address,
+      creatorSmartPolicy.address,
+      denyAllSmartPolicy.address
+    )).to.be.rejectedWith(
+      "Operation DENIED by CREATTOR policy"
     );
   });
 

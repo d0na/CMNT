@@ -3,6 +3,8 @@ pragma solidity ^0.8.18;
 
 import "hardhat/console.sol";
 import "./base/SmartPolicy.sol";
+import "./base/NMT.sol";
+import "./base/MutableAsset.sol";
 import "./PolicyInformationPoint.sol";
 
 contract CreatorSmartPolicy is SmartPolicy {
@@ -48,6 +50,12 @@ contract CreatorSmartPolicy is SmartPolicy {
         bytes calldata _payload
     ) public pure returns (uint256) {
         return abi.decode(_payload[4:], (uint256));
+    }
+
+    function getTrasnferFromParam(
+        bytes calldata _payload
+    ) public pure returns (address, address) {
+        return abi.decode(_payload[4:], (address, address));
     }
 
     // Condition 1
@@ -124,10 +132,18 @@ contract CreatorSmartPolicy is SmartPolicy {
         }
 
         if (_signature == ACT_TRANSFER_FROM) {
-            return true;
+            (address from, address to) = this.getTrasnferFromParam(_action);
+            return _calcInstancesCount(_resource, to) <= 3;
         }
 
         return false;
+    }
+
+    function _calcInstancesCount(
+        address _res,
+        address _subj
+    ) private view returns (uint256) {
+        return MutableAsset(_res).nmtContract().balanceOf(_subj);
     }
 
     fallback() external {

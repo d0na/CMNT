@@ -3,6 +3,8 @@ pragma solidity ^0.8.18;
 
 import "hardhat/console.sol";
 import "./base/SmartPolicy.sol";
+import "./base/MutableAsset.sol";
+import "./base/NMT.sol";
 import "./PolicyInformationPoint.sol";
 
 contract PrincipalSmartPolicy is SmartPolicy {
@@ -36,12 +38,27 @@ contract PrincipalSmartPolicy is SmartPolicy {
         // console.logBytes(_action);
         bytes4 _signature = this.decodeSignature(_action);
         if (_signature == ACT_MINT) {
-            return true;
+            uint256 instancesCount = _calcInstancesCount(_resource, _subject);
+            
+            if (instancesCount <= 3) {
+                return true;
+            }
+
+            
         }
+
         return false;
     }
 
-    fallback() external {
-        //console.log("Fallback CreatorSmartPolicy");
+    function _calcInstancesCount(
+        address _res,
+        address _subj
+    ) private view returns (uint256) {
+        return NMT(_res).balanceOf(_subj);
     }
+
+
+
+
+    fallback() external {}
 }
