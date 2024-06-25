@@ -136,6 +136,37 @@ abstract contract MutableAsset {
         return true;
     }
 
+/** regulate the transferFrom method  */
+    function payableTransferFrom (
+        address from,
+        address to,
+        uint256 amount
+    )
+        public
+        virtual
+        evaluatedByCreator(
+            msg.sender,
+            abi.encodeWithSignature(
+                "payableTransferFrom(address,address,uint256)",
+                from,to,amount
+            ),
+            address(this)
+        )
+        // consider also  the holder Smart Policy 
+        // evaluatedByHolder(
+        //     msg.sender,
+        //     abi.encodeWithSignature(
+        //         "transferFrom(address,address)",
+        //         from,to
+        //     ),
+        //     address(this)
+        //)
+        returns(bool)
+    {
+        // ERC721(nmt).transferFrom(from,to,uint160(address(address(this))));
+        return true;
+    }
+
     /**
      * MODIFIERS
      * */

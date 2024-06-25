@@ -4,10 +4,11 @@ pragma solidity ^0.8.18;
 import "hardhat/console.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "./MutableAsset.sol";
 import "./SmartPolicy.sol";
 
-abstract contract NMT is Ownable, ERC721 {
+abstract contract NMT is Ownable, ERC721, ERC721Enumerable {
     address public principalSmartPolicy;
 
     constructor(address _principalSmartPolicy) {
@@ -89,14 +90,30 @@ abstract contract NMT is Ownable, ERC721 {
         address from,
         address to,
         uint256 tokenId
-    ) public virtual override {
+    ) public virtual override(ERC721, IERC721) {
         // console.log("transferFrom from %s to %s tokenId %s", from,to,tokenId);
         MutableAsset(getMutableAssetAddress(tokenId)).transferFrom(from, to);
 
         // more expensive in terms of gas
-        super._safeTransfer(from, to, tokenId);
+        super.transferFrom(from, to, tokenId);
         // less expensive in terms of gas
         //ERC721.transferFrom(from, to, tokenId);
+    }
+
+    function payableTransferFrom(
+        address from,
+        address to,
+        uint256 tokenId
+    ) public payable {
+        MutableAsset(getMutableAssetAddress(tokenId)).payableTransferFrom(
+            from,
+            to,
+            msg.value
+        );
+        // Call the original transferFrom function
+        super.transferFrom(from, to, tokenId);
+        // Optional: Transfer the fee
+        payable(from).transfer(msg.value); // send the ETH to the seller
     }
 
     /** MODIFIERs */
@@ -114,5 +131,26 @@ abstract contract NMT is Ownable, ERC721 {
             "Operation DENIED by PRINCIPAL policy"
         );
         _;
+    }
+
+    function supportsInterface(
+        bytes4 interfaceId
+    ) public view override(ERC721, ERC721Enumerable) returns (bool) {
+        return super.supportsInterface(interfaceId);
+    }
+
+    function _update(
+        address to,
+        uint256 tokenId,
+        address auth
+    ) internal virtual override(ERC721, ERC721Enumerable) returns (address) {
+        super._update(to, tokenId, auth);
+    }
+
+    function _increaseBalance(
+        address account,
+        uint128 amount
+    ) internal virtual override(ERC721, ERC721Enumerable) {
+        super._increaseBalance(account, amount);
     }
 }

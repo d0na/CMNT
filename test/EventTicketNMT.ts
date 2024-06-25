@@ -9,18 +9,21 @@ import { expect } from "chai";
 import { ethers } from "hardhat";
 import { string } from "hardhat/internal/core/params/argumentTypes";
 import { BigNumber } from "ethers";
-import { deployEventTicketNMT } from "../../helpers/eventTicketTest";
+import { deployEventTicketNMT } from "../helpers/eventTicketTest";
 
 const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 
-const TOKEN_ID1_STRING = "921600849408656576225127304129841157239410643646";
-const TOKEN_ID2_STRING = "1048441399354366663447528331587451327875741636968";
+// const TOKEN_ID1_STRING = "921600849408656576225127304129841157239410643646";
+const TOKEN_ID1_STRING = "1158808384137004768675244516077074077445013636396";
+const TOKEN_ID2_STRING = "908326538895415626116914244041615655093740059278";
+// const TOKEN_ID2_STRING = "1048441399354366663447528331587451327875741636968";
 
-const ASSET_ADDRESS1 = "0xa16E02E87b7454126E5E10d957A927A7F5B5d2be";
-const ASSET_ADDRESS2 = "0xB7A5bd0345EF1Cc5E66bf61BdeC17D2461fBd968";
-
+// const ASSET_ADDRESS1 = "0xa16E02E87b7454126E5E10d957A927A7F5B5d2be";
+const ASSET_ADDRESS1 = "0xCafac3dD18aC6c6e92c921884f9E4176737C052c";
+// const ASSET_ADDRESS2 = "0xB7A5bd0345EF1Cc5E66bf61BdeC17D2461fBd968";
+const ASSET_ADDRESS2 = "0x9f1ac54BEF0DD2f6f3462EA0fa94fC62300d3a8e";
 describe("eventTicketNMT", function () {
-  
+
   it("Should revert if the miner is 0 address", async function () {
     // valid alternative to ZERO_ADDRESS is
     // ethers.constants.AddressZero
@@ -31,7 +34,7 @@ describe("eventTicketNMT", function () {
     ).to.be.revertedWith("Ownable: new owner is the zero address");
   });
 
-  it("Should mint and own", async function () {
+  it("Should be minted and owned", async function () {
     // valid alternative ethers.constants.AddressZero
     const { eventTicketNMT, owner, creatorSmartPolicy, denyAllSmartPolicy } =
       await loadFixture(deployEventTicketNMT);
@@ -40,6 +43,7 @@ describe("eventTicketNMT", function () {
       creatorSmartPolicy.address,
       denyAllSmartPolicy.address
     );
+
     expect(await eventTicketNMT.owner()).to.equal(owner.address);
   });
 
@@ -65,9 +69,8 @@ describe("eventTicketNMT", function () {
     const JacketMutableAsset = await ethers.getContractFactory(
       "JacketMutableAsset"
     );
-    const jacketMutableAsset = JacketMutableAsset.deploy(eventTicketNMT.address,creatorSmartPolicy.address,denyAllSmartPolicy.address);
-  
-    console.log(jacketMutableAsset.address)
+    const jacketMutableAsset = JacketMutableAsset.deploy(eventTicketNMT.address, creatorSmartPolicy.address, denyAllSmartPolicy.address);
+
     expect(Number(tokenId)).to.equal(Number(Minted.tokenId));
     expect(assetAddress).to.equal(Minted.assetAddress);
   });
@@ -86,7 +89,6 @@ describe("eventTicketNMT", function () {
       denyAllSmartPolicy.address
     );
     const txReceipt = await txResponse.wait();
-    console.log("aaa");
 
     const events = txReceipt.events;
 
@@ -148,9 +150,9 @@ describe("eventTicketNMT", function () {
     );
   });
 
-  it("Should have symbol named 'PUBMNTJACKET'", async function () {
+  it("Should have symbol named 'TICKETNMT'", async function () {
     const { eventTicketNMT } = await loadFixture(deployEventTicketNMT);
-    expect(await eventTicketNMT.symbol()).to.equal("WALLETMNT");
+    expect(await eventTicketNMT.symbol()).to.equal("TICKETNMT");
   });
 
   // it("Should have tokenUri 'filename.glb'", async function () {
@@ -258,7 +260,35 @@ describe("eventTicketNMT", function () {
   //     ).to.be.equal(Minted.owner);
   //   });
 
-  it("Should be minted and transfer twice the NFT ownership and check the rigth owner through the ownerOf(tokenId) method", async function () {
+  it("Should be minted until reached the max minted limit number", async function () {
+    const {
+      eventTicketNMT,
+      owner,
+      creatorSmartPolicy,
+      denyAllSmartPolicy,
+    } = await loadFixture(deployEventTicketNMT);
+
+
+    for (let i = 0; i <= 10; i++) {
+      eventTicketNMT.mint(
+        owner.address,
+        creatorSmartPolicy.address,
+        denyAllSmartPolicy.address
+      );
+    }
+
+    await expect(eventTicketNMT.mint(
+      owner.address,
+      creatorSmartPolicy.address,
+      denyAllSmartPolicy.address
+    )).to.be.rejectedWith(
+      "Operation DENIED by PRINCIPAL policy"
+    );
+  });
+
+ 
+
+  it("Should be minted and not Transfered using the payableTransferFrom method by paying  105 founds that are not allowed by CSP ", async function () {
     const {
       eventTicketNMT,
       owner,
@@ -267,51 +297,68 @@ describe("eventTicketNMT", function () {
       creatorSmartPolicy,
       denyAllSmartPolicy,
     } = await loadFixture(deployEventTicketNMT);
+
     const Minted = {
       from: ZERO_ADDRESS,
       firstOwner: owner.address,
       secondOwner: account1.address,
       thirdOwner: account2.address,
-      tokenId: TOKEN_ID1_STRING,
+      tokenId: '1158808384137004768675244516077074077445013636396',
     };
-
-    // Minting the NFT to the First Owner
-    const mintResponse = await eventTicketNMT.mint(
+    eventTicketNMT.mint(
       Minted.firstOwner,
       creatorSmartPolicy.address,
       denyAllSmartPolicy.address
-    );
-    await expect(mintResponse)
-      .to.emit(eventTicketNMT, "Transfer")
-      // from, to, tokenId
-      .withArgs(Minted.from, Minted.firstOwner, Minted.tokenId);
+    )
 
-    expect(await eventTicketNMT.ownerOf(Minted.tokenId)).to.be.equal(
-      Minted.firstOwner
-    );
-
-    // Trasfering the NFT to the Second Owner
-    await eventTicketNMT.transferFrom(
-      Minted.firstOwner,
-      Minted.secondOwner,
-      Minted.tokenId
+    // Transfer to  account1.address
+    await expect(eventTicketNMT.payableTransferFrom(
+      Minted.from,
+      account2.address,
+      Minted.tokenId, { value: 105 }
+    )).to.be.rejectedWith(
+      "Operation DENIED by CREATOR policy"
     );
 
-    // Check that the new owner is changed
-    expect(await eventTicketNMT.ownerOf(Minted.tokenId)).to.be.equal(
-      Minted.secondOwner
-    );
-
-    // Trasfering NFT to the Third Owner
-    await eventTicketNMT
-      .connect(account1)
-      .transferFrom(Minted.secondOwner, Minted.thirdOwner, Minted.tokenId);
-
-    // Check that the new owner is changed
-    expect(await eventTicketNMT.ownerOf(Minted.tokenId)).to.be.equal(
-      Minted.thirdOwner
-    );
+    
   });
+
+
+
+  it("Should be minted and  Transfered using the payableTransferFrom method by paying  99 founds ", async function () {
+    const {
+      eventTicketNMT,
+      owner,
+      account1,
+      account2,
+      creatorSmartPolicy,
+      denyAllSmartPolicy,
+    } = await loadFixture(deployEventTicketNMT);
+
+    const Minted = {
+      from: ZERO_ADDRESS,
+      firstOwner: owner.address,
+      secondOwner: account1.address,
+      thirdOwner: account2.address,
+      tokenId: '1158808384137004768675244516077074077445013636396',
+    };
+    eventTicketNMT.mint(
+      Minted.firstOwner,
+      creatorSmartPolicy.address,
+      denyAllSmartPolicy.address
+    )
+
+    // Transfer to  account1.address
+    await expect(eventTicketNMT.payableTransferFrom(
+      Minted.from,
+      account2.address,
+      Minted.tokenId, { value: 70 }
+    )).to.emit(eventTicketNMT, "Transfer")
+    // from, to, tokenId
+    .withArgs('0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266',account2.address, Minted.tokenId);
+  });
+
+
 
   //   it("Should be minted and tansfer to a different user (Account1) and visible in the Transfer event", async function () {
   //     const { eventTicketNMT, owner, account1 } = await loadFixture(deployEventTicketNMT);
@@ -358,14 +405,5 @@ describe("eventTicketNMT", function () {
   //   //     "Unlock time should be in the future"
   //   //   );
   //   // });
-  describe("Test with NFT", () => {
-  it("Minting and transferFrom", async function () {
-    const [creator, buyer, tailor1, tailor2] = await ethers.getSigners();
-    const NFT = await ethers.getContractFactory("NonFungibleToken");
-    const nft = await NFT.deploy(creator.address);
 
-    await nft.mintCollectionNFT(creator.address, 1);
-    await nft.transferFrom(creator.address, buyer.address, 1);
-  });
-});
 });

@@ -3,37 +3,47 @@ import { expect } from "chai";
 import { ethers } from "hardhat";
 
 export async function deployEventTicketNMT() {
-    // Contracts are deployed using the first signer/account by default
+  // Contracts are deployed using the first signer/account by default
 
-    // owner    - 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
-    // account1 - 0x70997970C51812dc3A010C7d01b50e0d17dc79C8
-    // account2 - 0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC
-    const [owner, account1, account2] = await ethers.getSigners();
-    // console.log(owner.address)
-    // console.log(account1.address)
-    // console.log(account2.address)
-    const EventTicketNMT = await ethers.getContractFactory("EventTicketNMT");
-    const eventTicketNMT = await EventTicketNMT.deploy(owner.address);
+  // owner    - 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+  // account1 - 0x70997970C51812dc3A010C7d01b50e0d17dc79C8
+  // account2 - 0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC
+  const [owner, account1, account2] = await ethers.getSigners();
 
-    const CreatorSmartPolicy = await ethers.getContractFactory(
-      "CreatorSmartPolicy"
-    );
-    const creatorSmartPolicy = await CreatorSmartPolicy.deploy();
+    // Principal SmartPolicy
+    // const AMEventTicket = await ethers.getContractFactory(
+    //   "AMEventTicket"
+    // );
+    // const amEventTicket = await AMEventTicket.deploy();
 
-    // DenyAllSmartPolicy
-    const DenyAllSmartPolicy = await ethers.getContractFactory(
-      "DenyAllSmartPolicy"
-    );
-    const denyAllSmartPolicy = await CreatorSmartPolicy.deploy();
-    return {
-      eventTicketNMT,
-      owner,
-      account1,
-      account2,
-      creatorSmartPolicy,
-      denyAllSmartPolicy,
-    };
-  }
+  // Principal SmartPolicy
+  const PrincipalSmartPolicy = await ethers.getContractFactory(
+    "PSPEventTicket"
+  );
+  const principalSmartPolicy = await PrincipalSmartPolicy.deploy();
+
+  const EventTicketNMT = await ethers.getContractFactory("EventTicketNMT");
+  const eventTicketNMT = await EventTicketNMT.deploy(owner.address, principalSmartPolicy.address);
+
+  const CreatorSmartPolicy = await ethers.getContractFactory(
+    "CSPEventTicket"
+  );
+  const creatorSmartPolicy = await CreatorSmartPolicy.deploy();
+
+  // DenyAllSmartPolicy
+  const DenyAllSmartPolicy = await ethers.getContractFactory(
+    "DenyAllSmartPolicy"
+  );
+  const denyAllSmartPolicy = await DenyAllSmartPolicy.deploy();
+  return {
+    eventTicketNMT,
+    owner,
+    account1,
+    account2,
+    creatorSmartPolicy,
+    denyAllSmartPolicy,
+  };
+}
 
 export async function deployEventTicketAsset() {
   // Contracts are deployed using the first signer/account by default

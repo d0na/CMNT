@@ -16,7 +16,7 @@ contract EventTicketNMT is NMT {
         address principalSmartPolicy
     )
         NMT(principalSmartPolicy)
-        ERC721("Mutable EventTicket UniPi Project", "WALLETMNT")
+        ERC721("Mutable EventTicket UniPi Project", "TICKETNMT")
         Ownable(to)
     {}
 
@@ -38,12 +38,12 @@ contract EventTicketNMT is NMT {
 
         // Retrieving the tokenID and calling the ERC721 contract minting function
         uint tokenId = uint160(address(eventTicket));
-        console.log("tokenID", tokenId);
+        // console.log("tokenID", tokenId);
 
         _safeMint(to, tokenId);
-        console.log("asset address:", address(eventTicket));
-        console.log("asset tokenId:", tokenId);
-        console.log("res:", address(eventTicket), tokenId);
+        // console.log("asset address:", address(eventTicket));
+        // console.log("asset tokenId:", tokenId);
+        // console.log("res:", address(eventTicket), tokenId);
         return (address(eventTicket), tokenId);
     }
 
