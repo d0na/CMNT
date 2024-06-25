@@ -38,27 +38,30 @@ contract PrincipalSmartPolicy is SmartPolicy {
         // console.logBytes(_action);
         bytes4 _signature = this.decodeSignature(_action);
         if (_signature == ACT_MINT) {
-            uint256 instancesCount = _calcInstancesCount(_resource, _subject);
-            
-            if (instancesCount <= 3) {
-                return true;
-            }
-
-            
+            return _isAuthorizedRetailer(_subject);
         }
 
         return false;
     }
 
-    function _calcInstancesCount(
-        address _res,
-        address _subj
-    ) private view returns (uint256) {
-        return NMT(_res).balanceOf(_subj);
+    // Condition 1
+    function _isAuthorizedRetailer(address _retailer) private pure returns (bool) {
+        // //return equal(_tailor,"mario");
+        // address[] memory tailors = pip.pubTailorList();
+        // for (uint i = 0; i < tailors.length; i++) {
+        //     if (tailors[i] == _tailor) {
+        //         return true;
+        //     }
+        // }
+        // return false;
+        return
+            // _retailer == 0x70997970C51812dc3A010C7d01b50e0d17dc79C8;
+            // _tailor == 0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC || //test account2
+            _retailer == 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266; // test account0
+            // _tailor == 0x21387C745c98f092C376151197E68e56E33de81e || // sepolia 1
+            // _tailor == 0x7DE5260b6964bAE3678f3C7a8c45628af2CeAc28 || // sepolia 2
+            // _tailor == 0x901D7C8d516a5c97bFeE31a781A1101D10BBc8e9; // sepolia 3
     }
-
-
-
 
     fallback() external {}
 }

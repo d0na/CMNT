@@ -23,7 +23,7 @@ abstract contract NMT is Ownable, ERC721 {
         address holderSmartPolicy
     )
         public
-        onlyOwner
+        // onlyOwner
         evaluatedByPrincipal(
             msg.sender,
             abi.encodeWithSignature(

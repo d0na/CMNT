@@ -48,34 +48,13 @@ describe("Tests related to JacketNMT", function () {
     expect(await jacketNMT.owner()).to.equal(owner.address);
   });
 
-  it("Should be minted many times until be avoided", async function () {
+  it("Should not be minted because denied by PRINCIPAL Smart Policy (not recognized retailer)", async function () {
     // valid alternative ethers.constants.AddressZero
-    const { jacketNMT, owner, creatorSmartPolicy, denyAllSmartPolicy } =
+    const { jacketNMT, account1, creatorSmartPolicy, denyAllSmartPolicy } =
       await loadFixture(deployJacketNMT);
-    await jacketNMT.mint(
-      owner.address,
-      creatorSmartPolicy.address,
-      denyAllSmartPolicy.address
-    );
-    expect(await jacketNMT.owner()).to.equal(owner.address);
-    await jacketNMT.mint(
-      owner.address,
-      creatorSmartPolicy.address,
-      denyAllSmartPolicy.address
-    );
-    await jacketNMT.mint(
-      owner.address,
-      creatorSmartPolicy.address,
-      denyAllSmartPolicy.address
-    );
-    await jacketNMT.mint(
-      owner.address,
-      creatorSmartPolicy.address,
-      denyAllSmartPolicy.address
-    );
 
-    await expect(jacketNMT.mint(
-      owner.address,
+    await expect(jacketNMT.connect(account1).mint(
+      account1.address,
       creatorSmartPolicy.address,
       denyAllSmartPolicy.address
     )).to.be.rejectedWith(
@@ -394,7 +373,7 @@ describe("Tests related to JacketNMT", function () {
   });
 
 
-  it("Should be minted and transfer Jackets untile the CreatorSmartPolicy should deny the transferred", async function () {
+  it("Should mint and transfer jackets until the CreatorSmartPolicy denies the transfer (reached limited number of owned jackets: 3)", async function () {
     const {
       jacketNMT,
       owner,
@@ -411,34 +390,41 @@ describe("Tests related to JacketNMT", function () {
       tokenId: TOKEN_ID1_STRING,
     };
 
-    await expect(jacketNMT.mint(
-      owner.address,
-      creatorSmartPolicy.address,
-      denyAllSmartPolicy.address
-    )).to.emit(jacketNMT, "Transfer")
-    .withArgs(Minted.from, Minted.firstOwner, '1158808384137004768675244516077074077445013636396');
+    const TOKEN_ID_LIST = [
+      '1158808384137004768675244516077074077445013636396',
+      '908326538895415626116914244041615655093740059278',
+      '1093979775858064614434340416839704496575080287317',
+      '843296899859498528068740589347817885660631960527',
+      '925870555928972260054763252142951812295523922115'
+    ]
+    for (let i = 0; i <= 4; i++) {
+      // Mint
+      await expect(jacketNMT.mint(
+        owner.address,
+        creatorSmartPolicy.address,
+        denyAllSmartPolicy.address
+      )).to.emit(jacketNMT, "Transfer")
+        .withArgs(Minted.from, Minted.firstOwner, TOKEN_ID_LIST[i]);
 
-    await expect(jacketNMT.mint(
-      owner.address,
-      creatorSmartPolicy.address,
-      denyAllSmartPolicy.address
-    )).to.emit(jacketNMT, "Transfer")
-    .withArgs(Minted.from, Minted.firstOwner, '908326538895415626116914244041615655093740059278');
-
-    await expect(jacketNMT.mint(
-      owner.address,
-      creatorSmartPolicy.address,
-      denyAllSmartPolicy.address
-    )).to.emit(jacketNMT, "Transfer")
-    .withArgs(Minted.from, Minted.firstOwner, '1093979775858064614434340416839704496575080287317');
-    
-    await expect(jacketNMT.mint(
-      owner.address,
-      creatorSmartPolicy.address,
-      denyAllSmartPolicy.address
-    )).to.be.rejectedWith(
-      "Operation DENIED by CREATTOR policy"
-    );
+      if (i <= 3) {
+        // Trasnfer to  account1.address
+        await expect(jacketNMT.transferFrom(
+          owner.address,
+          account1.address,
+          TOKEN_ID_LIST[i]
+        )).to.emit(jacketNMT, "Transfer")
+          .withArgs(owner.address, account1.address, TOKEN_ID_LIST[i]);
+      } else {
+        // Reached the limit number of owned jacket
+        await expect(jacketNMT.transferFrom(
+          owner.address,
+          account1.address,
+          TOKEN_ID_LIST[i]
+        )).to.be.rejectedWith(
+          "Operation DENIED by CREATOR policy"
+        );
+      }
+    }
   });
 
   //   it("Should be minted and tansfer to a different user (Account1) and visible in the Transfer event", async function () {
