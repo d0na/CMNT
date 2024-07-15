@@ -39,10 +39,11 @@ contract PSPEventTicket is SmartPolicy {
         // console.logBytes(_action);
         bytes4 _signature = this.decodeSignature(_action);
         if (_signature == ACT_MINT) {
-            if(NMT(_resource).totalSupply() < MAX_RELEASED_TICKET_NUMBER){
-                return true;
-            }
-            return false;
+            // if(NMT(_resource).totalSupply() < MAX_RELEASED_TICKET_NUMBER){
+            //     return true;
+            // }
+            // return false;
+            return true;
         }
 
         return false;

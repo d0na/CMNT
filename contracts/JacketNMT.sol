@@ -32,7 +32,7 @@ contract JacketNMT is NMT {
     }
 
     /**
-     *
+     * Real Token mint implementation
      * @param to  address of the new holder
      */
     function _mint(
@@ -47,7 +47,8 @@ contract JacketNMT is NMT {
             address(holderSmartPolicy)
         );
 
-        //transferOwnership(to);
+        // Advise the ownable smart contract about the ownership change
+        // transferOwnership(to);
 
         // Retrieving the tokenID and calling the ERC721 contract minting function
         uint tokenId = uint160(address(jacket));
@@ -57,6 +58,7 @@ contract JacketNMT is NMT {
         // console.log("asset address:", address(jacket));
         // console.log("asset tokenId:", tokenId);
         // console.log("res:",address(jacket), tokenId);
+        // console.log("JACKETNMT -- minted");
         return (address(jacket), tokenId);
     }
 
