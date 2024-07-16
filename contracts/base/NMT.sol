@@ -102,7 +102,6 @@ abstract contract NMT is Ownable, ERC721Enumerable {
         address to,
         uint256 tokenId
     ) public payable {
-        console.log("PaybleTrasnferFrom");
         MutableAsset(getMutableAssetAddress(tokenId)).payableTransferFrom(
             from,
             to,
