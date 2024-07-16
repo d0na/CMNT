@@ -10,6 +10,7 @@ import { ethers } from "hardhat";
 import { string } from "hardhat/internal/core/params/argumentTypes";
 import { BigNumber } from "ethers";
 import { deployJacketNMT } from "../helpers/test";
+import * as _ from "../typechain-types";
 
 const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 
@@ -340,8 +341,8 @@ describe("Tests related to JacketNMT", function () {
       await expect(jacketNMT.transferFrom(
         FIRSTOWNER, SECONDOWNER, TOKENID
       )).to.emit(jacketNMT, "Transfer")
-      // from, to, tokenId
-      .withArgs(FIRSTOWNER, SECONDOWNER, TOKENID);;
+        // from, to, tokenId
+        .withArgs(FIRSTOWNER, SECONDOWNER, TOKENID);;
 
       // Check that the new owner is changed, verfies the TOKENID owenership for the SECOND Owner 
       expect(await jacketNMT.ownerOf(TOKENID)).to.be.equal(
@@ -351,7 +352,7 @@ describe("Tests related to JacketNMT", function () {
       // Trasfering NFT to the Third Owner
       await jacketNMT
         .connect(account1)
-        .transferFrom(SECONDOWNER,THIRDOWNER, TOKENID);
+        .transferFrom(SECONDOWNER, THIRDOWNER, TOKENID);
 
       // Check that the new owner is changed, verfies the TOKENID owenership for the THIRD Owner 
       expect(await jacketNMT.ownerOf(TOKENID)).to.be.equal(
@@ -403,6 +404,117 @@ describe("Tests related to JacketNMT", function () {
         } else {
           // Reached the limit number of owned jacket
           await expect(jacketNMT.transferFrom(
+            owner.address,
+            account1.address,
+            TOKEN_ID_LIST[i]
+          )).to.be.rejectedWith(
+            "Operation DENIED by CREATOR policy"
+          );
+        }
+      }
+    });
+  });
+
+  describe("Tests related to safeTransferFrom", () => {
+
+    it("Should be minted and safe-transfered the NFT ownership twice. Then checked through the ownerOf(tokenId) method the correct owner.", async function () {
+      const {
+        jacketNMT,
+        owner,
+        account1,
+        account2,
+        creatorSmartPolicy,
+        denyAllSmartPolicy,
+      } = await loadFixture(deployJacketNMT);
+      const FIRSTOWNER = owner.address;
+      const SECONDOWNER = account1.address;
+      const THIRDOWNER = account2.address;
+      const TOKENID = TOKEN_ID1_STRING;
+
+      // Minting the NFT for the First Owner
+      const mintResponse = await jacketNMT.mint(
+        FIRSTOWNER, //to
+        creatorSmartPolicy.address,
+        denyAllSmartPolicy.address
+      );
+
+      // Verifies that the Token is Transfer to the 'to' mint param (FIRST OWNER) 
+      await expect(mintResponse)
+        .to.emit(jacketNMT, "Transfer")
+        // from, to, tokenId
+        .withArgs(ZERO_ADDRESS, FIRSTOWNER, TOKENID);
+
+      // Verifies the TOKENID owenership for the FIRST Owner 
+      expect(await jacketNMT.ownerOf(TOKENID)).to.be.equal(
+        FIRSTOWNER
+      );
+
+      // Trasfering the NFT to the Second Owner
+      await expect((jacketNMT as _.JacketNMT)["safeTransferFrom(address,address,uint256)"](
+        FIRSTOWNER, SECONDOWNER, TOKENID
+      )).to.emit(jacketNMT, "Transfer")
+        // from, to, tokenId
+        .withArgs(FIRSTOWNER, SECONDOWNER, TOKENID);;
+
+      // Check that the new owner is changed, verfies the TOKENID owenership for the SECOND Owner 
+      expect(await jacketNMT.ownerOf(TOKENID)).to.be.equal(
+        SECONDOWNER
+      );
+
+      // Trasfering NFT to the Third Owner
+      await (jacketNMT as _.JacketNMT)
+        .connect(account1)["safeTransferFrom(address,address,uint256)"](SECONDOWNER, THIRDOWNER, TOKENID);
+
+      // Check that the new owner is changed, verfies the TOKENID owenership for the THIRD Owner 
+      expect(await jacketNMT.ownerOf(TOKENID)).to.be.equal(
+        THIRDOWNER
+      );
+    });
+
+    it("Should mint and safe-transfered jackets until the CreatorSmartPolicy denies the transfer (due to reached limited number of owned jackets: 3)", async function () {
+      const {
+        jacketNMT,
+        owner,
+        account1,
+        account2,
+        denyAllSmartPolicy,
+        creatorSmartPolicy,
+      } = await loadFixture(deployJacketNMT);
+      const Minted = {
+        from: ZERO_ADDRESS,
+        firstOwner: owner.address,
+        secondOwner: account1.address,
+        thirdOwner: account2.address,
+        tokenId: TOKEN_ID1_STRING,
+      };
+
+      const TOKEN_ID_LIST = [
+        '1158808384137004768675244516077074077445013636396',
+        '908326538895415626116914244041615655093740059278',
+        '1093979775858064614434340416839704496575080287317',
+        '843296899859498528068740589347817885660631960527',
+        '925870555928972260054763252142951812295523922115'
+      ]
+      for (let i = 0; i <= 4; i++) {
+        // Mint
+        await expect(jacketNMT.mint(
+          owner.address,
+          creatorSmartPolicy.address,
+          denyAllSmartPolicy.address
+        )).to.emit(jacketNMT, "Transfer")
+          .withArgs(Minted.from, Minted.firstOwner, TOKEN_ID_LIST[i]);
+
+        if (i <= 3) {
+          // Trasnfer to  account1.address
+          await expect((jacketNMT as _.JacketNMT)["safeTransferFrom(address,address,uint256)"](
+            owner.address,
+            account1.address,
+            TOKEN_ID_LIST[i]
+          )).to.emit(jacketNMT, "Transfer")
+            .withArgs(owner.address, account1.address, TOKEN_ID_LIST[i]);
+        } else {
+          // Reached the limit number of owned jacket
+          await expect((jacketNMT as _.JacketNMT)["safeTransferFrom(address,address,uint256)"](
             owner.address,
             account1.address,
             TOKEN_ID_LIST[i]

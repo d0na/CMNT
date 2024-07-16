@@ -92,11 +92,10 @@ abstract contract NMT is Ownable, ERC721Enumerable {
         uint256 tokenId
     ) public virtual override(ERC721, IERC721) {
         MutableAsset(getMutableAssetAddress(tokenId)).transferFrom(from, to);
-        // Call the _update function, problems using super_safeTransfer or others
-        super._update(to, tokenId,from);
-        // less expensive in terms of gas
-        //ERC721.transferFrom(from, to, tokenId);
+        super.transferFrom(from, to, tokenId);
     }
+
+    //safeTransferFrom(from, to, tokenId, data)
 
     function payableTransferFrom(
         address from,
@@ -109,8 +108,7 @@ abstract contract NMT is Ownable, ERC721Enumerable {
             to,
             msg.value
         );
-        // Call the _update function, problems using super_safeTransfer or others
-        super._update(to, tokenId,from);
+        super.transferFrom(from, to, tokenId);
         // Optional: Transfer the fee
         payable(from).transfer(msg.value); // send the ETH to the seller
     }
@@ -130,26 +128,5 @@ abstract contract NMT is Ownable, ERC721Enumerable {
             "Operation DENIED by PRINCIPAL policy"
         );
         _;
-    }
-
-    function supportsInterface(
-        bytes4 interfaceId
-    ) public view override(ERC721Enumerable) returns (bool) {
-        return super.supportsInterface(interfaceId);
-    }
-
-    function _update(
-        address to,
-        uint256 tokenId,
-        address auth
-    ) internal virtual override(ERC721Enumerable) returns (address) {
-        super._update(to, tokenId, auth);
-    }
-
-    function _increaseBalance(
-        address account,
-        uint128 amount
-    ) internal virtual override(ERC721Enumerable) {
-        super._increaseBalance(account, amount);
     }
 }
