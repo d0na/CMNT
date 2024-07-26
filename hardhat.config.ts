@@ -20,6 +20,13 @@ require("@nomicfoundation/hardhat-toolbox");
 // /*  Esempio from Polygon website */
 require("dotenv").config();
 
+function getDynamicOutputFile() {
+  const date = new Date();
+  const formattedDate = date.toISOString().replace(/[:.]/g, '-');
+  return `gas-report-${formattedDate}`;
+}
+const minimist = require('minimist');
+const argv = minimist(process.argv.slice(2));
 module.exports = {
   defaultNetwork: "hardhat",
   networks: {
@@ -45,17 +52,31 @@ module.exports = {
       ],
     },
   },
-  etherscan: {
-    // apiKey: process.env.POLYGONSCAN_API_KEY,
-    apiKey: process.env.ALCHEMY_API_KEY,
-  },
+  // etherscan: {
+  //   // apiKey: process.env.POLYGONSCAN_API_KEY,
+  //   apiKey: process.env.ALCHEMY_API_KEY,
+  // },
   //https://medium.com/@abhijeet.sinha383/how-to-calculate-gas-and-costs-while-deploying-solidity-contracts-and-functions-54007d321626
   gasReporter: {
     enabled: true,
     noColors: false,
     currency: "EUR",
-    outputFile: "gas-report-matic.txt",
     token: "MATIC",
+    L1: "polygon",
+    currencyDisplayPrecision: 4,
+    reportFormat: "markdown",
+    // outputFile:  getDynamicOutputFile()+'.md' ,
+    outputFile:  'gas-report-'+argv._[1].split('/').pop().split('.')[0]+'.md' ,
+    forceTerminalOutput: true,
+    forceTerminalOutputFormat: "terminal",
+    // outputJSONFile	:  getDynamicOutputFile()+'.json', 
+    // outputJSON: true,
+    // to see the the value of gasPrice it's is enough check the website:
+    // https://polygonscan.com/ on the top right corner at the voice - Gas: gwei.
+    // while for the MATIC price in euro, it is enough to use the COINMARKET_API which provides
+    // a value MATIC PRICE IN EURO that can be double checked in the previous website.
+    coinmarketcap: process.env.COINMARKET_API_KEY,
+    gasPrice: 30.1
   },
   paths: {
     sources: "./contracts",
