@@ -17,9 +17,12 @@ class NMT {
     ' -- usingFor --
 
     ' -- vars --
+	+[[address]] principalSmartPolicy
 
     ' -- methods --
-	+mint() onlyOwner
+	+mint() evaluatedByPrincipal
+	+transferFrom() 
+	+setPrincipalSmartPolicy() evaluatedByPrincipal
 	#_mint()
 
 }
@@ -49,7 +52,8 @@ class MutableAsset {
 	+setLinked() evaluatedByCreator,evaluatedByHolder
 	+setHolderSmartPolicy() onlyOwner
 	+setCreatorSmartPolicy() evaluatedByCreator,evaluatedByHolder
-	+🔍getHolder()®®
+	+transferFrom() evaluatedByCreator
+	+🔍getHolder()
 
 }
 
@@ -106,6 +110,21 @@ class DenyAllSmartPolicy {
 }
 ' -- inheritance / usingFor --
 DenyAllSmartPolicy --[#DarkGoldenRod]|> SmartPolicy
+
+PrincipalSmartPolicy --[#DarkGoldenRod]|> SmartPolicy
+class PrincipalSmartPolicy {
+    ' -- inheritance --
+	{abstract}SmartPolicy
+
+    ' -- usingFor --
+
+    ' -- vars --
+
+    ' -- methods --
+	+🔍evaluate()
+	+**__constructor__**()
+
+}
 
 class HolderSmartPolicy {
     ' -- inheritance --
