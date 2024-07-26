@@ -66,10 +66,10 @@ describe("eventTicketNMT", function () {
 
 
       //JacketMutableAsset
-      const JacketMutableAsset = await ethers.getContractFactory(
-        "JacketMutableAsset"
+      const EventTicketMutableAsset = await ethers.getContractFactory(
+        "EventTicketMutableAsset"
       );
-      const jacketMutableAsset = JacketMutableAsset.deploy(eventTicketNMT.address, creatorSmartPolicy.address, denyAllSmartPolicy.address);
+      const eventicketMutableAsset = EventTicketMutableAsset.deploy(eventTicketNMT.address, creatorSmartPolicy.address, denyAllSmartPolicy.address);
 
       expect(Number(tokenId)).to.equal(Number(Minted.tokenId));
       expect(assetAddress).to.equal(Minted.assetAddress);

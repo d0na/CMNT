@@ -80,8 +80,12 @@ describe("Tests related to JacketNMT", function () {
       );
       const assetAddress = mintResponse[0];
       const tokenId = mintResponse[1];
-      //console.log("[TokenID]: %s",tokenId)
-      //console.log("[AssetAddress]: %s",assetAddress)
+
+      //JacketMutableAsset
+      const JacketMutableAsset = await ethers.getContractFactory(
+        "JacketMutableAsset"
+      );
+      const jacketMutableAsset = JacketMutableAsset.deploy(jacketNMT.address, creatorSmartPolicy.address, denyAllSmartPolicy.address);
 
       expect(Number(tokenId)).to.equal(Number(Minted.tokenId));
       expect(assetAddress).to.equal(Minted.assetAddress);
