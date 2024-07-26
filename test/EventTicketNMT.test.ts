@@ -9,7 +9,7 @@ import { expect } from "chai";
 import { ethers } from "hardhat";
 import { string } from "hardhat/internal/core/params/argumentTypes";
 import { BigNumber } from "ethers";
-import { deployEventTicketNMT } from "../helpers/eventTicketTest";
+import { deployEventTicketNMT } from "../helpers/eventTicketTest.helper";
 
 const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 
@@ -260,7 +260,7 @@ describe("eventTicketNMT", function () {
     //     ).to.be.equal(Minted.owner);
     //   });
 
-    it("Should mint items until it reaches the max minted limit number (10) and then denied by the Principal Policy", async function () {
+    it("[Rule B] Should mint items until it reaches the max minted limit number (10) and he is recognized, then should be denied by the Principal Policy", async function () {
       const {
         eventTicketNMT,
         owner,
@@ -283,7 +283,24 @@ describe("eventTicketNMT", function () {
       )).to.be.rejectedWith(
         "Operation DENIED by PRINCIPAL policy"
       );
+    });
 
+    it("[Rule B] Should not mint because who is minting is not recognized as valid user and the operaion is denied by the Principal Policy", async function () {
+      const {
+        eventTicketNMT,
+        owner,
+        creatorSmartPolicy,
+        denyAllSmartPolicy,account2
+      } = await loadFixture(deployEventTicketNMT);
+
+
+      await expect(eventTicketNMT.connect(account2).mint(
+        owner.address,
+        creatorSmartPolicy.address,
+        denyAllSmartPolicy.address
+      )).to.be.rejectedWith(
+        "Operation DENIED by PRINCIPAL policy"
+      );
     });
   });
 

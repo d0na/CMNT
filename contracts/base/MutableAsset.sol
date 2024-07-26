@@ -203,6 +203,30 @@ abstract contract MutableAsset {
         _;
     }
 
+     modifier evaluatedBySmartPolicies(
+        address _subject,
+        bytes memory _action,
+        address _resource
+    ) {
+        require(
+            SmartPolicy(creatorSmartPolicy).evaluate(
+                _subject,
+                _action,
+                _resource
+            ) == true,
+            "Operation DENIED by CREATOR policy"
+        );
+        require(
+            SmartPolicy(holderSmartPolicy).evaluate(
+                _subject,
+                _action,
+                _resource
+            ) == true,
+            "Operation DENIED by HOLDER policy"
+        );
+        _;
+    }
+
     /**
      * @dev Revert the execution if the call is not from the owner
      */

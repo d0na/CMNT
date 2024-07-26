@@ -5,7 +5,6 @@ import "hardhat/console.sol";
 import "../base/SmartPolicy.sol";
 import "../base/MutableAsset.sol";
 import "../base/NMT.sol";
-import "./AMEventTicket.sol";
 contract PSPEventTicket is SmartPolicy {
     uint256 internal MAX_RELEASED_TICKET_NUMBER = 10;
     /*
@@ -30,6 +29,26 @@ contract PSPEventTicket is SmartPolicy {
     // Evalute if the action is allowed or denied
     // TODO think to add a modifier that check if the action is in some list -> onlyAllowedAction
 
+    function _isAuthorizedUser(address _user) private pure returns (bool) {
+        // //return equal(_tailor,"mario");
+        // address[] memory tailors = pip.pubTailorList();
+        // for (uint i = 0; i < tailors.length; i++) {
+        //     if (tailors[i] == _tailor) {
+        //         return true;
+        //     }
+        // }
+        // return false;
+        return
+            _user == 0x70997970C51812dc3A010C7d01b50e0d17dc79C8 || //test account1
+            // _tailor == 0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC || //test account2
+            _user == 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266 ; // test account0
+            // _tailor == 0x21387C745c98f092C376151197E68e56E33de81e || // sepolia 1
+            // _tailor == 0x7DE5260b6964bAE3678f3C7a8c45628af2CeAc28 || // sepolia 2
+            // _tailor == 0x901D7C8d516a5c97bFeE31a781A1101D10BBc8e9; // sepolia 3
+            
+    }
+
+
     function evaluate(
         address _subject,
         bytes memory _action,
@@ -39,7 +58,7 @@ contract PSPEventTicket is SmartPolicy {
         // console.logBytes(_action);
         bytes4 _signature = this.decodeSignature(_action);
         if (_signature == ACT_MINT) {
-            if(NMT(_resource).totalSupply() < MAX_RELEASED_TICKET_NUMBER){
+            if ((NMT(_resource).totalSupply() < MAX_RELEASED_TICKET_NUMBER) && _isAuthorizedUser(_subject) ){
                 return true;
             }
             return false;

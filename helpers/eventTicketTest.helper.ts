@@ -8,13 +8,14 @@ export async function deployEventTicketNMT() {
   // owner    - 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
   // account1 - 0x70997970C51812dc3A010C7d01b50e0d17dc79C8
   // account2 - 0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC
-  const [owner, account1, account2] = await ethers.getSigners();
+  // account3 - 
+  const [owner, account1, account2, account3] = await ethers.getSigners();
 
-    // Principal SmartPolicy
-    // const AMEventTicket = await ethers.getContractFactory(
-    //   "AMEventTicket"
-    // );
-    // const amEventTicket = await AMEventTicket.deploy();
+  // Principal SmartPolicy
+  // const AMEventTicket = await ethers.getContractFactory(
+  //   "AMEventTicket"
+  // );
+  // const amEventTicket = await AMEventTicket.deploy();
 
   // Principal SmartPolicy
   const PrincipalSmartPolicy = await ethers.getContractFactory(
@@ -25,10 +26,15 @@ export async function deployEventTicketNMT() {
   const EventTicketNMT = await ethers.getContractFactory("EventTicketNMT");
   const eventTicketNMT = await EventTicketNMT.deploy(owner.address, principalSmartPolicy.address);
 
+  const AMEventOrganizer = await ethers.getContractFactory(
+    "AMEventOrganizer"
+  );
+  const amEventOrganizer = await AMEventOrganizer.deploy();
+
   const CreatorSmartPolicy = await ethers.getContractFactory(
     "CSPEventTicket"
   );
-  const creatorSmartPolicy = await CreatorSmartPolicy.deploy();
+  const creatorSmartPolicy = await CreatorSmartPolicy.deploy(amEventOrganizer.address);
 
   // DenyAllSmartPolicy
   const DenyAllSmartPolicy = await ethers.getContractFactory(
@@ -47,25 +53,35 @@ export async function deployEventTicketNMT() {
 
 export async function deployEventTicketAsset() {
   // Contracts are deployed using the first signer/account by default
-  const [creator, buyer, tailor1, tailor2] = await ethers.getSigners();
+  const [creator, buyer, account1, account2, account3] = await ethers.getSigners();
   // creator    - 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
   // buyer - 0x70997970C51812dc3A010C7d01b50e0d17dc79C8
   // tailor1 - 0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC
   // tailor2 - 0x90F79bf6EB2c4f870365E785982E1f101E93b906
 
+  const PrincipalSmartPolicy = await ethers.getContractFactory(
+    "PSPEventTicket"
+  );
+  const principalSmartPolicy = await PrincipalSmartPolicy.deploy();
+
+  const AMEventOrganizer = await ethers.getContractFactory(
+    "AMEventOrganizer"
+  );
+  const amEventOrganizer = await AMEventOrganizer.deploy();
+
   // EventTicketNMT
   const EventTicketNMT = await ethers.getContractFactory("EventTicketNMT");
-  const eventTicketNMT = await EventTicketNMT.deploy(creator.address);
+  const eventTicketNMT = await EventTicketNMT.deploy(creator.address, principalSmartPolicy.address);
   // HolderSmartPolicy
   const HolderSmartPolicy = await ethers.getContractFactory(
-    "HolderSmartPolicy"
+    "HSPEventTicket"
   );
   const holderSmartPolicy = await HolderSmartPolicy.deploy();
-  // CreatorSmartPolicy
+  // CSPEventTicket
   const CreatorSmartPolicy = await ethers.getContractFactory(
-    "CreatorSmartPolicy"
+    "CSPEventTicket"
   );
-  const creatorSmartPolicy = await CreatorSmartPolicy.deploy();
+  const creatorSmartPolicy = await CreatorSmartPolicy.deploy(amEventOrganizer.address);
   // DenyAllSmartPolicy
   const DenyAllSmartPolicy = await ethers.getContractFactory(
     "DenyAllSmartPolicy"
@@ -76,7 +92,7 @@ export async function deployEventTicketAsset() {
   const mintTx = await eventTicketNMT.mint(
     buyer.address,
     creatorSmartPolicy.address,
-    denyAllSmartPolicy.address
+    holderSmartPolicy.address
   );
   const mintResponse = await mintTx.wait();
   const eventTicketTokenId = mintResponse.events[0].args["tokenId"];
@@ -86,7 +102,7 @@ export async function deployEventTicketAsset() {
     "EventTicketMutableAsset"
   );
   const eventTicketMutableAsset = EventTicketMutableAsset.attach(eventTicketAddress);
-
+  
   return {
     eventTicketNMT,
     eventTicketAddress,
@@ -94,8 +110,9 @@ export async function deployEventTicketAsset() {
     eventTicketMutableAsset,
     creator,
     buyer,
-    tailor1,
-    tailor2,
+    account1,
+    account2,
+    account3,
     holderSmartPolicy,
     denyAllSmartPolicy,
     creatorSmartPolicy,
