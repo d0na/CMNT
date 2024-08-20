@@ -46,7 +46,7 @@ describe("Tests related to JacketNMT", function () {
         creatorSmartPolicy.address,
         denyAllSmartPolicy.address
       );
-      expect(await jacketNMT.owner()).to.equal(owner.address);
+      expect(await jacketNMT.ownerOf(TOKEN_ID1_STRING)).to.equal(owner.address);
     });
 
     it("Should not be minted because denied by PRINCIPAL Smart Policy (not recognized retailer)", async function () {
@@ -341,8 +341,9 @@ describe("Tests related to JacketNMT", function () {
         FIRSTOWNER
       );
 
+      jacketNMT.approve(account1.address,TOKENID);
       // Trasfering the NFT to the Second Owner
-      await expect(jacketNMT.transferFrom(
+      await expect(jacketNMT.connect(account1).transferFrom(
         FIRSTOWNER, SECONDOWNER, TOKENID
       )).to.emit(jacketNMT, "Transfer")
         // from, to, tokenId

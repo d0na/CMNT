@@ -67,19 +67,18 @@ describe("EventTicketMutableAsset", function () {
 
   describe("Smart Policies stuff", function () {
     describe("[RULE C] - setSeat ", function () {
-      xit("Should setBikeTransport because the subject is allowed by the Smart policies", async function () {
-        const { eventTicketMutableAsset, account1 } = await deployEventTicketAsset();
-        const setBikeTransport = await eventTicketMutableAsset.connect(account1).setBikeTransport(true, "test");
+
+      it("Should invoke the _setSeatNumber function without policy evaluation", async function () {
+        const { eventTicketMutableAsset } = await deployEventTicketAsset();
+        const _setSeat = await eventTicketMutableAsset._setSeat(6, "ticket");
         const eventTicketDescriptor = await eventTicketMutableAsset.getEventTicketDescriptor();
-        expect(eventTicketDescriptor["bikeTransport"]).to.be.equal(true);
+        // await expect(_setSeat)
+        //   .to.emit(eventTicketMutableAsset, "StateChanged")
+        //   .withArgs([1, "ticket"]);
+        expect(eventTicketDescriptor["seatNumber"]).to.be.equal(6);
+        expect(await eventTicketMutableAsset.tokenURI()).to.be.equal("ticket");
       });
 
-      xit("Should not setBikeTransport because the subject is not allowed by the Smart policies", async function () {
-        const { eventTicketMutableAsset, account2 } = await deployEventTicketAsset();
-        await expect(
-          eventTicketMutableAsset.connect(account2).setBikeTransport(true, "test")
-        ).to.be.rejectedWith("Operation DENIED by CREATOR policy");
-      });
       it("Should an event organizer change the seatNumber", async function () {
         const { eventTicketMutableAsset, account3 } = await deployEventTicketAsset();
         const setBikeTransport = await eventTicketMutableAsset.connect(account3).setSeat(111, "test");
@@ -95,6 +94,17 @@ describe("EventTicketMutableAsset", function () {
       });
     });
     describe("[RULE D] - setBackStageAccess ", function () {
+
+      it("Should invoke the _setBackstageAccess function without policy evaluation", async function () {
+        const { eventTicketMutableAsset } = await deployEventTicketAsset();
+        const _setBackstageAccess = await eventTicketMutableAsset._setBackstageAccess(true, "ticket");
+        const eventTicketDescriptor = await eventTicketMutableAsset.getEventTicketDescriptor();
+        // await expect(_setSeat)
+        //   .to.emit(eventTicketMutableAsset, "StateChanged")
+        //   .withArgs([1, "ticket"]);
+        expect(eventTicketDescriptor["backstageAccess"]).to.be.equal(true);
+        expect(await eventTicketMutableAsset.tokenURI()).to.be.equal("ticket");
+      });
 
       it("Should the owner set the backstage access to true becasuse he has the PremiumRole and the seatNumber is < 100 ", async function () {
         const { eventTicketMutableAsset, buyer, account3 } = await deployEventTicketAsset();
@@ -121,6 +131,18 @@ describe("EventTicketMutableAsset", function () {
     });
 
     describe("[RULE F] - setValidationDate ", function () {
+
+      it("Should invoke the _setValidationDate function without policy evaluation", async function () {
+        const { eventTicketMutableAsset } = await deployEventTicketAsset();
+        const _setBackstageAccess = await eventTicketMutableAsset._setValidationDate(12345, "ticket");
+        const eventTicketDescriptor = await eventTicketMutableAsset.getEventTicketDescriptor();
+        // await expect(_setSeat)
+        //   .to.emit(eventTicketMutableAsset, "StateChanged")
+        //   .withArgs([1, "ticket"]);
+        expect(eventTicketDescriptor["validationDate"]).to.be.equal(12345);
+        expect(await eventTicketMutableAsset.tokenURI()).to.be.equal("ticket");
+      });
+
 
       it("Should an user validate the ticket beacuse he is authorized due to the Logist Support Role", async function () {
         const { eventTicketMutableAsset, buyer } = await deployEventTicketAsset();
@@ -160,6 +182,18 @@ describe("EventTicketMutableAsset", function () {
     });
     describe("[RULE E] - setVirtualSwagBagAccess ", function () {
 
+      it("Should invoke the _setVirtualSwagBagAccess function without policy evaluation", async function () {
+        const { eventTicketMutableAsset } = await deployEventTicketAsset();
+        const _setBackstageAccess = await eventTicketMutableAsset._setVirtualSwagBagAccess(true, "ticket");
+        const eventTicketDescriptor = await eventTicketMutableAsset.getEventTicketDescriptor();
+        // await expect(_setSeat)
+        //   .to.emit(eventTicketMutableAsset, "StateChanged")
+        //   .withArgs([1, "ticket"]);
+        expect(eventTicketDescriptor["virtualSwagBagAccess"]).to.be.equal(true);
+        expect(await eventTicketMutableAsset.tokenURI()).to.be.equal("ticket");
+      });
+
+
       it("Should a Logist Support User set the virtual swag bag access to true", async function () {
         const { eventTicketMutableAsset, buyer } = await deployEventTicketAsset();
         await eventTicketMutableAsset.connect(buyer).setVirtualSwagBagAccess(true, "test");
@@ -183,10 +217,21 @@ describe("EventTicketMutableAsset", function () {
         expect(eventTicketDescriptor["virtualSwagBag"]).to.be.equal(123456);
       });
 
+      it("Should invoke the _setVirtualSwagBag function without policy evaluation", async function () {
+        const { eventTicketMutableAsset } = await deployEventTicketAsset();
+        const _setBackstageAccess = await eventTicketMutableAsset._setVirtualSwagBag(12345, "ticket");
+        const eventTicketDescriptor = await eventTicketMutableAsset.getEventTicketDescriptor();
+        // await expect(_setSeat)
+        //   .to.emit(eventTicketMutableAsset, "StateChanged")
+        //   .withArgs([1, "ticket"]);
+        expect(eventTicketDescriptor["virtualSwagBag"]).to.be.equal(12345);
+        expect(await eventTicketMutableAsset.tokenURI()).to.be.equal("ticket");
+      });
+
       it("Shouldn't a Logist Support User set a virtual swag bag because the setVirtualSwagBagAccess is false", async function () {
         const { eventTicketMutableAsset, account1 } = await deployEventTicketAsset();
         await expect(eventTicketMutableAsset.connect(account1).setVirtualSwagBag(1234, "test")
-      ).to.be.rejectedWith("Operation DENIED by CREATOR policy");
+        ).to.be.rejectedWith("Operation DENIED by CREATOR policy");
       });
     });
   });
