@@ -8,7 +8,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 // https://medium.com/51nodes/why-upgrading-openzeppelin-smart-contracts-from-version-4-to-version-5-is-unsafe-e08be30efd8a
 
-contract MyNFT is  ERC721Enumerable, Ownable {
+contract MyTokenERC721Enumerable is  ERC721Enumerable, Ownable {
     constructor(address to) ERC721("MyNFT", "MNFT") Ownable(to) {}
 
 
@@ -17,6 +17,6 @@ contract MyNFT is  ERC721Enumerable, Ownable {
         address collector,
         uint256 tokenId
     ) public onlyOwner {
-        _safeMint(collector, tokenId);
+        _mint(collector, tokenId);
     }
 }
