@@ -105,7 +105,7 @@ abstract contract MutableAsset {
         creatorSmartPolicy = _creatorSmartPolicy;
     }
 
-     /** regulate the transferFrom method  */
+    /** regulate the transferFrom method  */
     function transferFrom(
         address from,
         address to
@@ -114,30 +114,28 @@ abstract contract MutableAsset {
         virtual
         evaluatedByCreator(
             msg.sender,
-            abi.encodeWithSignature(
-                "transferFrom(address,address)",
-                from,to
-            ),
+            abi.encodeWithSignature("transferFrom(address,address)", from, to),
             address(this)
         )
-
-        // consider also  the holder Smart Policy 
-        // evaluatedByHolder(
-        //     msg.sender,
-        //     abi.encodeWithSignature(
-        //         "transferFrom(address,address)",
-        //         from,to
-        //     ),
-        //     address(this)
-        //)
-        returns(bool)
+        returns (
+            // consider also  the holder Smart Policy
+            // evaluatedByHolder(
+            //     msg.sender,
+            //     abi.encodeWithSignature(
+            //         "transferFrom(address,address)",
+            //         from,to
+            //     ),
+            //     address(this)
+            //)
+            bool
+        )
     {
         // ERC721(nmt).transferFrom(from,to,uint160(address(address(this))));
         return true;
     }
 
-/** regulate the transferFrom method  */
-    function payableTransferFrom (
+    /** regulate the transferFrom method  */
+    function payableTransferFrom(
         address from,
         address to,
         uint256 amount
@@ -148,20 +146,24 @@ abstract contract MutableAsset {
             msg.sender,
             abi.encodeWithSignature(
                 "payableTransferFrom(address,address,uint256)",
-                from,to,amount
+                from,
+                to,
+                amount
             ),
             address(this)
         )
-        // consider also  the holder Smart Policy 
-        // evaluatedByHolder(
-        //     msg.sender,
-        //     abi.encodeWithSignature(
-        //         "transferFrom(address,address)",
-        //         from,to
-        //     ),
-        //     address(this)
-        //)
-        returns(bool)
+        returns (
+            // consider also  the holder Smart Policy
+            // evaluatedByHolder(
+            //     msg.sender,
+            //     abi.encodeWithSignature(
+            //         "transferFrom(address,address)",
+            //         from,to
+            //     ),
+            //     address(this)
+            //)
+            bool
+        )
     {
         // ERC721(nmt).transferFrom(from,to,uint160(address(address(this))));
         return true;
@@ -203,7 +205,7 @@ abstract contract MutableAsset {
         _;
     }
 
-     modifier evaluatedBySmartPolicies(
+    modifier evaluatedBySmartPolicies(
         address _subject,
         bytes memory _action,
         address _resource
@@ -216,15 +218,19 @@ abstract contract MutableAsset {
             ) == true,
             "Operation DENIED by CREATOR policy"
         );
-        require(
-            SmartPolicy(holderSmartPolicy).evaluate(
-                _subject,
-                _action,
-                _resource
-            ) == true,
-            "Operation DENIED by HOLDER policy"
-        );
-        _;
+        if (holderSmartPolicy == 0x0000000000000000000000000000000000000000) {
+            _;
+        } else {
+            require(
+                SmartPolicy(holderSmartPolicy).evaluate(
+                    _subject,
+                    _action,
+                    _resource
+                ) == true,
+                "Operation DENIED by HOLDER policy"
+            );
+            _;
+        }
     }
 
     /**
