@@ -2,13 +2,13 @@
 pragma solidity ^0.8.18;
 
 import "hardhat/console.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
+// import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "./MutableAsset.sol";
 import "./SmartPolicy.sol";
 
-abstract contract NMT is Ownable, ERC721Enumerable {
+abstract contract NMT is  ERC721Enumerable {
     address public principalSmartPolicy;
 
     constructor(address _principalSmartPolicy) {
@@ -128,4 +128,9 @@ abstract contract NMT is Ownable, ERC721Enumerable {
         );
         _;
     }
+
+    // modifier _onlyOwner(tokenId) {
+    //     require(msg.sender == this.ownerOf(tokenId);, "Caller is not the holder");
+    //     _;
+    // }
 }

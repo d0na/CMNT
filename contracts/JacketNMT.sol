@@ -24,7 +24,7 @@ contract JacketNMT is NMT {
             "Mutable Jacket for a PUB Decentraland UniPi Project",
             "PUBMNTJACKET"
         )
-        Ownable(to)
+        // Ownable(to)
     {}
 
     fallback() external {

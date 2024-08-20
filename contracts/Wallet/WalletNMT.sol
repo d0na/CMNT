@@ -18,7 +18,7 @@ contract WalletNMT is NMT {
     )
         NMT(principalSmartPolicy)
         ERC721("Mutable Wallet UniPi Project", "WALLETMNT")
-        Ownable(to)
+        // Ownable(to)
     {}
 
     /**

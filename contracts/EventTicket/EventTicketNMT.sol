@@ -17,7 +17,7 @@ contract EventTicketNMT is NMT {
     )
         NMT(principalSmartPolicy)
         ERC721("Mutable EventTicket UniPi Project", "TICKETNMT")
-        Ownable(to)
+        // Ownable(to)
     {}
 
     /**

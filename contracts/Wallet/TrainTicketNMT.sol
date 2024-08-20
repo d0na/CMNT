@@ -17,7 +17,7 @@ contract TrainTicketNMT is NMT {
     )
         NMT(principalSmartPolicy)
         ERC721("Mutable TrainTicket UniPi Project", "WALLETMNT")
-        Ownable(to)
+        // Ownable(to)
     {}
 
     /**
