@@ -218,19 +218,15 @@ abstract contract MutableAsset {
             ) == true,
             "Operation DENIED by CREATOR policy"
         );
-        if (holderSmartPolicy == 0x0000000000000000000000000000000000000000) {
-            _;
-        } else {
-            require(
-                SmartPolicy(holderSmartPolicy).evaluate(
-                    _subject,
-                    _action,
-                    _resource
-                ) == true,
-                "Operation DENIED by HOLDER policy"
-            );
-            _;
-        }
+        require(
+            SmartPolicy(holderSmartPolicy).evaluate(
+                _subject,
+                _action,
+                _resource
+            ) == true,
+            "Operation DENIED by HOLDER policy"
+        );
+        _;
     }
 
     /**
