@@ -12,7 +12,7 @@ allowmixing
 class NMT {
     ' -- inheritance --
 	{abstract}Ownable
-	{abstract}ERC721Enumerable
+	{abstract}ERC721
 
     ' -- usingFor --
 
@@ -23,10 +23,12 @@ class NMT {
 	+mint() evaluatedByPrincipal
 	+transferFrom() 
 	+setPrincipalSmartPolicy() evaluatedByPrincipal
+	#_mint()
+
 }
 ' -- inheritance / usingFor --
 NMT --[#DarkGoldenRod]|> Ownable
-NMT --[#DarkGoldenRod]|> ERC721Enumerable
+NMT --[#DarkGoldenRod]|> ERC721
 
 
 
@@ -38,18 +40,20 @@ class MutableAsset {
 
     ' -- vars --
 	+{static}[[address]] nmt
+	+{static}[[NMT]] nmtContract
+	+[[address]] linked
+	+[[string]] tokenURI
 	+[[address]] holderSmartPolicy
 	+[[address]] creatorSmartPolicy
-	+[[string]] tokenURI
-	+[[address]] linked
 
     ' -- methods --
 	+**__constructor__**()
-	+setLinked() evaluatedByCreator,evaluatedByHolder
 	#setTokenURI()
+	+setLinked() evaluatedByCreator,evaluatedByHolder
 	+setHolderSmartPolicy() onlyOwner
+	+setCreatorSmartPolicy() evaluatedByCreator,evaluatedByHolder
 	+transferFrom() evaluatedByCreator
-	+🔍getDescriptor()
+	+🔍getHolder()
 
 }
 
@@ -64,9 +68,10 @@ class MyTokenMutableAsset {
 
     ' -- methods --
 	+**__constructor__**()
-	+setAttrAddress() evaluatedByCreator,evaluatedByHolder	
-	+setAttrUint() evaluatedByCreator,evaluatedByHolder
-	+setAttrBool() evaluatedByCreator,evaluatedByHolder
+	+setAttribUint() evaluatedByCreator,evaluatedByHolder
+	+setAttribBool() evaluatedByCreator,evaluatedByHolder
+	+setAttribAddress() evaluatedByCreator,evaluatedByHolder
+	+🔍getMyTokenDescriptor()
 
 }
 ' -- inheritance / usingFor --
@@ -82,8 +87,7 @@ class MyTokenNMT {
 
     ' -- methods --
 	+**__constructor__**()
-	+_mint()
-	+_transferFrom()
+	#_mint()
 	+🔍getMyTokenAddress()
 
 }
@@ -105,6 +109,9 @@ class DenyAllSmartPolicy {
 
 }
 ' -- inheritance / usingFor --
+DenyAllSmartPolicy --[#DarkGoldenRod]|> SmartPolicy
+
+PrincipalSmartPolicy --[#DarkGoldenRod]|> SmartPolicy
 class PrincipalSmartPolicy {
     ' -- inheritance --
 	{abstract}SmartPolicy
@@ -132,6 +139,8 @@ class HolderSmartPolicy {
 	+**__constructor__**()
 
 }
+' -- inheritance / usingFor --
+HolderSmartPolicy --[#DarkGoldenRod]|> SmartPolicy
 
 class CreatorSmartPolicy {
     ' -- inheritance --
@@ -146,18 +155,20 @@ class CreatorSmartPolicy {
 	+**__constructor__**()
 
 }
+' -- inheritance / usingFor --
+CreatorSmartPolicy --[#DarkGoldenRod]|> SmartPolicy
 
-' class SmartPolicy {
-'     ' -- inheritance --
+class SmartPolicy {
+    ' -- inheritance --
 
-'     ' -- usingFor --
+    ' -- usingFor --
 
-'     ' -- vars --
+    ' -- vars --
 
-'     ' -- methods --
-' 	#🔍decodeData()
-' 	#🔍decodeSignature()
-' 	+🔍evaluate()
+    ' -- methods --
+	#🔍decodeData()
+	#🔍decodeSignature()
+	+🔍evaluate()
 
-' }
+}
 @enduml
