@@ -112,8 +112,8 @@ contract CreatorSmartPolicy is SmartPolicy {
         bytes memory _action,
         address _resource
     ) public view virtual override returns (bool) {
-        // console.log("Passed action [CREATOR SP]:");
-        // console.logBytes(_action);
+        console.log("Passed action [CREATOR SP]:");
+        console.logBytes(_action);
         bytes4 _signature = this.decodeSignature(_action);
         // Set Color
         if (_signature == ACT_SET_COLOR) {
@@ -132,7 +132,12 @@ contract CreatorSmartPolicy is SmartPolicy {
         }
 
         if (_signature == ACT_TRANSFER_FROM) {
+            console.log("evaluate creator transferFrom");
             (address from, address to) = this.getTrasnferFromParam(_action);
+            console.log(
+                "_calcInstancesCount(_resource, to),",
+                _calcInstancesCount(_resource, to)
+            );
             return _calcInstancesCount(_resource, to) <= 3;
         }
 
@@ -143,7 +148,7 @@ contract CreatorSmartPolicy is SmartPolicy {
         address _res,
         address _subj
     ) private view returns (uint256) {
-        return MutableAsset(_res).nmtContract().balanceOf(_subj);
+        return NMT(MutableAsset(_res).nmt()).balanceOf(_subj);
     }
 
     fallback() external {

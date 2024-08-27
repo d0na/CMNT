@@ -261,6 +261,69 @@ describe("Tests related to JacketNMT", function () {
 
   describe("Tests related to transferFrom", () => {
 
+    it("Should be minted and transferFrom", async function () {
+      const {
+        jacketNMT,
+        owner,
+        account1,
+        account2,
+        denyAllSmartPolicy,
+        creatorSmartPolicy,
+      } = await loadFixture(deployJacketNMT);
+
+      const MintedAsset = {
+        from: ZERO_ADDRESS,
+        creator: owner.address,
+        firstHolder: account1.address,
+        thirdOwner: account2.address,
+        tokenId: TOKEN_ID1_STRING,
+        address: ASSET_ADDRESS1,
+      };
+
+      // Minting the NFT to the Creator
+      const mintResponse = await jacketNMT.mint(
+        MintedAsset.creator, // to
+        creatorSmartPolicy.address, // creator smart policy 
+        creatorSmartPolicy.address // holder smart policy
+      );
+
+      const JacketMutableAsset = await ethers.getContractFactory(
+        "JacketMutableAsset"
+      );
+      const jacketMutableAsset = JacketMutableAsset.attach(MintedAsset.address);
+      console.log("holder: %s", await jacketMutableAsset.holderSmartPolicy());
+      console.log("creator: %s", await jacketMutableAsset.creatorSmartPolicy());
+      console.log("asset: %s", MintedAsset.address);
+
+      // Verify all the response data
+      await expect(mintResponse)
+        .to.emit(jacketNMT, "Transfer")
+        // from, to, tokenId
+        .withArgs(MintedAsset.from, MintedAsset.creator, MintedAsset.tokenId);
+
+
+
+      // Verify that the Creator is the current holder  
+      expect(await jacketNMT.ownerOf(MintedAsset.tokenId)).to.be.equal(
+        MintedAsset.creator
+      );
+
+      // Trasfering the NFT to the Second Owner
+      await jacketNMT.transferFrom(
+        MintedAsset.creator,
+        MintedAsset.firstHolder,
+        MintedAsset.tokenId
+      );
+
+      // Check that the new owner is not changed
+      expect(await jacketNMT.ownerOf(MintedAsset.tokenId)).to.be.equal(
+        MintedAsset.firstHolder
+      );
+
+      // 5. it's verified that the Asset has the same address that it is stored on the NTM
+      expect(await jacketMutableAsset.holderSmartPolicy()).to.be.equal(ZERO_ADDRESS);
+    });
+
     it("Should be minted and transferred but the CreatorSmartPolicylNoTransferAllowed policy should deny it", async function () {
       const {
         jacketNMT,

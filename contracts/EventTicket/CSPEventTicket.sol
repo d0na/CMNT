@@ -170,7 +170,7 @@ contract CSPEventTicket is SmartPolicy {
         address _res,
         address _subj
     ) private view returns (uint256) {
-        return MutableAsset(_res).nmtContract().balanceOf(_subj);
+        return NMT(MutableAsset(_res).nmt()).balanceOf(_subj);
     }
 
     fallback() external {

@@ -7,7 +7,6 @@ import "./NMT.sol";
 
 abstract contract MutableAsset {
     address public immutable nmt;
-    NMT public immutable nmtContract;
 
     address public linked;
     string public tokenURI;
@@ -36,7 +35,6 @@ abstract contract MutableAsset {
         nmt = _nmt;
         holderSmartPolicy = _holderSmartPolicy;
         creatorSmartPolicy = _creatorSmartPolicy;
-        nmtContract = NMT(_nmt);
     }
 
     event OwnershipTransferred(
@@ -50,7 +48,26 @@ abstract contract MutableAsset {
 
     // function getAssetDescriptor() public virtual override {}
     function getHolder() public view returns (address) {
-        return nmtContract.ownerOf(uint160(address(this)));
+        console.log("getHolder: %s", address(this));
+        console.log(
+            "getHolder: res %s",
+            NMT(nmt).ownerOf(uint160(address(this)))
+        );
+        console.log("getHolder: nmtcontract %s", nmt);
+
+        return NMT(nmt).ownerOf(uint160(address(this)));
+    }
+
+    function delegateGetHolder() public returns (address) {
+        console.log("into delegatGetHolder: %s",address(this));
+        console.log("into delegatGetHolder, nmt: %s",nmt);
+        (bool success, bytes memory returnedData) = nmt.delegatecall(
+            abi.encodeWithSignature("ownerOf(uint256)", uint160(address(this)))
+        );
+                console.log("into delegatGetHolder, success: %s",success);
+
+        require(success, "Reverted getHolder");
+        return abi.decode(returnedData, (address));
     }
 
     function setLinked(
@@ -113,24 +130,12 @@ abstract contract MutableAsset {
         public
         virtual
         evaluatedByCreator(
-            msg.sender,
+            from,
             abi.encodeWithSignature("transferFrom(address,address)", from, to),
             address(this)
         )
-        returns (
-            // consider also  the holder Smart Policy
-            // evaluatedByHolder(
-            //     msg.sender,
-            //     abi.encodeWithSignature(
-            //         "transferFrom(address,address)",
-            //         from,to
-            //     ),
-            //     address(this)
-            //)
-            bool
-        )
+        returns (bool)
     {
-        // ERC721(nmt).transferFrom(from,to,uint160(address(address(this))));
         return true;
     }
 
@@ -194,6 +199,17 @@ abstract contract MutableAsset {
         bytes memory _action,
         address _resource
     ) {
+        console.log(
+            "evaluatedByCreator - creatorSmartPolicy: %s",
+            creatorSmartPolicy
+        );
+        console.log(
+            "evaluatedByCreator - holderSmartPolicy: %s",
+            holderSmartPolicy
+        );
+        console.log("evaluatedByCreator - _subject: %s", _subject);
+        console.log("evaluatedByCreator - _resource: %s", _resource);
+        console.log("evaluatedByCreator - mutable asset: %s", address(this));
         require(
             SmartPolicy(creatorSmartPolicy).evaluate(
                 _subject,
@@ -202,6 +218,7 @@ abstract contract MutableAsset {
             ) == true,
             "Operation DENIED by CREATOR policy"
         );
+        console.log("evaluatedByCreator DONE");
         _;
     }
 
@@ -218,22 +235,29 @@ abstract contract MutableAsset {
             ) == true,
             "Operation DENIED by CREATOR policy"
         );
-        require(
-            SmartPolicy(holderSmartPolicy).evaluate(
-                _subject,
-                _action,
-                _resource
-            ) == true,
-            "Operation DENIED by HOLDER policy"
-        );
-        _;
+        if (holderSmartPolicy == 0x0000000000000000000000000000000000000000) {
+            _;
+        } else {
+            require(
+                SmartPolicy(holderSmartPolicy).evaluate(
+                    _subject,
+                    _action,
+                    _resource
+                ) == true,
+                "Operation DENIED by HOLDER policy"
+            );
+            _;
+        }
     }
 
     /**
      * @dev Revert the execution if the call is not from the owner
      */
     modifier onlyOwner() {
-        require(msg.sender == getHolder(), "Caller is not the holder");
+        console.log("onlyOwner msg.sender", msg.sender);
+        console.log("delegateGetHolder", delegateGetHolder());
+        require(msg.sender == delegateGetHolder(), "Caller is not the holder");
+        console.log("only owner ok");
         _;
     }
 }

@@ -8,7 +8,7 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "./MutableAsset.sol";
 import "./SmartPolicy.sol";
 
-abstract contract NMT is  ERC721Enumerable {
+abstract contract NMT is ERC721Enumerable {
     address public principalSmartPolicy;
 
     constructor(address _principalSmartPolicy) {
@@ -90,9 +90,49 @@ abstract contract NMT is  ERC721Enumerable {
         address from,
         address to,
         uint256 tokenId
-    ) public virtual override(ERC721, IERC721) {
-        MutableAsset(getMutableAssetAddress(tokenId)).transferFrom(from, to);
+    )
+        public
+        virtual
+        override(ERC721, IERC721)
+        _transferFromEvaluation(from, to, tokenId)
+    {
+        (
+            bool setHolderSPResult,
+            bytes memory returndata2
+        ) = getMutableAssetAddress(tokenId).delegatecall(
+                abi.encodeWithSignature(
+                    "setHolderSmartPolicy(address)",
+                    0x0000000000000000000000000000000000000000
+                )
+            );
+        console.log(
+            "NMT setHolderSmartPolicy -  result: %s ",
+            setHolderSPResult
+        );
+        require(setHolderSPResult, "Delegate setHolderSmartPolicy call failed");
+
+        // if the function call reverted
+        // if (setHolderSPResult == false) {
+        //     // if there is a return reason string
+        //     if (returndata2.length > 0) {
+        //         // bubble up any reason for revert
+        //         assembly {
+        //             let returndata2_size := mload(returndata2)
+        //             revert(add(32, returndata2), returndata2_size)
+        //         }
+        //     } else {
+        //         revert("Function call reverted");
+        //     }
+        // }
+        //         MutableAsset(getMutableAssetAddress(tokenId)).setHolderSmartPolicy(
+        //     0x0000000000000000000000000000000000000000
+        // );
+        // // enforce the transfForm policy located in the Creato Smart Policy linked in the mutable asset
+        // MutableAsset(getMutableAssetAddress(tokenId)).transferFrom(from, to);
+        // // set the default 0 address after the transfer from to
+
         super.transferFrom(from, to, tokenId);
+        console.log("TrasnferFrom exexcuted");
     }
 
     //safeTransferFrom(from, to, tokenId, data)
@@ -133,4 +173,13 @@ abstract contract NMT is  ERC721Enumerable {
     //     require(msg.sender == this.ownerOf(tokenId);, "Caller is not the holder");
     //     _;
     // }
+
+    modifier _transferFromEvaluation(
+        address from,
+        address to,
+        uint256 tokenId
+    ) {
+        require(MutableAsset(getMutableAssetAddress(tokenId)).transferFrom(from, to), "TransferFrom evaluation failed");
+        _;
+    }
 }
