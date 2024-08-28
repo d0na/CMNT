@@ -30,8 +30,6 @@ abstract contract MutableAsset {
             _creatorSmartPolicy == address(_creatorSmartPolicy),
             "Invalid creatorSmartPolicy address"
         );
-        // console.log("_holderSmartPolicy", _holderSmartPolicy);
-        // console.log("_creatorSmartPolicy", _creatorSmartPolicy);
         nmt = _nmt;
         holderSmartPolicy = _holderSmartPolicy;
         creatorSmartPolicy = _creatorSmartPolicy;
@@ -46,28 +44,8 @@ abstract contract MutableAsset {
         tokenURI = _tokenUri;
     }
 
-    // function getAssetDescriptor() public virtual override {}
     function getHolder() public view returns (address) {
-        console.log("getHolder: %s", address(this));
-        console.log(
-            "getHolder: res %s",
-            NMT(nmt).ownerOf(uint160(address(this)))
-        );
-        console.log("getHolder: nmtcontract %s", nmt);
-
         return NMT(nmt).ownerOf(uint160(address(this)));
-    }
-
-    function delegateGetHolder() public returns (address) {
-        console.log("into delegatGetHolder: %s",address(this));
-        console.log("into delegatGetHolder, nmt: %s",nmt);
-        (bool success, bytes memory returnedData) = nmt.delegatecall(
-            abi.encodeWithSignature("ownerOf(uint256)", uint160(address(this)))
-        );
-                console.log("into delegatGetHolder, success: %s",success);
-
-        require(success, "Reverted getHolder");
-        return abi.decode(returnedData, (address));
     }
 
     function setLinked(
@@ -75,12 +53,7 @@ abstract contract MutableAsset {
     )
         public
         virtual
-        evaluatedByCreator(
-            msg.sender,
-            abi.encodeWithSignature("setLinked(address)", linkedNmt),
-            address(this)
-        )
-        evaluatedByHolder(
+        evaluatedBySmartPolicies(
             msg.sender,
             abi.encodeWithSignature("setLinked(address)", linkedNmt),
             address(this)
@@ -92,7 +65,7 @@ abstract contract MutableAsset {
     /** Set a new Mutable Asset Owner Smart policy  */
     function setHolderSmartPolicy(
         address _holderSmartPolicy
-    ) public virtual onlyOwner {
+    ) public virtual onlyHolder {
         holderSmartPolicy = _holderSmartPolicy;
     }
 
@@ -102,15 +75,7 @@ abstract contract MutableAsset {
     )
         public
         virtual
-        evaluatedByCreator(
-            msg.sender,
-            abi.encodeWithSignature(
-                "setCreatorSmartPolicy(address)",
-                _creatorSmartPolicy
-            ),
-            address(this)
-        )
-        evaluatedByHolder(
+        evaluatedBySmartPolicies(
             msg.sender,
             abi.encodeWithSignature(
                 "setCreatorSmartPolicy(address)",
@@ -129,6 +94,7 @@ abstract contract MutableAsset {
     )
         public
         virtual
+        onlyNMT
         evaluatedByCreator(
             from,
             abi.encodeWithSignature("transferFrom(address,address)", from, to),
@@ -136,6 +102,7 @@ abstract contract MutableAsset {
         )
         returns (bool)
     {
+        holderSmartPolicy = 0x0000000000000000000000000000000000000000;
         return true;
     }
 
@@ -147,6 +114,7 @@ abstract contract MutableAsset {
     )
         public
         virtual
+        onlyNMT
         evaluatedByCreator(
             msg.sender,
             abi.encodeWithSignature(
@@ -158,19 +126,10 @@ abstract contract MutableAsset {
             address(this)
         )
         returns (
-            // consider also  the holder Smart Policy
-            // evaluatedByHolder(
-            //     msg.sender,
-            //     abi.encodeWithSignature(
-            //         "transferFrom(address,address)",
-            //         from,to
-            //     ),
-            //     address(this)
-            //)
             bool
         )
     {
-        // ERC721(nmt).transferFrom(from,to,uint160(address(address(this))));
+        holderSmartPolicy = 0x0000000000000000000000000000000000000000;
         return true;
     }
 
@@ -199,17 +158,6 @@ abstract contract MutableAsset {
         bytes memory _action,
         address _resource
     ) {
-        console.log(
-            "evaluatedByCreator - creatorSmartPolicy: %s",
-            creatorSmartPolicy
-        );
-        console.log(
-            "evaluatedByCreator - holderSmartPolicy: %s",
-            holderSmartPolicy
-        );
-        console.log("evaluatedByCreator - _subject: %s", _subject);
-        console.log("evaluatedByCreator - _resource: %s", _resource);
-        console.log("evaluatedByCreator - mutable asset: %s", address(this));
         require(
             SmartPolicy(creatorSmartPolicy).evaluate(
                 _subject,
@@ -218,7 +166,6 @@ abstract contract MutableAsset {
             ) == true,
             "Operation DENIED by CREATOR policy"
         );
-        console.log("evaluatedByCreator DONE");
         _;
     }
 
@@ -235,7 +182,7 @@ abstract contract MutableAsset {
             ) == true,
             "Operation DENIED by CREATOR policy"
         );
-        if (holderSmartPolicy == 0x0000000000000000000000000000000000000000) {
+        if (holderSmartPolicy == address(0)) {
             _;
         } else {
             require(
@@ -251,13 +198,18 @@ abstract contract MutableAsset {
     }
 
     /**
-     * @dev Revert the execution if the call is not from the owner
+     * @dev Revert the execution if the call is not from the holder
      */
-    modifier onlyOwner() {
-        console.log("onlyOwner msg.sender", msg.sender);
-        console.log("delegateGetHolder", delegateGetHolder());
-        require(msg.sender == delegateGetHolder(), "Caller is not the holder");
-        console.log("only owner ok");
+    modifier onlyHolder() {
+        require(msg.sender == getHolder(), "Caller is not the holder");
+        _;
+    }
+
+    /**
+     * @dev Revert the execution if the call is not from the NMT contract
+     */
+    modifier onlyNMT() {
+        require(msg.sender == nmt, "Caller should be NMT");
         _;
     }
 }

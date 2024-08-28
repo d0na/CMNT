@@ -72,7 +72,7 @@ contract MutableAsset10a is MutableAsset {
         uint256 _param10
     )
         public
-        evaluatedByCreator(
+        evaluatedBySmartPolicies(
             msg.sender,
             abi.encodeWithSignature(
                 "setMethod(uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256)",

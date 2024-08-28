@@ -55,16 +55,7 @@ contract JacketMutableAsset is MutableAsset {
         string memory _tokenURI
     )
         public
-        evaluatedByCreator(
-            msg.sender,
-            abi.encodeWithSignature(
-                "setColor(uint256,string)",
-                _color,
-                _tokenURI
-            ),
-            address(this)
-        )
-        evaluatedByHolder(
+        evaluatedBySmartPolicies(
             msg.sender,
             abi.encodeWithSignature(
                 "setColor(uint256,string)",
@@ -77,7 +68,7 @@ contract JacketMutableAsset is MutableAsset {
         _setColor(_color, _tokenURI);
     }
 
-    // Public only for evaluating costs
+    // is public (external) only for evaluating costs
     function _setColor(uint256 _color, string memory _tokenURI) public {
         jacketDescriptor.color = _color;
         setTokenURI(_tokenURI);
