@@ -27,28 +27,28 @@ describe("eventTicketNMT", function () {
     it("Should revert if the miner is 0 address", async function () {
       // valid alternative to ZERO_ADDRESS is
       // ethers.constants.AddressZero
-      const { eventTicketNMT, creatorSmartPolicy, denyAllSmartPolicy } =
+      const { eventTicketNMT, creatorSmartPolicy } =
         await loadFixture(deployEventTicketNMT);
       expect(
-        eventTicketNMT.mint(ZERO_ADDRESS, creatorSmartPolicy, denyAllSmartPolicy)
+        eventTicketNMT.mint(ZERO_ADDRESS, creatorSmartPolicy)
       ).to.be.revertedWith("Ownable: new owner is the zero address");
     });
 
-    it("Should be minted and owned", async function () {
+    it("Should mint and own by the Creator", async function () {
       // valid alternative ethers.constants.AddressZero
-      const { eventTicketNMT, owner, creatorSmartPolicy, denyAllSmartPolicy } =
+      const { eventTicketNMT, owner, creatorSmartPolicy } =
         await loadFixture(deployEventTicketNMT);
       await eventTicketNMT.mint(
         owner.address,
         creatorSmartPolicy.address,
-        denyAllSmartPolicy.address
+        creatorSmartPolicy.address
       );
 
-      expect(await eventTicketNMT.owner()).to.equal(owner.address);
+      expect(await eventTicketNMT.ownerOf(TOKEN_ID1_STRING)).to.equal(owner.address);
     });
 
     it("Should mint a new asset and return its address and tokenId", async function () {
-      const { eventTicketNMT, owner, creatorSmartPolicy, denyAllSmartPolicy } =
+      const { eventTicketNMT, owner, creatorSmartPolicy } =
         await loadFixture(deployEventTicketNMT);
       const Minted = {
         owner: owner.address,
@@ -59,7 +59,7 @@ describe("eventTicketNMT", function () {
       const mintResponse = await eventTicketNMT.callStatic.mint(
         owner.address,
         creatorSmartPolicy.address,
-        denyAllSmartPolicy.address
+        creatorSmartPolicy.address
       );
       const assetAddress = mintResponse[0];
       const tokenId = mintResponse[1];
@@ -69,14 +69,14 @@ describe("eventTicketNMT", function () {
       const EventTicketMutableAsset = await ethers.getContractFactory(
         "EventTicketMutableAsset"
       );
-      const eventicketMutableAsset = EventTicketMutableAsset.deploy(eventTicketNMT.address, creatorSmartPolicy.address, denyAllSmartPolicy.address);
+      const eventicketMutableAsset = EventTicketMutableAsset.deploy(eventTicketNMT.address, creatorSmartPolicy.address, creatorSmartPolicy.address);
 
       expect(Number(tokenId)).to.equal(Number(Minted.tokenId));
       expect(assetAddress).to.equal(Minted.assetAddress);
     });
 
     it("Should mint new asset and trigger the Transfer event with the right onwer and tokenId", async function () {
-      const { eventTicketNMT, owner, creatorSmartPolicy, denyAllSmartPolicy } =
+      const { eventTicketNMT, owner, creatorSmartPolicy } =
         await loadFixture(deployEventTicketNMT);
       const Minted = {
         owner: owner.address,
@@ -86,7 +86,7 @@ describe("eventTicketNMT", function () {
       const txResponse = await eventTicketNMT.mint(
         owner.address,
         creatorSmartPolicy.address,
-        denyAllSmartPolicy.address
+        creatorSmartPolicy.address
       );
       const txReceipt = await txResponse.wait();
 
@@ -104,8 +104,7 @@ describe("eventTicketNMT", function () {
         owner,
         account1,
         account2,
-        creatorSmartPolicy,
-        denyAllSmartPolicy,
+        creatorSmartPolicy
       } = await loadFixture(deployEventTicketNMT);
       const Minted1 = {
         from: ZERO_ADDRESS,
@@ -121,12 +120,12 @@ describe("eventTicketNMT", function () {
       const mint1 = await eventTicketNMT.mint(
         account1.address,
         creatorSmartPolicy.address,
-        denyAllSmartPolicy.address
+        creatorSmartPolicy.address
       );
       const mint2 = await eventTicketNMT.mint(
         account1.address,
         creatorSmartPolicy.address,
-        denyAllSmartPolicy.address
+        creatorSmartPolicy.address
       );
 
       await expect(mint1)
@@ -177,7 +176,7 @@ describe("eventTicketNMT", function () {
     // });
 
     it("Should mint a new asset with the right address", async function () {
-      const { eventTicketNMT, owner, creatorSmartPolicy, denyAllSmartPolicy } =
+      const { eventTicketNMT, owner, creatorSmartPolicy } =
         await loadFixture(deployEventTicketNMT);
       const Minted = {
         owner: owner.address,
@@ -188,7 +187,7 @@ describe("eventTicketNMT", function () {
       await eventTicketNMT.mint(
         owner.address,
         creatorSmartPolicy.address,
-        denyAllSmartPolicy.address
+        creatorSmartPolicy.address
       );
 
       expect(await eventTicketNMT.getMutableAssetAddress(Minted.tokenId)).to.be.equal(
@@ -199,10 +198,8 @@ describe("eventTicketNMT", function () {
     it("Should mint a new asset and retrieves the same owner with getOwner", async function () {
       const {
         eventTicketNMT,
-        owner,
-        creatorSmartPolicy,
         account1,
-        denyAllSmartPolicy,
+        creatorSmartPolicy,
       } = await loadFixture(deployEventTicketNMT);
       const JacketMutableAsset = await ethers.getContractFactory(
         "JacketMutableAsset"
@@ -218,7 +215,7 @@ describe("eventTicketNMT", function () {
       const mint = await eventTicketNMT.mint(
         account1.address,
         creatorSmartPolicy.address,
-        denyAllSmartPolicy.address
+        creatorSmartPolicy.address
       );
       // const jacketAddress = await eventTicketNMT.getJacketAddress(Minted.tokenId);
 
@@ -265,7 +262,6 @@ describe("eventTicketNMT", function () {
         eventTicketNMT,
         owner,
         creatorSmartPolicy,
-        denyAllSmartPolicy,
       } = await loadFixture(deployEventTicketNMT);
 
 
@@ -273,13 +269,13 @@ describe("eventTicketNMT", function () {
         eventTicketNMT.mint(
           owner.address,
           creatorSmartPolicy.address,
-          denyAllSmartPolicy.address
+          creatorSmartPolicy.address
         );
       }
       await expect(eventTicketNMT.mint(
         owner.address,
         creatorSmartPolicy.address,
-        denyAllSmartPolicy.address
+        creatorSmartPolicy.address
       )).to.be.rejectedWith(
         "Operation DENIED by PRINCIPAL policy"
       );
@@ -289,15 +285,14 @@ describe("eventTicketNMT", function () {
       const {
         eventTicketNMT,
         owner,
-        creatorSmartPolicy,
-        denyAllSmartPolicy,account2
+        creatorSmartPolicy, account2
       } = await loadFixture(deployEventTicketNMT);
 
 
       await expect(eventTicketNMT.connect(account2).mint(
         owner.address,
         creatorSmartPolicy.address,
-        denyAllSmartPolicy.address
+        creatorSmartPolicy.address
       )).to.be.rejectedWith(
         "Operation DENIED by PRINCIPAL policy"
       );
@@ -313,7 +308,6 @@ describe("eventTicketNMT", function () {
         account1,
         account2,
         creatorSmartPolicy,
-        denyAllSmartPolicy,
       } = await loadFixture(deployEventTicketNMT);
 
       // const Minted = {
@@ -333,7 +327,7 @@ describe("eventTicketNMT", function () {
       eventTicketNMT.mint(
         CREATOR,
         creatorSmartPolicy.address,
-        denyAllSmartPolicy.address
+        creatorSmartPolicy.address
       )
 
       expect(await eventTicketNMT.ownerOf(TOKENID)).to.be.eq(CREATOR);
@@ -356,7 +350,6 @@ describe("eventTicketNMT", function () {
         account1,
         account2,
         creatorSmartPolicy,
-        denyAllSmartPolicy,
       } = await loadFixture(deployEventTicketNMT);
 
 
@@ -368,7 +361,7 @@ describe("eventTicketNMT", function () {
       eventTicketNMT.mint(
         CREATOR,
         creatorSmartPolicy.address,
-        denyAllSmartPolicy.address
+        creatorSmartPolicy.address
       )
 
       // Transfer to  account1.address
