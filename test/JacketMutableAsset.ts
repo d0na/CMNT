@@ -17,11 +17,11 @@ describe("Tests related to the JacketMutableAsset", function () {
   });
 
   it("Should retrieve the holderSmartPolicy address", async function () {
-    const { jacketNMT, jacketMutableAsset, denyAllSmartPolicy } =
+    const { jacketNMT, jacketMutableAsset, creatorSmartPolicy } =
       await deployJacketAsset();
     const holderSmartPolicyAddress =
       await jacketMutableAsset.holderSmartPolicy();
-    expect(holderSmartPolicyAddress).to.be.equal(denyAllSmartPolicy.address);
+    expect(holderSmartPolicyAddress).to.be.equal(creatorSmartPolicy.address);
   });
 
   it("Should retrieve the creatorSmartPolicy address", async function () {
@@ -62,10 +62,7 @@ describe("Tests related to the JacketMutableAsset", function () {
     it("Should evaluate successfully an action equal to setColor(1,url)", async function () {
       const { creatorSmartPolicy, creator, jacketMutableAsset } =
         await loadFixture(deployJacketAsset);
-        const creatorSmartPolicyAddress =
-        await jacketMutableAsset.creatorSmartPolicy();
 
-      
       expect(await creatorSmartPolicy.evaluate(
         creator.address,
         //The following corresponds to: ` abi.encodeWithSignature("setColor(uint,string)", <number>,<string>)`,
@@ -82,6 +79,17 @@ describe("Tests related to the JacketMutableAsset", function () {
         "0xa44b6b74000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000005677265656e000000000000000000000000000000000000000000000000000000",
         jacketMutableAsset.address
       )).to.be.equal(false);
+    });
+
+    it("Should evaluate unsuccessfully an action equal to setColor(1,url) because denied by the DENY ALL policy (set to 0x)", async function () {
+      const { buyer: holder, jacketMutableAsset } =
+        await loadFixture(deployJacketAsset);
+      await jacketMutableAsset.connect(holder).setHolderSmartPolicy(ZERO_ADDRESS);
+      expect(await jacketMutableAsset.holderSmartPolicy()).to.be.equal(ZERO_ADDRESS)
+      await expect(
+        jacketMutableAsset
+          .setColor(1, "green")
+      ).to.be.rejectedWith("Operation DENIED by HOLDER policy");
     });
   });
 

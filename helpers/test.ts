@@ -80,16 +80,16 @@ export async function deployJacketAsset() {
   );
   const creatorSmartPolicy = await CreatorSmartPolicy.deploy();
 
-  // const DenyAllSmartPolicy = await ethers.getContractFactory(
-  //   "DenyAllSmartPolicy"
-  // );
-  // const denyAllSmartPolicy = await DenyAllSmartPolicy.deploy();
+  const DenyAllSmartPolicy = await ethers.getContractFactory(
+    "DenyAllSmartPolicy"
+  );
+  const denyAllSmartPolicy = await DenyAllSmartPolicy.deploy();
 
   //JacketMutableAsset mint
   const mintTx = await jacketNMT.mint(
     buyer.address,
     creatorSmartPolicy.address,
-    // denyAllSmartPolicy.address
+    creatorSmartPolicy.address
   );
   const mintResponse = await mintTx.wait();
   const jacketTokenId = mintResponse.events[0].args["tokenId"];
@@ -111,7 +111,7 @@ export async function deployJacketAsset() {
     tailor1,
     tailor2,
     holderSmartPolicy,
-    // denyAllSmartPolicy,
+    denyAllSmartPolicy,
     creatorSmartPolicy,
   };
 }
@@ -264,7 +264,7 @@ export async function deployMutableAssetWithManyParams() {
   const JacketNMT = await ethers.getContractFactory("JacketNMT");
   const jacketNMT = await JacketNMT.deploy(creator.address);
   // HolderSmartPolicy
-  const MPExpHolderSmartPolicy = await ethers.getContractFactory(
+  const MPExpHolderSmartPolicy = await ethers.getContractFactory( 
     "MPExpHolderSmartPolicy"
   );
   const holderSmartPolicy = await MPExpHolderSmartPolicy.deploy();
