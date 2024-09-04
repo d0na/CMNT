@@ -23,7 +23,7 @@ contract CreatorSmartPolicy is SmartPolicy {
             
     */
     //mapping(bytes32 => bytes32) private AllowedActions;
-    PolicyInformationPoint private pip;
+    // PolicyInformationPoint private pip;
     address constant _pip = 0x57A8aAfc40EDCa45F13B4a74009CBAD162e82e23;
 
     bytes4 internal constant ACT_SET_COLOR =
@@ -33,7 +33,7 @@ contract CreatorSmartPolicy is SmartPolicy {
         bytes4(keccak256("transferFrom(address,address)"));
 
     constructor() {
-        pip = PolicyInformationPoint(_pip);
+        // pip = PolicyInformationPoint(_pip);
         // change_pattern: 0x6368616e67655f7061747465726e
         // AllowedActions[
         //     "0x6368616e67655f7061747465726e"
