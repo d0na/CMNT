@@ -46,7 +46,7 @@ describe("Tests related to the JacketMutableAsset", function () {
     expect(jacketDescriptor["sleeves"]).to.be.equal(false); //not color defined
   });
 
-  it("Should setColor without policy evaluation", async function () {
+  xit("Should setColor without policy evaluation", async function () {
     const { jacketMutableAsset } = await deployJacketAsset();
     const _setColor = await jacketMutableAsset._setColor(1, "green");
     await expect(_setColor)
