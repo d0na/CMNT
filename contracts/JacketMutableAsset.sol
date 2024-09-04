@@ -65,13 +65,16 @@ contract JacketMutableAsset is MutableAsset {
             address(this)
         )
     {
-        _setColor(_color, _tokenURI);
-    }
-
-    // is public (external) only for evaluating costs
-    function _setColor(uint256 _color, string memory _tokenURI) public {
         jacketDescriptor.color = _color;
         setTokenURI(_tokenURI);
         emit StateChanged(jacketDescriptor);
+        //_setColor(_color, _tokenURI);
     }
+
+    // // is public (external) only for evaluating costs
+    // function _setColor(uint256 _color, string memory _tokenURI) public {
+    //     jacketDescriptor.color = _color;
+    //     setTokenURI(_tokenURI);
+    //     emit StateChanged(jacketDescriptor);
+    // }
 }
