@@ -183,7 +183,7 @@ abstract contract MutableAsset {
             "Operation DENIED by CREATOR policy"
         );
         if (holderSmartPolicy == address(0)) {
-            revert("Operation DENIED by HOLDER policy");
+            revert("Operation DENIED by HOLDER policy set to DENY_ALL");
         } else {
             require(
                 SmartPolicy(holderSmartPolicy).evaluate(
