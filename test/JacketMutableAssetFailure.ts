@@ -21,17 +21,18 @@ describe("JacketMutableAssetFail", function () {
   });
 
   describe("The owner (buyer)", function () {
-    // it("should fail changing the color Jacket to 1 due to the DENY aLL Policy", async function () {
-    //   const { jacketMutableAsset, buyer, denyAllSmartPolicy } =
-    //     await loadFixture(deployJacketAsset);
-    //   // expect(await jacketMutableAsset.holderSmartPolicy()).to.be.equal(
-    //   //   // denyAllSmartPolicy.address
-    //   //   '0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9'
-    //   // );
-    //   await expect(
-    //     jacketMutableAsset.connect(buyer).setColor(1, "green")
-    //   ).to.be.rejectedWith("Operation DENIED by HOLDER policy");
-    // });
+    it("should fail changing the color Jacket to 1 due to the DENY aLL Policy", async function () {
+      const { jacketMutableAsset, buyer, denyAllSmartPolicy } =
+        await loadFixture(deployJacketAsset);
+
+      await jacketMutableAsset.connect(buyer).setHolderSmartPolicy(ZERO_ADDRESS);
+      expect(await jacketMutableAsset.holderSmartPolicy()).to.be.equal(
+        ZERO_ADDRESS
+      );
+      await expect(
+        jacketMutableAsset.connect(buyer).setColor(1, "green")
+      ).to.be.rejectedWith("Operation DENIED by HOLDER policy set to DENY_ALL");
+    });
 
     it("Should change the color Jacket to 2 and fail due to CREATOR Policy", async function () {
       const { jacketMutableAsset, buyer } = await loadFixture(
@@ -77,15 +78,15 @@ describe("JacketMutableAssetFail", function () {
   });
   describe("The creator (creator) not allowed by the HOLDER policy", function () {
     it("Should not change the color Jacket to 1 failing due to HOLDER Policy because is set to DENY_ALL", async function () {
-      const { jacketMutableAsset, creator } = await loadFixture(
+      const { jacketMutableAsset, creator, buyer, holderSmartPolicy } = await loadFixture(
         deployJacketAsset
       );
-      await jacketMutableAsset.connect(creator).setHolderSmartPolicy(ZERO_ADDRESS);
+      await jacketMutableAsset.connect(buyer).setHolderSmartPolicy(holderSmartPolicy.address);
       // console.log("CREator:",await jacketMutableAsset.creatorSmartPolicy())
       // console.log("Holder:",await jacketMutableAsset.holderSmartPolicy())
       await expect(
         jacketMutableAsset.connect(creator).setColor(1, "green")
-      ).to.be.rejectedWith("Operation DENIED by HOLDER policy set to DENY_ALL");
+      ).to.be.rejectedWith("Operation DENIED by HOLDER policy");
     });
   });
 });

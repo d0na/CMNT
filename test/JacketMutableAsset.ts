@@ -118,6 +118,7 @@ describe("Tests related to the JacketMutableAsset", function () {
     it("Should be forbidden to change the creator smart policy ", async function () {
       const { jacketMutableAsset, creator, creatorSmartPolicy } =
         await loadFixture(deployJacketAsset);
+        
       await expect(
         jacketMutableAsset
           .connect(creator)
